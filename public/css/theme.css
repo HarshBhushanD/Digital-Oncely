@@ -1,0 +1,343 @@
+:root {
+    /* Light Mode Colors (Instagram-inspired) */
+    --light-bg: #ffffff;
+    --light-text: #1a1a1a;
+    --light-secondary-text: #666666;
+    --light-border: #e0e0e0;
+    --light-primary: #00a854;
+    --light-secondary: #f5f5f5;
+    --light-hover: #f0f0f0;
+    --light-button-hover: #008c4a;
+    --light-success: #00a854;
+    --light-danger: #ff4d4f;
+    --light-warning: #faad14;
+    --light-card-bg: #ffffff;
+    --light-input-bg: #ffffff;
+    --light-input-border: #d9d9d9;
+    --light-shadow: rgba(0, 0, 0, 0.08);
+
+    /* Dark Mode Colors (Matching Light Mode Style) */
+    --dark-bg: #1a1a1a;
+    --dark-text: #ffffff;
+    --dark-secondary-text: #b3b3b3;
+    --dark-border: #333333;
+    --dark-primary: #00a854;
+    --dark-secondary: #2a2a2a;
+    --dark-hover: #008c4a;
+    --dark-button-hover: #008c4a;
+    --dark-success: #00a854;
+    --dark-danger: #ff4d4f;
+    --dark-warning: #faad14;
+    --dark-card-bg: #2a2a2a;
+    --dark-input-bg: #2a2a2a;
+    --dark-input-border: #404040;
+    --dark-shadow: rgba(0, 0, 0, 0.2);
+
+    /* Default to light theme */
+    --bg-color: var(--light-bg);
+    --text-color: var(--light-text);
+    --secondary-text: var(--light-secondary-text);
+    --border-color: var(--light-border);
+    --primary-color: var(--light-primary);
+    --secondary-color: var(--light-secondary);
+    --hover-color: var(--light-hover);
+    --button-hover: var(--light-button-hover);
+    --success-color: var(--light-success);
+    --danger-color: var(--light-danger);
+    --warning-color: var(--light-warning);
+    --card-bg: var(--light-card-bg);
+    --input-bg: var(--light-input-bg);
+    --input-border: var(--light-input-border);
+    --shadow: var(--light-shadow);
+
+    --primary-color: #2DC854;
+    --secondary-color: #4CAF50;
+    --success-color: #2DC854;
+    --warning-color: #8BC34A;
+    --danger-color: #F44336;
+    --light-color: #E8F5E9;
+    --dark-color: #1B5E20;
+    --star-color: #4CAF50;
+    --sidebar-width: 380px;
+    --card-radius: 16px;
+    --card-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    --sidebar-bg: #fff;
+    --main-bg: #fff;
+    --button-orange: #4CAF50;
+    --button-orange-hover: #388E3C;
+}
+
+/* Dark mode styles */
+[data-theme="dark"] {
+    --bg-color: var(--dark-bg);
+    --text-color: var(--dark-text);
+    --secondary-text: var(--dark-secondary-text);
+    --border-color: var(--dark-border);
+    --primary-color: var(--dark-primary);
+    --secondary-color: var(--dark-secondary);
+    --hover-color: var(--dark-hover);
+    --button-hover: var(--dark-button-hover);
+    --success-color: var(--dark-success);
+    --danger-color: var(--dark-danger);
+    --warning-color: var(--dark-warning);
+    --card-bg: var(--dark-card-bg);
+    --input-bg: var(--dark-input-bg);
+    --input-border: var(--dark-input-border);
+    --shadow: var(--dark-shadow);
+}
+
+/* Manual theme toggle classes */
+.light-theme {
+    --bg-color: var(--light-bg);
+    --text-color: var(--light-text);
+    --secondary-text: var(--light-secondary-text);
+    --border-color: var(--light-border);
+    --primary-color: var(--light-primary);
+    --secondary-color: var(--light-secondary);
+    --hover-color: var(--light-hover);
+    --button-hover: var(--light-button-hover);
+    --success-color: var(--light-success);
+    --danger-color: var(--light-danger);
+    --warning-color: var(--light-warning);
+    --card-bg: var(--light-card-bg);
+    --input-bg: var(--light-input-bg);
+    --input-border: var(--light-input-border);
+    --shadow: var(--light-shadow);
+}
+
+.dark-theme {
+    --bg-color: var(--dark-bg);
+    --text-color: var(--dark-text);
+    --secondary-text: var(--dark-secondary-text);
+    --border-color: var(--dark-border);
+    --primary-color: var(--dark-primary);
+    --secondary-color: var(--dark-secondary);
+    --hover-color: var(--dark-hover);
+    --button-hover: var(--dark-button-hover);
+    --success-color: var(--dark-success);
+    --danger-color: var(--dark-danger);
+    --warning-color: var(--dark-warning);
+    --card-bg: var(--dark-card-bg);
+    --input-bg: var(--dark-input-bg);
+    --input-border: var(--dark-input-border);
+    --shadow: var(--dark-shadow);
+}
+
+/* Global Styles */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Card Styles */
+.card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px var(--shadow);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+/* Button Styles */
+.btn {
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s;
+    padding: 10px 20px;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--button-hover);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+.btn-secondary:hover {
+    background-color: var(--hover-color);
+}
+
+/* Input Styles */
+.form-control {
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    color: var(--text-color);
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.form-control:focus {
+    background-color: var(--input-bg);
+    border-color: var(--primary-color);
+    color: var(--text-color);
+    box-shadow: 0 0 0 2px var(--primary-color);
+}
+
+/* Navigation Styles */
+.navbar {
+    background-color: var(--card-bg);
+    border-bottom: 1px solid var(--border-color);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+.nav-link {
+    color: var(--text-color);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.nav-link:hover {
+    color: var(--primary-color);
+}
+
+/* Text Colors */
+.text-secondary {
+    color: var(--secondary-text) !important;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0.5rem;
+    margin-left: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.theme-toggle:hover {
+    color: var(--primary-color);
+}
+
+/* Modern Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-text);
+}
+
+/* Form Elements */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+    display: block;
+    font-weight: 500;
+}
+
+/* Alerts */
+.alert {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.alert-success {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.alert-danger {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.alert-warning {
+    background-color: var(--warning-color);
+    color: var(--text-color);
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+th {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+tr:hover {
+    background-color: var(--hover-color);
+}
+
+/* Badges */
+.badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.badge-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.badge-secondary {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+}
+
+/* Loading Spinner */
+.spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid var(--secondary-color);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+} 

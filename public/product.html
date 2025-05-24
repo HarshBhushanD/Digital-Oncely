@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .navbar {
+            background-color: var(--card-bg);
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        .navbar-brand {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .navbar-nav {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-color);
+        }
+
+        #logout-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0;
+        }
+
+        #logout-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 32px 16px;
+        }
+
+        .header {
+            background-color: var(--card-bg);
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            text-align: center;
+        }
+
+        .product-layout {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+        }
+
+        .main-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--card-bg);
+            border-radius: var(--card-radius);
+            box-shadow: var(--card-shadow);
+            padding: 32px 28px;
+            position: sticky;
+            top: 32px;
+            align-self: flex-start;
+        }
+
+        .sidebar h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: var(--text-color);
+        }
+
+        .sidebar .product-desc {
+            color: var(--text-color);
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+        }
+
+        .sidebar .product-rating {
+            color: var(--star-color);
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .sidebar .rating-text {
+            color: var(--secondary-text);
+            font-size: 1rem;
+            margin-left: 8px;
+        }
+
+        .sidebar .deal-badge {
+            background: var(--light-color);
+            color: var(--dark-color);
+            font-weight: 600;
+            border-radius: 6px;
+            padding: 4px 12px;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+
+        .sidebar .product-price {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-color);
+            margin-bottom: 8px;
+        }
+
+        .sidebar .plan-label {
+            font-weight: 600;
+            margin-top: 16px;
+            margin-bottom: 4px;
+            display: block;
+            color: var(--text-color);
+        }
+
+        .sidebar select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 10px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .sidebar .watch-deal {
+            color: var(--text-color);
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin: 18px 0 20px 0;
+        }
+
+        .sidebar .add-to-cart-btn {
+            padding: 14px;
+            background: var(--card-bg);
+            color: var(--text-color);
+            border: 2px solid var(--text-color);
+            border-radius: 32px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .sidebar .add-to-cart-btn:hover {
+            background: var(--bg-color);
+        }
+
+        .sidebar .buy-now-btn {
+            padding: 14px;
+            background: var(--button-orange);
+            color: #fff;
+            border: none;
+            border-radius: 32px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .sidebar .buy-now-btn:hover {
+            background: var(--button-orange-hover);
+        }
+
+        .sidebar .deal-highlights {
+            background: var(--bg-color);
+            border-radius: 12px;
+            padding: 18px 16px;
+            margin-top: 18px;
+            font-size: 1.05rem;
+            color: var(--text-color);
+        }
+
+        .sidebar .deal-highlights li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .main-gallery {
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 32px 32px 24px 32px;
+            margin-bottom: 32px;
+        }
+
+        .main-gallery .gallery-img {
+            width: 100%;
+            max-width: 600px;
+            height: 320px;
+            object-fit: contain;
+            border-radius: 12px;
+            background: var(--card-bg);
+            margin-bottom: 18px;
+            display: block;
+        }
+
+        .main-gallery .gallery-thumbs {
+            display: flex;
+            gap: 16px;
+        }
+
+        .main-gallery .gallery-thumb {
+            width: 120px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            background: var(--card-bg);
+        }
+
+        .main-gallery .gallery-thumb.selected {
+            border: 2px solid var(--primary-color);
+        }
+
+        @media (max-width: 1100px) {
+            .product-layout { flex-direction: column; }
+            .sidebar { width: 100%; position: static; margin-top: 32px; }
+        }
+
+        @media (max-width: 700px) {
+            .main-gallery { padding: 16px; }
+            .sidebar { padding: 16px; }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.2rem;
+            color: var(--secondary-text);
+        }
+
+        .error-message {
+            background-color: var(--danger-color);
+            color: white;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .back-button:hover {
+            background-color: var(--button-orange-hover);
+        }
+
+        .overview-para, .plans-para {
+            font-size: 1.15rem;
+            margin-bottom: 18px;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .overview-section, .plans-section {
+            margin-bottom: 40px;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0.5rem;
+            margin-left: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .theme-toggle:hover {
+            color: var(--primary-color);
+        }
+
+        .plan-card {
+            background: var(--card-bg) !important;
+            color: var(--text-color) !important;
+        }
+
+        .btn-lg {
+            width: 100%;
+        }
+
+        .qa-list {
+            margin-top: 24px;
+        }
+
+        .qa-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .qa-item .question h3 {
+            color: var(--text-color);
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+        }
+
+        .qa-item .answer {
+            color: var(--secondary-text);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .reviews-summary {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .average-rating {
+            text-align: center;
+        }
+
+        .average-rating .stars {
+            color: var(--star-color);
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .average-rating .rating-text {
+            color: var(--text-color);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .average-rating .total-reviews {
+            color: var(--secondary-text);
+            font-size: 1rem;
+        }
+
+        .reviews-list {
+            margin-top: 24px;
+        }
+
+        .review-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .reviewer-name {
+            color: var(--text-color);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .review-rating {
+            color: var(--star-color);
+            font-size: 1.2rem;
+        }
+
+        .review-title {
+            color: var(--text-color);
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .review-text {
+            color: var(--secondary-text);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 20px;
+            }
+
+            .image-preview-container {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            .btn-lg {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="navbar-brand">Digital Oncely</a>
+            <div class="navbar-nav">
+                <a href="/products" class="nav-link">Products</a>
+                <a href="/addproduct.html" class="nav-link">Add Product</a>
+                <button id="logout-btn" class="nav-link">Logout</button>
+                <button id="theme-toggle" class="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="header">
+        <div class="container">
+            <h1>Product Details</h1>
+        </div>
+    </div>
+    
+    <div class="container">
+        <a href="/products" class="back-button">← Back to Products</a>
+        
+        <div class="error-message" id="error-message">
+            An error occurred while loading the product. Please try again later.
+        </div>
+        
+        <div class="loading" id="loading">
+            Loading product details...
+        </div>
+        
+        <div class="product-layout" id="product-layout" style="display:none;">
+            <div class="main-content">
+                <div class="main-gallery" id="main-gallery">
+                    <img src="" alt="Product Image" class="gallery-img" id="main-gallery-img">
+                    <div class="gallery-thumbs" id="gallery-thumbs"></div>
+                </div>
+                <div id="brief-section"></div>
+                <div id="features-section"></div>
+                <div id="tldr-section"></div>
+                <div id="overview-section"></div>
+                <div id="plans-section"></div>
+                <div id="founders-section"></div>
+                <div id="qa-section"></div>
+                <div id="reviews-section"></div>
+            </div>
+            <aside class="sidebar" id="sidebar">
+                <h2 id="sidebar-product-name"></h2>
+                <div class="product-desc" id="sidebar-product-desc"></div>
+                <div class="product-rating">★★★★★<span class="rating-text">No reviews</span></div>
+                <div class="deal-badge">One-time payment. Lifetime deal.</div>
+                <div class="product-price" id="sidebar-product-price"></div>
+                <label class="plan-label" for="plan-select">Select a plan</label>
+                <select id="plan-select"><option>Lifetime Deal</option></select>
+                <div class="watch-deal">♡ Watch this deal</div>
+                <div class="action-buttons">
+                    <button class="add-to-cart-btn">Add to cart</button>
+                    <button class="buy-now-btn">Buy now</button>
+                </div>
+                <ul class="deal-highlights">
+                    <li>🗓️ Refundable up to 60 days</li>
+                    <li>🔵 Best price anywhere</li>
+                    <li>🌟 Handpicked, high-quality deals</li>
+                </ul>
+            </aside>
+        </div>
+        <div class="product-container" id="product-container" style="display: none;">
+            
+        </div>
+    </div>
+    
+    <script src="/js/theme.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loadingElement = document.getElementById('loading');
+            const productLayout = document.getElementById('product-layout');
+            const errorMessage = document.getElementById('error-message');
+            
+            document.getElementById('logout-btn').addEventListener('click', function() {
+                localStorage.removeItem('jwtToken');
+                window.location.href = '/login.html';
+            });
+
+            const token = localStorage.getItem('jwtToken');
+            if (!token) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const productSlug = urlParams.get('slug');
+
+            async function fetchProductData() {
+                try {
+                    const requestData = {
+                        task: 'fetch',
+                        projectType: 'Product',
+                        limit: 50,
+                        page: 1
+                    };
+                    
+                    console.log('Request data:', requestData);
+
+                    const response = await fetch('https://rh5f3cc2p0.execute-api.us-east-1.amazonaws.com/default/backend_function', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(requestData)
+                    });
+                    
+                    console.log('Response status:', response.status);
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        console.error('Error response:', errorData);
+                        throw new Error(errorData.error || 'Failed to fetch products');
+                    }
+                    
+                    const data = await response.json();
+                    console.log('API Response:', data);
+                    
+                    if (!data.items || data.items.length === 0) {
+                        throw new Error('No products found');
+                    }
+                    
+                    const product = data.items.find(p => {
+                        const slug = p.productName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                        return slug === productSlug;
+                    });
+                    
+                    if (!product) {
+                        throw new Error('Product not found');
+                    }
+                    
+                    console.log('Full Product data:', JSON.stringify(product, null, 2));
+                    
+                    displayProductData(product);
+                    
+                } catch (error) {
+                    console.error('Error fetching product:', error);
+                    loadingElement.style.display = 'none';
+                    errorMessage.style.display = 'block';
+                    errorMessage.textContent = error.message;
+                    
+                    if (error.message.includes('login')) {
+                        setTimeout(() => {
+                            window.location.href = '/login.html';
+                        }, 2000);
+                    }
+                }
+            }
+
+            function displayProductData(product) {
+                
+                const founderData = {
+                    name: product.founder?.name || '',
+                    title: product.founder?.title || '',
+                    imageUrl: product.founder?.image || '',
+                    profile: product.founder?.link || '',
+                    message: product.founder?.message || '',
+                    posts: product.founder?.posts || [],
+                    links: product.founder?.links || []
+                };
+                
+                console.log('Processed Founder data:', founderData);
+
+                document.getElementById('sidebar-product-name').textContent = product.productName;
+                document.getElementById('sidebar-product-desc').textContent = product.brief;
+                document.getElementById('sidebar-product-price').textContent = product.price;
+                
+                const mainGalleryImg = document.getElementById('main-gallery-img');
+                const galleryThumbs = document.getElementById('gallery-thumbs');
+                if (product.imageUrls && product.imageUrls.length > 0) {
+                    mainGalleryImg.src = product.imageUrls[0];
+                    mainGalleryImg.alt = product.productName;
+                    galleryThumbs.innerHTML = '';
+                    product.imageUrls.forEach((url, idx) => {
+                        const thumb = document.createElement('img');
+                        thumb.src = url;
+                        thumb.className = 'gallery-thumb' + (idx === 0 ? ' selected' : '');
+                        thumb.addEventListener('click', () => {
+                            mainGalleryImg.src = url;
+                            document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('selected'));
+                            thumb.classList.add('selected');
+                        });
+                        galleryThumbs.appendChild(thumb);
+                    });
+                }
+                document.getElementById('brief-section').innerHTML = `
+                   <div style="font-size:1.18rem;line-height:1.6;color:#333;text-align:left;margin-bottom:28px;">${product.brief || ''}</div>
+                `;
+                
+                let featuresList = '';
+                if (product.bestFeatures) {
+                 
+                  const lines = product.bestFeatures.split(/\n|<br\s*\/?>(?![^<]*>)/).filter(Boolean);
+                  featuresList = lines.map(line => {
+                    
+                    const match = line.match(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic}|[\uD800-\uDBFF][\uDC00-\uDFFF])?\s*([^–\-:]+)[–\-:]+(.+)$/u);
+                    if (match) {
+                      return `<li style='margin-bottom:12px;font-size:1.08rem;'><span style='font-size:1.3em;'>${match[1]||''}</span> <b>${match[2].trim()}</b> – ${match[3].trim()}</li>`;
+                    } else {
+                      return `<li style='margin-bottom:12px;font-size:1.08rem;'>${line}</li>`;
+                    }
+                  }).join('');
+                }
+                document.getElementById('features-section').innerHTML = `
+                   <h2 style="font-size:2rem;font-weight:800;margin-bottom:18px;text-align:left;">Best features</h2>
+                   <ul style="padding-left:0;list-style:none;text-align:left;">${featuresList}</ul>
+                `;
+                
+                document.getElementById('tldr-section').innerHTML = `
+                <h2>TL;DR</h2>
+                <div style="display: flex; flex-wrap: wrap; gap: 48px 64px; align-items: flex-start; margin-bottom: 32px;">
+                  <div style="flex:1 1 320px; min-width:260px;">
+                    <div style="font-weight:700;font-size:1.2rem;margin-bottom:8px;display:flex;align-items:center;gap:8px;">⭐ Best for</div>
+                    <ul style="margin-bottom:24px;">
+                      ${(product.tldr?.bestFor||'').split(/\n|,/).filter(Boolean).map(x=>`<li>${x.trim()}</li>`).join('')||'<li>NA</li>'}
+                    </ul>
+                    <div style="font-weight:700;font-size:1.2rem;margin-bottom:8px;display:flex;align-items:center;gap:8px;">🖥️ Integrations</div>
+                    <ul style="margin-bottom:24px;">
+                      ${(product.tldr?.integrations||'').split(/\n|,/).filter(Boolean).map(x=>`<li>${x.trim()}</li>`).join('')||'<li>NA</li>'}
+                    </ul>
+                  </div>
+                  <div style="flex:1 1 320px; min-width:260px;">
+                    <div style="font-weight:700;font-size:1.2rem;margin-bottom:8px;display:flex;align-items:center;gap:8px;">🔁 Alternative to</div>
+                    <ul style="margin-bottom:24px;">
+                      ${(product.tldr?.alternatives||'').split(/\n|,/).filter(Boolean).map(x=>`<li>${x.trim()}</li>`).join('')||'<li>NA</li>'}
+                    </ul>
+                    <div style="font-weight:700;font-size:1.2rem;margin-bottom:8px;display:flex;align-items:center;gap:8px;">≣ Features</div>
+                    <ul style="margin-bottom:24px;">
+                      ${(product.tldr?.features||'').split(/\n|,/).filter(Boolean).map(x=>`<li>${x.trim()}</li>`).join('')||'<li>NA</li>'}
+                    </ul>
+                  </div>
+                </div>`;
+               
+                if (product.overview) {
+                    let paragraphs = product.overview.split(/\n\n+/).filter(p => p.trim());
+                    
+                    if (paragraphs.length <= 1) {
+                        paragraphs = product.overview
+                            .split(/(?<=\.|\?|\!) +/) 
+                            .filter(s => s.trim())   
+                            .map(s => s.trim());     
+                    }
+
+                    const totalImages = product.imageUrls?.length || 0;
+                    
+                    let formattedOverview = '';
+                    if (paragraphs.length > 0 && totalImages > 0) {
+                       
+                        const imageInterval = Math.max(1, Math.floor(paragraphs.length / totalImages));
+                        
+                        paragraphs.forEach((paragraph, index) => {
+                           
+                            let formattedParagraph = paragraph;
+                            if (!paragraph.match(/[.!?]$/)) {
+                                formattedParagraph += '.';
+                            }
+                            
+                            
+                            formattedOverview += `<p class="overview-para">${formattedParagraph}</p>`;
+                            
+                            const imageIndex = Math.floor(index / imageInterval);
+                            if (imageIndex < totalImages && 
+                                index % imageInterval === imageInterval - 1 && 
+                                (index < paragraphs.length - 1 || imageIndex === totalImages - 1)) {
+                                    
+                                formattedOverview += `
+                                    <div style="text-align:center;margin:20px 0 40px 0;">
+                                        <img src="${product.imageUrls[imageIndex]}" 
+                                            alt="${product.productName} image ${imageIndex + 1}" 
+                                            style="width:100%;max-width:600px;border-radius:12px;">
+                                    </div>`;
+                            }
+                        });
+                    } else {
+                       
+                        formattedOverview = paragraphs.map(p => {
+                            let formattedParagraph = p;
+                            if (!p.match(/[.!?]$/)) {
+                                formattedParagraph += '.';
+                            }
+                            return `<p class="overview-para">${formattedParagraph}</p>`;
+                        }).join('');
+                    }
+                    
+                    document.getElementById('overview-section').innerHTML = `
+                        <h2>Overview</h2>
+                        ${formattedOverview}
+                    `;
+                }
+               
+                if (product.plans && product.plans.length > 0) {
+                    document.getElementById('plans-section').innerHTML = `
+                        <h2>Plans & Pricing</h2>
+                        <div class="plans-grid">
+                            ${product.plans.map(plan => `
+                                <div class="plan-card">
+                                    <h3>${plan.name}</h3>
+                                    <div class="plan-price">${plan.price}</div>
+                                    <ul class="plan-features">
+                                        ${plan.features.map(feature => `<li>${feature}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+                
+                document.getElementById('founders-section').innerHTML = `
+                    <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 32px;">From the founders</h2>
+                    <div style="display: flex; gap: 40px; flex-wrap: wrap; margin-bottom: 40px;">
+                        <div style="flex-basis: 280px; flex-grow: 0; flex-shrink: 0;">
+                            <div style="text-align: center; margin-bottom: 24px;">
+                                <img src="${founderData.imageUrl || 'https://via.placeholder.com/150'}" alt="${founderData.name || 'Founder'}" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-bottom: 12px; border: 1px solid #eee;">
+                                <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 4px;">${founderData.name || 'Founder Name'}</div>
+                                <div style="font-size: 1.1rem; color: #555;">${founderData.title || 'Founder'}</div>
+                                <a href="${founderData.profile || '#'}" style="color: var(--primary-color); text-decoration: none; font-size: 1.1rem; margin-top: 8px; display: inline-block;">${founderData.profile || 'Founder Profile'} &rarr;</a>
+                            </div>
+                            <hr style="border: none; height: 1px; background-color: #eee; margin: 24px 0;">
+                            <div style="margin-bottom: 24px;">
+                                <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 12px;">All posts</h3>
+                                <ul style="list-style: none; padding: 0;">
+                                    ${founderData.posts && founderData.posts.length > 0 ? 
+                                        founderData.posts.map(post => 
+                                            `<li style="margin-bottom: 8px;"><a href="#" style="color: var(--primary-color); text-decoration: none; font-size: 1.1rem;">${post}</a></li>`
+                                        ).join('') : '<li>No posts available</li>'}
+                                </ul>
+                            </div>
+                            <hr style="border: none; height: 1px; background-color: #eee; margin: 24px 0;">
+                            <div>
+                                <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 12px;">Helpful links</h3>
+                                <ul style="list-style: none; padding: 0;">
+                                    ${founderData.links && founderData.links.length > 0 ? 
+                                        founderData.links.map(link => 
+                                            `<li style="margin-bottom: 8px;"><a href="#" style="color: var(--primary-color); text-decoration: none; font-size: 1.1rem;">${link}</a></li>`
+                                        ).join('') : '<li>No helpful links available</li>'}
+                                </ul>
+                            </div>
+                        </div>
+                        <div style="flex: 1; min-width: 300px;
+                            font-size: 1.15rem; line-height: 1.8; color: #333;">
+                            ${founderData.message ? founderData.message.split('\n').map(paragraph =>
+                                paragraph.trim() ? `<p style="margin-bottom: 16px;">${paragraph}</p>` : ''
+                            ).join('') : '<p>No founder message available.</p>'}
+                        </div>
+                    </div>
+                `;
+               
+                document.getElementById('qa-section').innerHTML = `
+                    <h2>Questions & Answers</h2>
+                    <div class="qa-list">
+                        ${product.qa && product.qa.length > 0 ? 
+                            product.qa.map(qa => `
+                                <div class="qa-item">
+                                    <div class="question">
+                                        <h3>${qa.question}</h3>
+                                    </div>
+                                    <div class="answer">
+                                        <p>${qa.answer}</p>
+                                    </div>
+                                </div>
+                            `).join('') : 
+                            '<div class="qa-item"><p style="text-align: center; color: var(--secondary-text);">No questions available yet.</p></div>'
+                        }
+                    </div>
+                `;
+                
+                if (product.reviews && product.reviews.length > 0) {
+                    const averageRating = product.reviews.reduce((acc, review) => acc + review.rating, 0) / product.reviews.length;
+                    const stars = '★'.repeat(Math.round(averageRating)) + '☆'.repeat(5 - Math.round(averageRating));
+                    
+                    document.getElementById('reviews-section').innerHTML = `
+                        <h2>Customer Reviews</h2>
+                        <div class="reviews-summary">
+                            <div class="average-rating">
+                                <div class="stars">${stars}</div>
+                                <div class="rating-text">${averageRating.toFixed(1)} out of 5</div>
+                                <div class="total-reviews">${product.reviews.length} reviews</div>
+                            </div>
+                        </div>
+                        <div class="reviews-list">
+                            ${product.reviews.map(review => `
+                                <div class="review-item">
+                                    <div class="review-header">
+                                        <div class="reviewer-name">${review.name}</div>
+                                        <div class="review-rating">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</div>
+                                    </div>
+                                    <div class="review-title">${review.title}</div>
+                                    <div class="review-text">${review.text}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                } else {
+                    document.getElementById('reviews-section').innerHTML = `
+                        <h2>Customer Reviews</h2>
+                        <div class="reviews-summary">
+                            <div class="average-rating">
+                                <div class="stars">☆☆☆☆☆</div>
+                                <div class="rating-text">No ratings yet</div>
+                                <div class="total-reviews">0 reviews</div>
+                            </div>
+                        </div>
+                        <div class="reviews-list">
+                            <div class="review-item">
+                                <p style="text-align: center; color: var(--secondary-text);">No reviews available yet.</p>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                loadingElement.style.display = 'none';
+                productLayout.style.display = 'flex';
+            }
+            
+            fetchProductData();
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Digital Oncely</title>
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-color: var(--bg-color);
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 16px var(--shadow);
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .login-title {
+            font-size: 2rem;
+            color: var(--text-color);
+            margin-bottom: 8px;
+        }
+
+        .login-subtitle {
+            color: var(--secondary-text);
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            background: var(--input-bg);
+            color: var(--text-color);
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-login:hover {
+            background: var(--button-hover);
+            transform: translateY(-1px);
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 24px;
+            color: var(--secondary-text);
+        }
+
+        .login-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+        }
+
+        .back-to-home {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: var(--text-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .back-to-home:hover {
+            background: var(--hover-color);
+        }
+
+        .error-message {
+            background: var(--danger-color);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .success-message {
+            background: var(--success-color);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <a href="/" class="back-to-home">
+            <i class="fas fa-arrow-left"></i>
+            Back to Home
+        </a>
+
+        <button class="theme-toggle" id="theme-toggle">
+            <i class="fas fa-moon"></i>
+        </button>
+
+        <div class="login-card">
+            <div class="login-header">
+                <h1 class="login-title">Welcome Back</h1>
+                <p class="login-subtitle">Sign in to continue to Digital Oncely</p>
+            </div>
+
+            <div class="error-message" id="error-message"></div>
+            <div class="success-message" id="success-message"></div>
+
+            <form id="login-form">
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <input type="email" class="form-control" id="email" required placeholder="Enter your email">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" class="form-control" id="password" required placeholder="Enter your password">
+                </div>
+
+                <button type="submit" class="btn-login">
+                    <span class="spinner" id="login-spinner" style="display: none;"></span>
+                    <span id="login-text">Sign In</span>
+                </button>
+            </form>
+
+            <div class="login-footer">
+                <p>Don't have an account? <a href="/signup.html">Sign up</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = themeToggle.querySelector('i');
+        
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.body.classList.add(savedTheme);
+            updateThemeIcon(savedTheme === 'dark-theme');
+        } else {
+            
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.body.classList.add('dark-theme');
+                updateThemeIcon(true);
+            }
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.body.classList.toggle('dark-theme');
+            document.body.classList.remove(isDark ? 'light-theme' : 'dark-theme');
+            localStorage.setItem('theme', isDark ? 'dark-theme' : 'light-theme');
+            updateThemeIcon(isDark);
+        });
+        
+        function updateThemeIcon(isDark) {
+            themeIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        const loginForm = document.getElementById('login-form');
+        const errorMessage = document.getElementById('error-message');
+        const successMessage = document.getElementById('success-message');
+        const loginSpinner = document.getElementById('login-spinner');
+        const loginText = document.getElementById('login-text');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+            
+            loginSpinner.style.display = 'inline-block';
+            loginText.textContent = 'Signing in...';
+            
+            try {
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value.trim();
+
+                // Step 1: Login request
+                console.log('Sending login request...');
+                const loginResponse = await fetch('https://rh5f3cc2p0.execute-api.us-east-1.amazonaws.com/default/backend_function', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        task: 'auth',
+                        action: 'login',
+                        email: email,
+                        password: password,
+                        website: 'digital-oncely.com'
+                    })
+                });
+
+                console.log('Login response status:', loginResponse.status);
+                const loginData = await loginResponse.json();
+                console.log('Login response:', loginData);
+
+                if (loginResponse.status === 404) {
+                    throw new Error('Account not found. Please sign up first.');
+                } else if (loginResponse.status === 403) {
+                    throw new Error('Access denied. Please check your credentials.');
+                } else if (!loginResponse.ok) {
+                    throw new Error(loginData.message || loginData.error || 'Login failed. Please try again.');
+                }
+
+                if (!loginData.token) {
+                    throw new Error('No authentication token received');
+                }
+
+                // Store the token
+                localStorage.setItem('jwtToken', loginData.token);
+                console.log('Token stored successfully');
+
+                // Step 2: Verify login status
+                console.log('Verifying login status...');
+                const verifyResponse = await fetch('https://rh5f3cc2p0.execute-api.us-east-1.amazonaws.com/default/backend_function', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${loginData.token}`,
+                        'Origin': window.location.origin
+                    },
+                    body: JSON.stringify({
+                        task: 'verify'
+                    })
+                });
+
+                console.log('Verify response status:', verifyResponse.status);
+                const verifyData = await verifyResponse.json();
+                console.log('Verify response:', verifyData);
+
+                if (!verifyResponse.ok) {
+                    throw new Error(verifyData.message || verifyData.error || 'Login verification failed');
+                }
+
+                if (!verifyData.isLoggedIn) {
+                    throw new Error('Login verification failed');
+                }
+
+                successMessage.textContent = loginData.message || 'Login successful! Redirecting...';
+                successMessage.style.display = 'block';
+                
+                // Step 3: Fetch initial data
+                console.log('Fetching initial data...');
+                const fetchResponse = await fetch('https://rh5f3cc2p0.execute-api.us-east-1.amazonaws.com/default/backend_function', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${loginData.token}`,
+                        'Origin': window.location.origin
+                    },
+                    body: JSON.stringify({
+                        task: 'fetch',
+                        projectType: 'digital-oncely',
+                        limit: 10,
+                        page: 1
+                    })
+                });
+
+                console.log('Fetch response status:', fetchResponse.status);
+                const fetchData = await fetchResponse.json();
+                console.log('Fetch response:', fetchData);
+
+                if (!fetchResponse.ok) {
+                    console.warn('Failed to fetch initial data:', fetchData);
+                }
+
+                setTimeout(() => {
+                    window.location.href = '/products.html';
+                }, 1500);
+
+            } catch (error) {
+                console.error('Login error:', error);
+                errorMessage.textContent = error.message || 'An error occurred during login';
+                errorMessage.style.display = 'block';
+            } finally {
+                loginSpinner.style.display = 'none';
+                loginText.textContent = 'Sign In';
+            }
+        });
+    </script>
+</body>
+</html> 

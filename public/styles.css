@@ -1,0 +1,348 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #ffffff;
+    color: #000000;
+    line-height: 1.6;
+}
+
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.header {
+    margin: 40px 0;
+}
+
+.tagline {
+    color: #333;
+    font-size: 18px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.tagline .heart {
+    color: #ff3b5c;
+    font-size: 24px;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 40px;
+}
+
+.stars {
+    color: #00b67a;
+    font-size: 24px;
+}
+
+.rating-text {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.trustpilot {
+    font-weight: bold;
+}
+
+.main-title {
+    font-size: 64px;
+    font-weight: bold;
+    margin-bottom: -5px;
+    line-height: 1.2;
+}
+
+.subtitle {
+    font-size: 68px;
+    font-weight: bold;
+    color: #33d888;
+    margin-bottom: 40px;
+}
+
+.description {
+    font-size: 20px;
+    margin-bottom: 40px;
+}
+
+.signup-form {
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    margin-bottom: 30px;
+}
+
+.email-input {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+}
+
+.submit-btn {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    bottom: 5px;
+    padding: 0 20px;
+    background-color: #ffa500;
+    color: #000;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #ff8c00;
+}
+
+.subscriber-count {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 40px;
+    font-size: 16px;
+}
+
+.star-icon {
+    color: #ffd700;
+    font-size: 20px;
+}
+
+.awards {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-top: 50px;
+}
+
+.award {
+    flex: 1;
+    min-width: 200px;
+    max-width: 300px;
+    padding: 20px;
+    position: relative;
+}
+
+.award-badge {
+    width: 100px;
+    height: 100px;
+    opacity: 0.2;
+    margin: 0 auto;
+    font-size: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.award-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 15px 0;
+}
+
+.award-subtitle {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.success-icon {
+    font-size: 48px;
+    color: #33d888;
+    margin-bottom: 15px;
+    background-color: rgba(51, 216, 136, 0.1);
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+}
+
+.error-icon {
+    font-size: 48px;
+    color: #ff3b5c;
+    margin-bottom: 15px;
+    background-color: rgba(255, 59, 92, 0.1);
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+}
+
+.modal h3 {
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+
+.modal-content.error {
+    border-top: 5px solid #ff3b5c;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .main-title {
+        font-size: 48px;
+    }
+    
+    .subtitle {
+        font-size: 58px;
+    }
+    
+    .signup-form {
+        flex-direction: column;
+    }
+    
+    .submit-btn {
+        position: relative;
+        right: 0;
+        top: 10px;
+        width: 100%;
+        padding: 15px;
+    }
+}
+.success-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #000;
+}
+
+.discount-text {
+    font-size: 16px;
+    margin-bottom: 25px;
+    color: #333;
+}
+
+.next-step {
+    background-color: #f0f8ff;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    text-align: center;
+    color: #0047AB;
+    font-weight: 500;
+}
+
+.pointer {
+    color: #ffa500;
+    font-size: 20px;
+    margin-right: 5px;
+}
+
+.coupon-code {
+    border: 1px dashed #ccc;
+    padding: 15px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f5f5f5;
+}
+
+#discount-code {
+    font-size: 22px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: #333;
+}
+
+.copy-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    transition: color 0.2s;
+}
+
+.copy-button:hover {
+    color: #000;
+}
+
+.copy-success {
+    position: absolute;
+    background-color: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+    bottom: -30px;
+    right: 0;
+}
+
+.copy-success.show {
+    opacity: 1;
+}
+
+/* Adjust existing modal styles */
+.modal-content {
+    position: relative;
+    width: 450px;
+    max-width: 90%;
+}

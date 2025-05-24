@@ -1,0 +1,13 @@
+RewriteEngine On
+
+# Handle products listing page
+RewriteRule ^products/?$ products.html [L]
+
+# Handle individual product URLs
+RewriteRule ^products/([^/]+)/?$ product.html [L]
+
+# Redirect old product URLs to new format
+RewriteRule ^product\.html/([^/]+)\.html$ /products/$1 [R=301,L]
+
+# Handle 404 errors
+ErrorDocument 404 /404.html 
