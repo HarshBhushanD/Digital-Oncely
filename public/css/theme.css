@@ -65,6 +65,14 @@
     --main-bg: #fff;
     --button-orange: #4CAF50;
     --button-orange-hover: #388E3C;
+
+    /* Add responsive breakpoints */
+    --breakpoint-xs: 0;
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
+    --breakpoint-xxl: 1400px;
 }
 
 /* Dark mode styles */
@@ -128,6 +136,7 @@ body {
     background-color: var(--bg-color);
     color: var(--text-color);
     transition: background-color 0.3s, color 0.3s;
+    padding-top: 0; /* Reset default body padding */
 }
 
 /* Card Styles */
@@ -339,5 +348,668 @@ tr:hover {
 @keyframes spin {
     to {
         transform: rotate(360deg);
+    }
+}
+
+/* Base responsive styles */
+html {
+    font-size: 16px;
+}
+
+/* Responsive typography */
+@media (max-width: 768px) {
+    html {
+        font-size: 14px;
+    }
+}
+
+/* Responsive container */
+.container {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+@media (min-width: 576px) {
+    .container {
+        max-width: 540px;
+    }
+}
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 720px;
+    }
+}
+
+@media (min-width: 992px) {
+    .container {
+        max-width: 960px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1140px;
+    }
+}
+
+/* Responsive grid system */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+
+.col {
+    flex: 1 0 0%;
+    padding: 0 15px;
+}
+
+/* Responsive card styles */
+@media (max-width: 768px) {
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+}
+
+/* Responsive button styles */
+@media (max-width: 576px) {
+    .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+/* Responsive form styles */
+@media (max-width: 768px) {
+    .form-control {
+        font-size: 16px; /* Prevents zoom on mobile */
+    }
+    
+    .form-group {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Enhanced Mobile Navbar */
+@media (max-width: 992px) {
+    .navbar {
+        /* Revert fixed position to stick to the top but not cover content */
+        position: sticky; /* or relative if not sticky */
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        padding: 0.75rem 1rem;
+        background-color: var(--bg-color);
+        border-bottom: 1px solid var(--border-color); /* Add bottom border */
+        box-shadow: 0 2px 8px var(--shadow);
+        display: flex; /* Use flexbox for layout */
+        justify-content: space-between; /* Space brand and toggler */
+        align-items: center;
+    }
+
+    .navbar-brand {
+        font-size: 1.5rem; /* Slightly larger font */
+        font-weight: 700; /* Bolder */
+        color: var(--text-color); /* Use text color variable */
+        text-decoration: none;
+    }
+
+    .navbar-toggler {
+        display: block; /* Ensure toggler is visible on mobile */
+        border: none;
+        padding: 0.5rem;
+        background: transparent;
+        cursor: pointer;
+    }
+
+    .navbar-toggler-icon {
+        display: block;
+        width: 24px;
+        height: 2px;
+        background-color: var(--text-color);
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .navbar-toggler-icon::before,
+    .navbar-toggler-icon::after {
+        content: '';
+        position: absolute;
+        width: 24px;
+        height: 2px;
+        background-color: var(--text-color);
+        transition: all 0.3s ease;
+    }
+
+    .navbar-toggler-icon::before {
+        top: -6px;
+    }
+
+    .navbar-toggler-icon::after {
+        bottom: -6px;
+    }
+
+    .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
+        background-color: transparent;
+    }
+
+    .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::before {
+        transform: rotate(45deg);
+        top: 0;
+    }
+
+    .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::after {
+        transform: rotate(-45deg);
+        bottom: 0;
+    }
+
+    .navbar-collapse {
+        /* Collapsible menu styles */
+        display: none; /* Hidden by default */
+        position: absolute; /* Position relative to navbar */
+        top: 100%; /* Position below the navbar */
+        left: 0;
+        width: 100%;
+        background-color: var(--bg-color); /* Use background color */
+        box-shadow: 0 8px 16px var(--shadow); /* Add shadow */
+        padding: 1rem;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        overflow-y: auto;
+    }
+
+    .navbar-collapse.show {
+        display: block; /* Shown when active */
+    }
+
+    .nav-item {
+        margin: 0.5rem 0; /* Adjust margin */
+    }
+
+    .nav-link {
+        font-size: 1rem; /* Adjust font size */
+        padding: 0.75rem 0; /* Adjust padding */
+        display: block;
+        border-bottom: 1px solid var(--border-color); /* Keep border */
+        color: var(--text-color);
+        text-decoration: none;
+    }
+
+    .nav-link:hover {
+        color: var(--primary-color);
+    }
+
+    /* Ensure desktop links are hidden */
+     .navbar-nav:not(.mobile-nav-list) {
+        display: none;
+     }
+
+    /* Style for the mode toggle within the menu */
+    .theme-toggle {
+        display: flex; /* Ensure it's a flex item */
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-color);
+        padding: 0.75rem 0;
+        margin-top: 1rem;
+        border-top: 1px solid var(--border-color);
+        cursor: pointer;
+    }
+
+    .theme-toggle:hover {
+        color: var(--primary-color);
+    }
+
+    /* Hide the bottom mobile nav if it exists */
+    .mobile-nav {
+        display: none !important;
+    }
+}
+
+/* Products Grid */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.product-card {
+    background-color: var(--card-bg);
+    border-radius: var(--card-radius);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-color);
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--card-shadow);
+}
+
+.product-image {
+    position: relative;
+    padding-top: 100%; /* 1:1 Aspect Ratio */
+    overflow: hidden;
+}
+
+.product-image img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.05);
+}
+
+.product-info {
+    padding: 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--text-color);
+}
+
+.product-price {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.product-description {
+    font-size: 1rem;
+    color: var(--secondary-text);
+    margin-bottom: 1.5rem;
+    flex-grow: 1;
+    line-height: 1.5;
+}
+
+.product-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: auto;
+}
+
+.product-actions .btn {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+}
+
+/* Responsive Products Grid */
+@media (max-width: 1200px) {
+    .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .product-info {
+        padding: 1rem;
+    }
+
+    .product-title {
+        font-size: 1.1rem;
+    }
+
+    .product-price {
+        font-size: 1.2rem;
+    }
+
+    .product-description {
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    .product-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .product-actions .btn {
+        width: 100%;
+    }
+
+    /* Hide deals section on mobile */
+    .deals-section,
+    .hot-deals-section,
+    .lifetime-deals-section,
+    .stay-ahead-section {
+        display: none !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 0.75rem;
+        padding: 0.75rem;
+    }
+
+    .product-info {
+        padding: 0.75rem;
+    }
+
+    .product-title {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .product-price {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .product-description {
+        font-size: 0.85rem;
+        margin-bottom: 0.75rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+}
+
+/* Products Filter Section */
+.products-filter {
+    background-color: var(--card-bg);
+    padding: 1rem;
+    border-radius: var(--card-radius);
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .products-filter {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        border-radius: 20px 20px 0 0;
+        box-shadow: 0 -2px 10px var(--shadow);
+        transform: translateY(100%);
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .products-filter.show {
+        transform: translateY(0);
+    }
+
+    .filter-toggle {
+        position: fixed;
+        bottom: 1rem;
+        right: 1rem;
+        z-index: 1001;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 10px var(--shadow);
+        border: none;
+        cursor: pointer;
+    }
+}
+
+/* Products Search and Sort */
+.products-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+@media (max-width: 768px) {
+    .products-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .products-search {
+        width: 100%;
+    }
+
+    .products-sort {
+        width: 100%;
+    }
+}
+
+/* Products Loading State */
+.products-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+}
+
+.products-loading .spinner {
+    width: 40px;
+    height: 40px;
+}
+
+@media (max-width: 768px) {
+    .products-loading .spinner {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+/* Responsive images */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Responsive utilities */
+.d-none {
+    display: none !important;
+}
+
+@media (min-width: 576px) {
+    .d-sm-none {
+        display: none !important;
+    }
+    .d-sm-block {
+        display: block !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .d-md-none {
+        display: none !important;
+    }
+    .d-md-block {
+        display: block !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .d-lg-none {
+        display: none !important;
+    }
+    .d-lg-block {
+        display: block !important;
+    }
+}
+
+/* Responsive spacing utilities */
+@media (max-width: 768px) {
+    .m-0 {
+        margin: 0 !important;
+    }
+    .p-0 {
+        padding: 0 !important;
+    }
+    .mt-2 {
+        margin-top: 0.5rem !important;
+    }
+    .mb-2 {
+        margin-bottom: 0.5rem !important;
+    }
+}
+
+/* Responsive flex utilities */
+@media (max-width: 768px) {
+    .flex-column-mobile {
+        flex-direction: column !important;
+    }
+    .flex-wrap-mobile {
+        flex-wrap: wrap !important;
+    }
+}
+
+/* Responsive text alignment */
+@media (max-width: 576px) {
+    .text-center-mobile {
+        text-align: center !important;
+    }
+}
+
+/* Responsive modal */
+@media (max-width: 768px) {
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+    .modal-content {
+        border-radius: 0.5rem;
+    }
+}
+
+/* Responsive alerts */
+@media (max-width: 576px) {
+    .alert {
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+}
+
+/* Responsive badges */
+@media (max-width: 576px) {
+    .badge {
+        font-size: 0.75rem;
+        padding: 0.2rem 0.4rem;
+    }
+}
+
+/* Responsive loading spinner */
+@media (max-width: 576px) {
+    .spinner {
+        width: 20px;
+        height: 20px;
+        border-width: 2px;
+    }
+}
+
+/* Add padding to main content to prevent overlap with fixed elements */
+@media (max-width: 992px) {
+    body {
+        padding-top: 65px; /* Adjust padding-top based on navbar height */
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        /* Add padding bottom to account for the potential fixed mobile-nav */
+        padding-bottom: 60px; /* Approximate height of mobile nav */
+    }
+}
+
+/* Mobile Navigation Menu */
+@media (max-width: 768px) {
+    .mobile-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: var(--bg-color);
+        border-top: 1px solid var(--border-color);
+        padding: 0.75rem;
+        z-index: 1000;
+        box-shadow: 0 -2px 10px var(--shadow);
+    }
+
+    .mobile-nav-list {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .mobile-nav-item {
+        flex: 1;
+        text-align: center;
+    }
+
+    .mobile-nav-link {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: var(--text-color);
+        text-decoration: none;
+        font-size: 0.8rem;
+        padding: 0.5rem;
+        transition: color 0.3s ease;
+    }
+
+    .mobile-nav-link:hover,
+    .mobile-nav-link.active {
+        color: var(--primary-color);
+    }
+
+    .mobile-nav-icon {
+        font-size: 1.5rem;
+        margin-bottom: 0.25rem;
+    }
+
+    /* Add padding to main content to account for fixed mobile nav */
+    .main-content {
+        padding-bottom: 4rem;
     }
 } 
