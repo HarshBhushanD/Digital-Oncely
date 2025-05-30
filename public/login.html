@@ -232,6 +232,15 @@
                 const email = document.getElementById('email').value.trim();
                 const password = document.getElementById('password').value.trim();
 
+                // Basic validation
+                if (!email || !password) {
+                    throw new Error('Please enter both email and password');
+                }
+
+                if (!email.includes('@') || !email.includes('.')) {
+                    throw new Error('Please enter a valid email address');
+                }
+
                 // Step 1: Login request
                 console.log('Sending login request...');
                 const loginResponse = await fetch('https://rh5f3cc2p0.execute-api.us-east-1.amazonaws.com/default/backend_function', {
@@ -242,9 +251,9 @@
                     body: JSON.stringify({
                         task: 'auth',
                         action: 'login',
-                        email: email,
+                        email: email.toLowerCase(),
                         password: password,
-                        website: 'digital-oncely.com'
+                        website: 'todo-site'
                     })
                 });
 
@@ -252,12 +261,14 @@
                 const loginData = await loginResponse.json();
                 console.log('Login response:', loginData);
 
-                if (loginResponse.status === 404) {
-                    throw new Error('Account not found. Please sign up first.');
-                } else if (loginResponse.status === 403) {
-                    throw new Error('Access denied. Please check your credentials.');
-                } else if (!loginResponse.ok) {
-                    throw new Error(loginData.message || loginData.error || 'Login failed. Please try again.');
+                if (!loginResponse.ok) {
+                    if (loginResponse.status === 401) {
+                        throw new Error('Invalid email or password. Please try again.');
+                    } else if (loginResponse.status === 404) {
+                        throw new Error('Account not found. Please sign up first.');
+                    } else {
+                        throw new Error(loginData.error || 'Login failed. Please try again.');
+                    }
                 }
 
                 if (!loginData.token) {
@@ -268,15 +279,13 @@
                 localStorage.setItem('jwtToken', loginData.token);
                 console.log('Token stored successfully');
 
-                // Step 2: Verify login status
+                // Step 2: Verify login status and get user data
                 console.log('Verifying login status...');
                 const verifyResponse = await fetch('https://rh5f3cc2p0.execute-api.us-east-1.amazonaws.com/default/backend_function', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${loginData.token}`,
-                        'Origin': window.location.origin
+                        'Authorization': `Bearer ${loginData.token}`
                     },
                     body: JSON.stringify({
                         task: 'verify'
@@ -287,12 +296,13 @@
                 const verifyData = await verifyResponse.json();
                 console.log('Verify response:', verifyData);
 
-                if (!verifyResponse.ok) {
-                    throw new Error(verifyData.message || verifyData.error || 'Login verification failed');
+                if (!verifyResponse.ok || !verifyData.isLoggedIn) {
+                    throw new Error('Login verification failed');
                 }
 
-                if (!verifyData.isLoggedIn) {
-                    throw new Error('Login verification failed');
+                // Store user data
+                if (verifyData.user) {
+                    localStorage.setItem('userData', JSON.stringify(verifyData.user));
                 }
 
                 successMessage.textContent = loginData.message || 'Login successful! Redirecting...';
@@ -304,13 +314,11 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${loginData.token}`,
-                        'Origin': window.location.origin
+                        'Authorization': `Bearer ${loginData.token}`
                     },
                     body: JSON.stringify({
                         task: 'fetch',
-                        projectType: 'digital-oncely',
+                        projectType: 'todo-site',
                         limit: 10,
                         page: 1
                     })
@@ -324,6 +332,7 @@
                     console.warn('Failed to fetch initial data:', fetchData);
                 }
 
+                // Redirect after successful login
                 setTimeout(() => {
                     window.location.href = 'products.html';
                 }, 1500);
