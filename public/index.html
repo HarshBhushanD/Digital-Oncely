@@ -354,19 +354,19 @@
     <main class="container">
         <h2 class="section-title" style="margin-top: 40px;">Latest Products</h2>
         <div class="product-grid" id="product-grid">
-            <!-- Products will be loaded dynamically -->
+            
         </div>
     </main>
 
     <script src="/js/theme.js"></script>
     <script>
-        // Mobile menu functionality
+       
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
         const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
         const desktopThemeToggle = document.getElementById('theme-toggle');
 
-        // Sync theme toggle icons
+        
         function syncThemeIcons() {
             const isDark = document.body.classList.contains('dark-theme');
             const icon = isDark ? 'fa-sun' : 'fa-moon';
@@ -374,24 +374,20 @@
             desktopThemeToggle.querySelector('i').className = `fas ${icon}`;
         }
 
-        // Add click handler for mobile theme toggle
         mobileThemeToggle.addEventListener('click', () => {
             document.body.classList.toggle('dark-theme');
             syncThemeIcons();
         });
 
-        // Initial sync of theme icons
         syncThemeIcons();
 
         mobileMenuBtn.addEventListener('click', () => {
             mobileMenu.classList.toggle('active');
-            // Toggle between bars and times icon
+           
             const icon = mobileMenuBtn.querySelector('i');
             icon.classList.toggle('fa-bars');
             icon.classList.toggle('fa-times');
         });
-
-        // Close mobile menu when clicking outside
         document.addEventListener('click', (e) => {
             if (!mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
                 mobileMenu.classList.remove('active');
