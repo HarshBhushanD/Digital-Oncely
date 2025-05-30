@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="css/theme.css">
     <style>
        
 
@@ -421,7 +421,7 @@
     <nav class="navbar">
         <div class="container">
             <div class="nav-content">
-                <a href="/" class="nav-brand">Digital Oncely</a>
+                <a href="index.html" class="nav-brand">Digital Oncely</a>
                 
                 <div class="search-bar">
                     <i class="fas fa-search" style="color: var(--secondary-text)"></i>
@@ -429,9 +429,9 @@
                 </div>
                 
                 <div class="nav-links">
-                    <a href="/products" class="nav-link">Products</a>
-                    <a href="/addproduct.html" class="nav-link">Add Product</a>
-                    <a href="/login.html" class="nav-link">Login</a>
+                    <a href="products.html" class="nav-link">Products</a>
+                    <a href="addproduct.html" class="nav-link">Add Product</a>
+                    <a href="login.html" class="nav-link">Login</a>
                     <button class="theme-toggle" id="theme-toggle">
                         <i class="fas fa-moon"></i>
                     </button>
@@ -450,13 +450,13 @@
     </nav>
 
     <div class="mobile-menu" id="mobile-menu">
-        <a href="/products" class="nav-link">Products</a>
-        <a href="/addproduct.html" class="nav-link">Add Product</a>
-        <a href="/login.html" class="nav-link">Login</a>
+        <a href="products.html" class="nav-link">Products</a>
+        <a href="addproduct.html" class="nav-link">Add Product</a>
+        <a href="login.html" class="nav-link">Login</a>
     </div>
 
     <div class="container">
-        <a href="/addproduct.html" class="add-product-btn">+ Add New Product</a>
+        <a href="addproduct.html" class="add-product-btn">+ Add New Product</a>
         
         <div class="error-message" id="error-message">
             An error occurred while loading products. Please try again later.
@@ -481,7 +481,7 @@
         </div>
     </div>
     
-    <script src="/js/theme.js"></script>
+    <script src="js/theme.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const loadingElement = document.getElementById('loading');
@@ -550,7 +550,7 @@
                     const productUrl = `/product.html?slug=${productSlug}`;
                     
                     productCard.innerHTML = `
-                        <img src="${product.imageUrls?.[0] || '/placeholder.jpg'}" alt="${product.productName || 'Product'}" class="product-image">
+                        <img src="${product.imageUrls?.[0] || 'images/placeholder.jpg'}" alt="${product.productName || 'Product'}" class="product-image">
                         <div class="product-content">
                             <h3 class="product-title">${product.productName || 'Untitled Product'}</h3>
                             <p class="product-description">${product.brief || 'No description available'}</p>
