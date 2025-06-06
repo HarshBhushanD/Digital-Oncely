@@ -27,7 +27,16 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const fetchSubscriberCount = async () => {
         try {
-            const response = await fetch('/api/subscribers/count');
+            const response = await fetch('https://rh5f3cc2p0.execute-api.us-east-1.amazonaws.com/default/backend_function', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    task: 'fetch',
+                    action: 'subscriber_count'
+                })
+            });
             const data = await response.json();
             if (data.count) {
                 animateCount(data.count);
@@ -76,12 +85,16 @@ const showSuccess = () => {
 
 const saveDiscountCode = async (email, code) => {
     try {
-        await fetch('/api/save-discount', {
+        await fetch('https://rh5f3cc2p0.execute-api.us-east-1.amazonaws.com/default/backend_function', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ email, discountCode: code })
+            body: JSON.stringify({
+                task: 'save_discount',
+                email,
+                discountCode: code
+            })
         });
     } catch (error) {
         console.error('Error saving discount code:', error);
@@ -102,12 +115,15 @@ const saveDiscountCode = async (email, code) => {
             submitBtn.textContent = 'Joining...';
             submitBtn.disabled = true;
             
-            const response = await fetch('/api/subscribe', {
+            const response = await fetch('https://rh5f3cc2p0.execute-api.us-east-1.amazonaws.com/default/backend_function', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ email })
+                body: JSON.stringify({
+                    task: 'subscribe',
+                    email
+                })
             });
             
             const data = await response.json();
