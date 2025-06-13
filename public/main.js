@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const fetchSubscriberCount = async () => {
         try {
-            const response = await fetch('https://rh5f3cc2p0.execute-api.us-east-1.amazonaws.com/default/backend_function', {
+            const response = await fetch('https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -85,7 +85,7 @@ const showSuccess = () => {
 
 const saveDiscountCode = async (email, code) => {
     try {
-        await fetch('https://rh5f3cc2p0.execute-api.us-east-1.amazonaws.com/default/backend_function', {
+        await fetch('https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -115,7 +115,7 @@ const saveDiscountCode = async (email, code) => {
             submitBtn.textContent = 'Joining...';
             submitBtn.disabled = true;
             
-            const response = await fetch('https://rh5f3cc2p0.execute-api.us-east-1.amazonaws.com/default/backend_function', {
+            const response = await fetch('https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -148,10 +148,6 @@ const saveDiscountCode = async (email, code) => {
     const validateEmail = (email) => {
         const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(String(email).toLowerCase());
-    };
-    
-    const showSuccess = () => {
-        successModal.style.display = 'flex';
     };
     
     const showError = (title, message) => {

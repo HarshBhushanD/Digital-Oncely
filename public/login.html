@@ -243,7 +243,7 @@
 
                 // Step 1: Login request
                 console.log('Sending login request...');
-                const loginResponse = await fetch('https://rh5f3cc2p0.execute-api.us-east-1.amazonaws.com/default/backend_function', {
+                const loginResponse = await fetch('https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -281,7 +281,7 @@
 
                 // Step 2: Verify login status and get user data
                 console.log('Verifying login status...');
-                const verifyResponse = await fetch('https://rh5f3cc2p0.execute-api.us-east-1.amazonaws.com/default/backend_function', {
+                const verifyResponse = await fetch('https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -310,7 +310,7 @@
                 
                 // Step 3: Fetch initial data
                 console.log('Fetching initial data...');
-                const fetchResponse = await fetch('https://rh5f3cc2p0.execute-api.us-east-1.amazonaws.com/default/backend_function', {
+                const fetchResponse = await fetch('https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
