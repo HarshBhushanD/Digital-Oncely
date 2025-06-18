@@ -1051,39 +1051,17 @@
                     
                     
                     const productData = {
-                        task: 'data',
-                        operation: 'add',
-                        projectType: 'Product',
-                        data: {
-                            productName: formData.get('productName'),
-                            price: formData.get('price'),
-                            brief: formData.get('brief'),
-                            deepExplanation: formData.get('deepExplanation'),
-                            bestFeatures: formData.get('bestFeatures'),
-                            tldr: {
-                                bestFor: formData.get('bestFor'),
-                                alternatives: formData.get('alternatives'),
-                                integrations: formData.get('integrations'),
-                                features: formData.get('tldrFeatures')
-                            },
-                            overview: formData.get('overview'),
-                            plansFeatures: formData.get('plansFeatures'),
-                            plans: plans,
-                            dealTerms: formData.get('dealTerms'),
-                            fromFounders: formData.get('fromFounders'),
-                            imageUrls: [], 
-                            founder: {
-                                name: document.getElementById('founder-name').value.trim(),
-                                title: document.getElementById('founder-title').value.trim(),
-                                image: document.getElementById('founder-image').value.trim(),
-                                link: document.getElementById('founder-link').value.trim(),
-                                message: document.getElementById('founder-message').value.trim(),
-                                posts: Array.from(document.querySelectorAll('.founder-post')).map(x => x.value.trim()).filter(Boolean),
-                                links: Array.from(document.querySelectorAll('.founder-link')).map(x => x.value.trim()).filter(Boolean)
-                            },
-                            qa: qaData,
-                            reviews: reviewsData
-                        }
+                        task: 'create',
+                        action: 'product',
+                        website: 'todo-site',
+                        productName: formData.get('productName'),
+                        brief: formData.get('brief'),
+                        description: formData.get('deepExplanation'),
+                        price: formData.get('price'),
+                        imageUrls: [], 
+                        plans: plans,
+                        qa: qaData,
+                        reviews: reviewsData
                     };
                     
                     for (let i = 0; i < previewedImages.length; i++) {
@@ -1099,51 +1077,31 @@
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
+                            'Accept': 'application/json',
                             'Authorization': `Bearer ${token}`
                         },
-                        body: JSON.stringify(productData)
+                        body: JSON.stringify({
+                            task: 'create',
+                            action: 'product',
+                            website: 'todo-site',
+                            productName: productData.data.productName,
+                            brief: productData.data.brief,
+                            description: productData.data.description,
+                            price: productData.data.price,
+                            imageUrls: productData.data.imageUrls
+                        })
                     });
 
-                    console.log('Submission response status:', response.status);
-                    let data;
-                    try {
-                        data = await response.json();
-                        console.log('Submission response:', data);
-                    } catch (e) {
-                        console.error('Error parsing response:', e);
-                        throw new Error('Invalid response from server');
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Failed to create product');
                     }
 
-                    if (response.ok && data.success !== false) {
-                       
-                        successAlert.innerHTML = `
-                            Product submitted successfully! 
-                            <br><br>
-                            View your product <a href="/products/${slugify(productData.data.productName)}" style="color: #155724; text-decoration: underline;">here</a> 
-                            or check all products <a href="/products" style="color: #155724; text-decoration: underline;">here</a>.
-                        `;
-                        successAlert.style.display = 'block';
-                        successAlert.scrollIntoView({ behavior: 'smooth' });
-                        form.reset();
-                        imagePreviewContainer.innerHTML = '';
-                        
-                        function slugify(str) {
-                            if (!str) return '';
-                            return str
-                                .toLowerCase()
-                                .replace(/[^a-z0-9]+/g, '-')
-                                .replace(/^-+|-+$/g, '')
-                                .replace(/[^\w-]+/g, '');
-                        }
+                    const data = await response.json();
+                    console.log('Product created:', data);
 
-                        const productNameSlug = slugify(productData.data.productName);
-                        console.log('Redirecting to:', `/products/${productNameSlug}`);
-                        setTimeout(() => {
-                            window.location.href = `/products/${productNameSlug}`;
-                        }, 2000);
-                    } else {
-                        throw new Error(data && data.message ? data.message : 'Failed to submit product. Please try again.');
-                    }
+                    // Redirect to products page on success
+                    window.location.href = '/products';
                 } catch (error) {
                     console.error('Error submitting product:', error);
                     errorAlert.textContent = error.message || 'An error occurred while submitting the product. Please try again.';

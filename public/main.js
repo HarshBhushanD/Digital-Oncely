@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    
     window.addEventListener('click', (e) => {
         if (e.target === successModal) {
             successModal.style.display = 'none';
@@ -30,19 +29,27 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
                 body: JSON.stringify({
                     task: 'fetch',
-                    action: 'subscriber_count'
+                    action: 'subscriber_count',
+                    website: 'todo-site'
                 })
             });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch subscriber count');
+            }
+
             const data = await response.json();
             if (data.count) {
                 animateCount(data.count);
             }
         } catch (error) {
             console.error('Error fetching subscriber count:', error);
+            subscriberCountElement.textContent = '0';
         }
     };
     
@@ -59,47 +66,52 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 200);
     };
    
-const generateRandomCode = () => {
-   
-    const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    let couponCode = '';
-    
-    for (let i = 0; i < 8; i++) {
-        couponCode += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    
-    return couponCode;
-};
+    const generateRandomCode = () => {
+        const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        let couponCode = '';
+        
+        for (let i = 0; i < 8; i++) {
+            couponCode += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        
+        return couponCode;
+    };
 
-const showSuccess = () => {
-    const randomCode = generateRandomCode();
-    
-    discountCode.textContent = randomCode;
-    
-    localStorage.setItem('discountCode', randomCode);
-    
-    saveDiscountCode(emailInput.value, randomCode);
-    
-    successModal.style.display = 'flex';
-};
+    const showSuccess = () => {
+        const randomCode = generateRandomCode();
+        discountCode.textContent = randomCode;
+        localStorage.setItem('discountCode', randomCode);
+        saveDiscountCode(emailInput.value, randomCode);
+        successModal.style.display = 'flex';
+    };
 
-const saveDiscountCode = async (email, code) => {
-    try {
-        await fetch('https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                task: 'save_discount',
-                email,
-                discountCode: code
-            })
-        });
-    } catch (error) {
-        console.error('Error saving discount code:', error);
-    }
-};
+    const saveDiscountCode = async (email, code) => {
+        try {
+            const response = await fetch('https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    task: 'create',
+                    action: 'discount',
+                    website: 'todo-site',
+                    email: email,
+                    discountCode: code
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to save discount code');
+            }
+
+            const data = await response.json();
+            console.log('Discount code saved:', data);
+        } catch (error) {
+            console.error('Error saving discount code:', error);
+        }
+    };
     
     submitBtn.addEventListener('click', async (e) => {
         e.preventDefault();
@@ -118,11 +130,14 @@ const saveDiscountCode = async (email, code) => {
             const response = await fetch('https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
                 body: JSON.stringify({
-                    task: 'subscribe',
-                    email
+                    task: 'create',
+                    action: 'subscriber',
+                    website: 'todo-site',
+                    email: email
                 })
             });
             
@@ -134,8 +149,9 @@ const saveDiscountCode = async (email, code) => {
             if (response.ok) {
                 emailInput.value = '';
                 showSuccess();
+                fetchSubscriberCount(); // Refresh the count
             } else {
-                showError('Subscription Failed', data.message || 'Something went wrong. Please try again.');
+                showError('Subscription Failed', data.error || 'Something went wrong. Please try again.');
             }
         } catch (error) {
             submitBtn.textContent = 'Join Free →';

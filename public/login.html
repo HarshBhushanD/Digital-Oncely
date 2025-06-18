@@ -180,7 +180,7 @@
             </form>
 
             <div class="login-footer">
-                <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+                <p>Don't have an account? <a href="/signup">Sign up</a></p>
             </div>
         </div>
     </div>
@@ -243,21 +243,25 @@
 
                 // Step 1: Login request
                 console.log('Sending login request...');
-                const loginResponse = await fetch('https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api', {
+                const loginRequestBody = {
+                    task: 'auth',
+                    action: 'login',
+                    email: email.toLowerCase(),
+                    password: password,
+                    website: 'todo-site'
+                };
+                const loginResponse = await fetch('/api/proxy', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        task: 'auth',
-                        action: 'login',
-                        email: email.toLowerCase(),
-                        password: password,
-                        website: 'todo-site'
+                        url: 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api',
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: loginRequestBody
                     })
                 });
-
-                console.log('Login response status:', loginResponse.status);
                 const loginData = await loginResponse.json();
                 console.log('Login response:', loginData);
 
@@ -281,18 +285,26 @@
 
                 // Step 2: Verify login status and get user data
                 console.log('Verifying login status...');
-                const verifyResponse = await fetch('https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api', {
+                const verifyRequestBody = {
+                    task: 'verify',
+                    website: 'todo-site'
+                };
+                const verifyResponse = await fetch('/api/proxy', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${loginData.token}`
                     },
                     body: JSON.stringify({
-                        task: 'verify'
+                        url: 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api',
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${loginData.token}`
+                        },
+                        body: verifyRequestBody
                     })
                 });
-
-                console.log('Verify response status:', verifyResponse.status);
                 const verifyData = await verifyResponse.json();
                 console.log('Verify response:', verifyData);
 
@@ -310,21 +322,29 @@
                 
                 // Step 3: Fetch initial data
                 console.log('Fetching initial data...');
-                const fetchResponse = await fetch('https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api', {
+                const fetchRequestBody = {
+                    task: 'fetch',
+                    action: 'products',
+                    website: 'todo-site',
+                    limit: 10,
+                    page: 1
+                };
+                const fetchResponse = await fetch('/api/proxy', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${loginData.token}`
                     },
                     body: JSON.stringify({
-                        task: 'fetch',
-                        projectType: 'todo-site',
-                        limit: 10,
-                        page: 1
+                        url: 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api',
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${loginData.token}`
+                        },
+                        body: fetchRequestBody
                     })
                 });
-
-                console.log('Fetch response status:', fetchResponse.status);
                 const fetchData = await fetchResponse.json();
                 console.log('Fetch response:', fetchData);
 
@@ -334,7 +354,7 @@
 
                 // Redirect after successful login
                 setTimeout(() => {
-                    window.location.href = 'products.html';
+                    window.location.href = '/products';
                 }, 1500);
 
             } catch (error) {

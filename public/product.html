@@ -555,26 +555,34 @@
             }
 
             const urlParams = new URLSearchParams(window.location.search);
-            const productSlug = urlParams.get('slug');
+            const slug = urlParams.get('slug');
 
             async function fetchProductData() {
                 try {
-                    const requestData = {
+                    const fetchRequestBody = {
                         task: 'fetch',
                         projectType: 'Product',
-                        limit: 50,
-                        page: 1
+                        website: 'todo-site',
+                        slug: slug
                     };
                     
-                    console.log('Request data:', requestData);
+                    console.log('Request data:', fetchRequestBody);
 
-                    const response = await fetch('https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api', {
+                    const response = await fetch('/api/proxy', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
+                            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
                         },
-                        body: JSON.stringify(requestData)
+                        body: JSON.stringify({
+                            url: 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api',
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                            },
+                            body: JSON.stringify(fetchRequestBody)
+                        })
                     });
                     
                     console.log('Response status:', response.status);
@@ -582,7 +590,7 @@
                     if (!response.ok) {
                         const errorData = await response.json();
                         console.error('Error response:', errorData);
-                        throw new Error(errorData.error || 'Failed to fetch products');
+                        throw new Error(errorData.error || 'Failed to fetch product');
                     }
                     
                     const data = await response.json();
@@ -594,7 +602,7 @@
                     
                     const product = data.items.find(p => {
                         const slug = p.productName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-                        return slug === productSlug;
+                        return slug === slug;
                     });
                     
                     if (!product) {
