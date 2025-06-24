@@ -176,17 +176,20 @@
         }
 
         .form-container {
-            background: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 2px 10px var(--shadow);
+            background: #f6fff8;
+            border-radius: 14px;
+            box-shadow: 0 2px 10px #b7e4c7;
             padding: 30px;
             margin-top: 30px;
+            border: 1px solid #b7e4c7;
         }
 
         .form-section {
             margin-bottom: 30px;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid #b7e4c7;
             padding-bottom: 20px;
+            background: #e9ffd9;
+            border-radius: 10px;
         }
 
         .form-section:last-child {
@@ -194,7 +197,7 @@
         }
 
         .form-section h2 {
-            color: var(--text-color);
+            color: #1b5e20;
             margin-bottom: 20px;
             font-size: 1.5rem;
             font-weight: 600;
@@ -208,28 +211,30 @@
             display: block;
             margin-bottom: 8px;
             font-weight: 500;
-            color: var(--text-color);
+            color: #388e3c;
         }
 
         .form-control {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--input-border);
+            width: 95%;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+            padding: 13px 14px;
+            border: 1.5px solid #cbd5e1;
             border-radius: 8px;
-            background: var(--input-bg);
-            color: var(--text-color);
-            font-size: 16px;
-            transition: all 0.3s;
+            background: #f9fafb;
+            color: #22223b;
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .form-control:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px var(--primary-color);
-            outline: none;
+            border-color: #43a047;
+            box-shadow: 0 0 0 2px #b9f6ca;
         }
 
         textarea.form-control {
-            min-height: 120px;
+            min-height: 100px;
             resize: vertical;
         }
 
@@ -249,24 +254,22 @@
         }
 
         .btn-primary {
-            background-color: var(--primary-color);
-            color: white;
+            background: linear-gradient(90deg, #43a047 0%, #81c784 100%);
+            color: #fff;
         }
 
         .btn-primary:hover {
-            background-color: var(--button-hover);
-            transform: translateY(-1px);
+            background: linear-gradient(90deg, #388e3c 0%, #66bb6a 100%);
         }
 
         .btn-secondary {
-            background-color: var(--secondary-color);
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
+            background: #e0f2f1;
+            color: #1b5e20;
+            border: 1px solid #b7e4c7;
         }
 
         .btn-secondary:hover {
-            background-color: var(--hover-color);
-            transform: translateY(-1px);
+            background: #b9f6ca;
         }
 
         .btn-sm {
@@ -291,7 +294,7 @@
             border-radius: 8px;
             overflow: hidden;
             background: var(--input-bg);
-            border: 1px solid var(--border-color);
+            border: 1.5px solid #b7e4c7;
             transition: transform 0.2s;
         }
 
@@ -309,7 +312,7 @@
             position: absolute;
             top: 8px;
             right: 8px;
-            background-color: var(--danger-color);
+            background-color: #f87171;
             color: white;
             border-radius: 50%;
             width: 24px;
@@ -327,6 +330,7 @@
 
         .remove-image:hover {
             transform: scale(1.1);
+            background: #ef4444;
         }
 
         .image-url-text {
@@ -358,18 +362,18 @@
         }
 
         .alert-success {
-            background-color: var(--success-color);
+            background-color: #43a047;
             color: white;
         }
 
         .alert-danger {
-            background-color: var(--danger-color);
+            background-color: #f87171;
             color: white;
         }
 
         .alert-warning {
-            background-color: var(--warning-color);
-            color: var(--text-color);
+            background-color: #fbbf24;
+            color: #22223b;
         }
 
         .progress-container {
@@ -386,7 +390,7 @@
 
         .progress-bar {
             height: 100%;
-            background-color: var(--primary-color);
+            background: linear-gradient(90deg, #43a047 0%, #81c784 100%);
             width: 0%;
             transition: width 0.3s ease;
         }
@@ -398,16 +402,17 @@
         }
 
         .plan-entry, .qa-entry, .review-entry {
-            background: var(--secondary-color);
+            background: #f1f8e9;
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 20px;
-            border: 1px solid var(--border-color);
+            border: 1px solid #b7e4c7;
             transition: transform 0.2s;
         }
 
         .plan-entry:hover, .qa-entry:hover, .review-entry:hover {
             transform: translateY(-2px);
+            background: #dcedc8;
         }
 
         .theme-toggle {
@@ -740,6 +745,12 @@
     
     <script src="/js/theme.js"></script>
     <script>
+        // ENVIRONMENT SWITCH
+        const IS_PRODUCTION = window.location.hostname !== 'localhost';
+        const API_BASE_URL = IS_PRODUCTION
+            ? 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api'
+            : '/api/proxy';
+
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('product-form');
             const imageUrlsContainer = document.getElementById('image-urls-container');
@@ -1050,55 +1061,94 @@
                     });
                     
                     
+                    // Build product data in the old working structure
                     const productData = {
-                        task: 'create',
-                        action: 'product',
-                        website: 'todo-site',
-                        productName: formData.get('productName'),
-                        brief: formData.get('brief'),
-                        description: formData.get('deepExplanation'),
-                        price: formData.get('price'),
-                        imageUrls: [], 
-                        plans: plans,
-                        qa: qaData,
-                        reviews: reviewsData
+                        task: 'data',
+                        operation: 'add',
+                        projectType: 'Product',
+                        data: {
+                            productName: formData.get('productName'),
+                            price: formData.get('price'),
+                            brief: formData.get('brief'),
+                            deepExplanation: formData.get('deepExplanation'),
+                            bestFeatures: formData.get('bestFeatures'),
+                            tldr: {
+                                bestFor: formData.get('bestFor'),
+                                alternatives: formData.get('alternatives'),
+                                integrations: formData.get('integrations'),
+                                features: formData.get('tldrFeatures')
+                            },
+                            overview: formData.get('overview'),
+                            plansFeatures: formData.get('plansFeatures'),
+                            plans: plans,
+                            dealTerms: formData.get('dealTerms'),
+                            fromFounders: formData.get('fromFounders'),
+                            imageUrls: [],
+                            founder: {
+                                name: document.getElementById('founder-name').value.trim(),
+                                title: document.getElementById('founder-title').value.trim(),
+                                image: document.getElementById('founder-image').value.trim(),
+                                link: document.getElementById('founder-link').value.trim(),
+                                message: document.getElementById('founder-message').value.trim(),
+                                posts: Array.from(document.querySelectorAll('.founder-post')).map(x => x.value.trim()).filter(Boolean),
+                                links: Array.from(document.querySelectorAll('.founder-link')).map(x => x.value.trim()).filter(Boolean)
+                            },
+                            qa: qaData,
+                            reviews: reviewsData
+                        }
                     };
-                    
+                    // Add image URLs
                     for (let i = 0; i < previewedImages.length; i++) {
                         const imageUrl = previewedImages[i].getAttribute('data-url');
                         productData.data.imageUrls.push(imageUrl);
-                        
-                        const progress = Math.round((i + 1) * 100 / previewedImages.length);
-                        progressBar.style.width = progress + '%';
-                        progressText.textContent = `Processing... ${progress}%`;
                     }
                     
-                    const response = await fetch('https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({
-                            task: 'create',
-                            action: 'product',
-                            website: 'todo-site',
-                            productName: productData.data.productName,
-                            brief: productData.data.brief,
-                            description: productData.data.description,
-                            price: productData.data.price,
-                            imageUrls: productData.data.imageUrls
-                        })
-                    });
-
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.error || 'Failed to create product');
+                    console.log('Submitting product with data:', productData);
+                    let fetchOptions;
+                    if (IS_PRODUCTION) {
+                        fetchOptions = {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify(productData)
+                        };
+                    } else {
+                        fetchOptions = {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                url: 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api',
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json',
+                                    'Authorization': `Bearer ${token}`
+                                },
+                                body: JSON.stringify(productData)
+                            })
+                        };
                     }
-
-                    const data = await response.json();
-                    console.log('Product created:', data);
+                    const response = await fetch('/api/proxy', fetchOptions);
+                    console.log('Proxy response status:', response.status);
+                    let data;
+                    try {
+                        data = await response.clone().json();
+                        console.log('Proxy response data:', data);
+                    } catch (e) {
+                        console.log('Proxy response is not JSON:', e);
+                    }
+                    if (!response.ok) {
+                        const errorData = data || {};
+                        console.error('Error submitting product:', errorData);
+                        throw new Error(errorData.error || errorData.details?.error || 'Failed to create product');
+                    }
 
                     // Redirect to products page on success
                     window.location.href = '/products';

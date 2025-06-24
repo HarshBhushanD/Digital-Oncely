@@ -557,6 +557,12 @@
             const urlParams = new URLSearchParams(window.location.search);
             const slug = urlParams.get('slug');
 
+            // ENVIRONMENT SWITCH
+            const IS_PRODUCTION = window.location.hostname !== 'localhost';
+            const API_BASE_URL = IS_PRODUCTION
+                ? 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api'
+                : '/api/proxy';
+
             async function fetchProductData() {
                 try {
                     const fetchRequestBody = {
@@ -568,22 +574,35 @@
                     
                     console.log('Request data:', fetchRequestBody);
 
-                    const response = await fetch('/api/proxy', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-                        },
-                        body: JSON.stringify({
-                            url: 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api',
+                    let fetchOptions;
+                    if (IS_PRODUCTION) {
+                        fetchOptions = {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                                'Authorization': `Bearer ${token}`
                             },
                             body: JSON.stringify(fetchRequestBody)
-                        })
-                    });
+                        };
+                    } else {
+                        fetchOptions = {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                url: 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api',
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${token}`
+                                },
+                                body: JSON.stringify(fetchRequestBody)
+                            })
+                        };
+                    }
+                    const response = await fetch(API_BASE_URL, fetchOptions);
                     
                     console.log('Response status:', response.status);
                     
