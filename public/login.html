@@ -149,9 +149,9 @@
             Back to Home
         </a>
 
-        <!-- <button class="theme-toggle" id="theme-toggle">
+        <button class="theme-toggle" id="theme-toggle">
             <i class="fas fa-moon"></i>
-        </button> -->
+        </button>
 
         <div class="login-card">
             <div class="login-header">
@@ -180,7 +180,7 @@
             </form>
 
             <div class="login-footer">
-                <p>Don't have an account? <a href="/signup">Sign up</a></p>
+                <p>Don't have an account? <a href="signup.html">Sign up</a></p>
             </div>
         </div>
     </div>
@@ -321,7 +321,7 @@
                     successMessage.textContent = 'Login successful! Redirecting...';
                     successMessage.style.display = 'block';
                     setTimeout(() => {
-                        window.location.href = 'http://127.0.0.1:5500/Digital-Oncely/public/products.html';
+                        window.location.href = 'products.html';
                     }, 1000);
                 } else {
                     showError(data.error || 'Invalid credentials');

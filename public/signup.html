@@ -4,166 +4,408 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - Digital Oncely</title>
-    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="css/theme.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* Green Color Enhancements */
+        :root {
+            --green-primary: #2DC854;
+            --green-secondary: #4CAF50;
+            --green-light: #E8F5E9;
+            --green-dark: #1B5E20;
+            --green-accent: #8BC34A;
+            --green-gradient: linear-gradient(135deg, #2DC854 0%, #4CAF50 50%, #8BC34A 100%);
+            --green-gradient-light: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 50%, #A5D6A7 100%);
+            --green-shadow: rgba(45, 200, 84, 0.15);
+            --green-border: #A5D6A7;
+            --green-hover: #66BB6A;
+        }
+
         .signup-container {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
-            background-color: var(--bg-color);
+            background: var(--green-gradient-light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .signup-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--green-gradient);
+            opacity: 0.03;
         }
 
         .signup-card {
             background: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 4px 16px var(--shadow);
+            border-radius: 20px;
+            box-shadow: 0 12px 40px var(--green-shadow);
             width: 100%;
-            max-width: 400px;
-            padding: 40px;
+            max-width: 480px;
+            padding: 48px;
+            border: 2px solid var(--green-border);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .signup-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--green-gradient);
         }
 
         .signup-header {
             text-align: center;
-            margin-bottom: 32px;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 1;
         }
 
         .signup-title {
-            font-size: 2rem;
-            color: var(--text-color);
-            margin-bottom: 8px;
+            font-size: 2.5rem;
+            background: var(--green-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
         }
 
         .signup-subtitle {
             color: var(--secondary-text);
+            font-size: 1.2rem;
+            font-weight: 500;
         }
 
         .form-group {
-            margin-bottom: 24px;
+            margin-bottom: 28px;
+            position: relative;
         }
 
         .form-label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             color: var(--text-color);
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
         }
 
         .form-control {
             width: 100%;
-            padding: 12px;
-            border: 1px solid var(--input-border);
-            border-radius: 8px;
+            padding: 16px 20px;
+            border: 2px solid var(--green-border);
+            border-radius: 12px;
             background: var(--input-bg);
             color: var(--text-color);
-            transition: all 0.2s;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            font-weight: 500;
         }
 
         .form-control:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px var(--primary-color);
+            border-color: var(--green-primary);
+            box-shadow: 0 0 0 4px var(--green-shadow);
+            outline: none;
+            transform: translateY(-2px);
+        }
+
+        .form-control:hover {
+            border-color: var(--green-accent);
+            transform: translateY(-1px);
+        }
+
+        .form-control::placeholder {
+            color: var(--secondary-text);
+            opacity: 0.7;
         }
 
         .btn-signup {
             width: 100%;
-            padding: 12px;
-            background: var(--primary-color);
+            padding: 16px;
+            background: var(--green-gradient);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-weight: 600;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.2rem;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-signup::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.6s;
         }
 
         .btn-signup:hover {
-            background: var(--button-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px var(--green-shadow);
+        }
+
+        .btn-signup:hover::before {
+            left: 100%;
+        }
+
+        .btn-signup:active {
             transform: translateY(-1px);
         }
 
         .signup-footer {
             text-align: center;
-            margin-top: 24px;
+            margin-top: 36px;
             color: var(--secondary-text);
+            position: relative;
+            z-index: 1;
         }
 
         .signup-footer a {
-            color: var(--primary-color);
+            background: var(--green-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 700;
+            transition: all 0.2s;
+            font-size: 1.1rem;
         }
 
         .signup-footer a:hover {
             text-decoration: underline;
+            transform: translateY(-1px);
         }
 
         .theme-toggle {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 24px;
+            right: 24px;
+            background: var(--card-bg);
+            border: 2px solid var(--green-border);
+            color: var(--text-color);
+            font-size: 1.3rem;
+            cursor: pointer;
+            padding: 14px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .theme-toggle:hover {
+            background: var(--green-light);
+            border-color: var(--green-primary);
+            transform: scale(1.1) rotate(180deg);
         }
 
         .back-to-home {
             position: fixed;
-            top: 20px;
-            left: 20px;
+            top: 24px;
+            left: 24px;
             color: var(--text-color);
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            border-radius: 8px;
-            transition: all 0.2s;
+            gap: 10px;
+            padding: 14px 24px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: var(--card-bg);
+            border: 2px solid var(--green-border);
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         .back-to-home:hover {
-            background: var(--hover-color);
+            background: var(--green-light);
+            border-color: var(--green-primary);
+            transform: translateX(-8px);
         }
 
         .error-message {
-            background: var(--danger-color);
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
             color: white;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 16px;
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 24px;
             display: none;
+            border-left: 5px solid #ff4757;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.2);
         }
 
         .success-message {
-            background: var(--success-color);
+            background: var(--green-gradient);
             color: white;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 16px;
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 24px;
             display: none;
+            border-left: 5px solid var(--green-dark);
+            font-weight: 600;
+            box-shadow: 0 4px 12px var(--green-shadow);
         }
 
         .password-requirements {
-            font-size: 0.875rem;
+            font-size: 0.9rem;
             color: var(--secondary-text);
-            margin-top: 8px;
+            margin-top: 16px;
+            background: var(--green-light);
+            padding: 16px;
+            border-radius: 10px;
+            border: 1px solid var(--green-border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .password-requirements h4 {
+            margin: 0 0 12px 0;
+            color: var(--green-dark);
+            font-weight: 700;
+            font-size: 1rem;
         }
 
         .requirement {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-top: 4px;
+            gap: 10px;
+            margin-top: 8px;
+            transition: all 0.3s ease;
+            padding: 4px 0;
         }
 
         .requirement i {
-            font-size: 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            width: 16px;
+            text-align: center;
         }
 
         .requirement.valid {
-            color: var(--success-color);
+            color: var(--green-primary);
+            font-weight: 600;
+        }
+
+        .requirement.valid i {
+            color: var(--green-primary);
+            transform: scale(1.3);
         }
 
         .requirement.invalid {
             color: var(--danger-color);
+        }
+
+        .requirement.invalid i {
+            color: var(--danger-color);
+        }
+
+        /* Spinner animation */
+        .spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Floating animation for card */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Responsive design */
+        @media (max-width: 480px) {
+            .signup-card {
+                padding: 32px 24px;
+                margin: 16px;
+                border-radius: 16px;
+            }
+
+            .signup-title {
+                font-size: 2rem;
+            }
+
+            .form-control {
+                padding: 14px 16px;
+                font-size: 1rem;
+            }
+
+            .btn-signup {
+                padding: 14px;
+                font-size: 1.1rem;
+            }
+
+            .back-to-home {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
+
+            .theme-toggle {
+                padding: 12px;
+                font-size: 1.1rem;
+            }
+
+            .password-requirements {
+                padding: 12px;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Enhanced focus states for accessibility */
+        .form-control:focus,
+        .btn-signup:focus,
+        .theme-toggle:focus,
+        .back-to-home:focus {
+            outline: 2px solid var(--green-primary);
+            outline-offset: 2px;
+        }
+
+        /* Loading state */
+        .btn-signup:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Success animation */
+        @keyframes successPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .success-message {
+            animation: successPulse 2s ease-in-out;
         }
     </style>
 </head>
@@ -174,9 +416,9 @@
             Back to Home
         </a>
 
-        <!-- <button class="theme-toggle" id="theme-toggle">
+        <button class="theme-toggle" id="theme-toggle">
             <i class="fas fa-moon"></i>
-        </button> -->
+        </button>
 
         <div class="signup-card">
             <div class="signup-header">
@@ -314,22 +556,57 @@
                     throw new Error('Password must be at least 8 characters long');
                 }
 
+                // ENVIRONMENT SWITCH
+                const IS_PRODUCTION = window.location.hostname !== 'localhost';
+                const API_BASE_URL = IS_PRODUCTION
+                    ? 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api'
+                    : '/api/proxy';
+
                 // Send signup request
                 console.log('Sending signup request...');
-                const response = await fetch('/api', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        task: 'create',
-                        action: 'user',
-                        website: 'todo-site',
-                        name: name,
-                        email: email,
-                        password: password
-                    }),
-                    headers: {
-                        'Content-Type': 'text/plain'
-                    }
-                });
+                let response;
+                if (IS_PRODUCTION) {
+                    // Direct API call in production
+                    response = await fetch('https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            task: 'auth',
+                            action: 'signup',
+                            name: name,
+                            email: email,
+                            password: password,
+                            website: 'todo-site'
+                        })
+                    });
+                } else {
+                    // Proxy call in development
+                    response = await fetch('/api/proxy', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            url: 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api',
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json'
+                            },
+                            body: {
+                                task: 'auth',
+                                action: 'signup',
+                                name: name,
+                                email: email,
+                                password: password,
+                                website: 'todo-site'
+                            }
+                        })
+                    });
+                }
 
                 console.log('Signup response status:', response.status);
 
@@ -349,7 +626,7 @@
                     successMessage.textContent = 'Signup successful! Redirecting...';
                     successMessage.style.display = 'block';
                     setTimeout(() => {
-                        window.location.href = '/products';
+                        window.location.href = './index.html';
                     }, 1500);
                 } else {
                     throw new Error('No authentication token received');
