@@ -7,7 +7,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/theme.css">
     <style>
-       
+        /* Green Color Enhancements */
+        :root {
+            --green-primary: #2DC854;
+            --green-secondary: #4CAF50;
+            --green-light: #E8F5E9;
+            --green-dark: #1B5E20;
+            --green-accent: #8BC34A;
+            --green-gradient: linear-gradient(135deg, #2DC854 0%, #4CAF50 50%, #8BC34A 100%);
+            --green-gradient-light: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 50%, #A5D6A7 100%);
+            --green-shadow: rgba(45, 200, 84, 0.15);
+            --green-border: #A5D6A7;
+            --green-hover: #66BB6A;
+        }
 
         * {
             margin: 0;
@@ -17,7 +29,6 @@
         }
         
         body {
-           
             line-height: 1.6;
         }
         
@@ -29,16 +40,38 @@
         }
         
         .header {
-            background-color: var(--card-bg);
+            background: var(--green-gradient-light);
             padding: 20px 0;
             box-shadow: var(--shadow);
             margin-bottom: 30px;
-            border-bottom: 1px solid var(--border-color); 
+            border-bottom: 3px solid var(--green-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--green-gradient);
+            opacity: 0.05;
+        }
+
+        .header .container {
+            position: relative;
+            z-index: 1;
         }
         
         .header h1 {
-            color: var(--text-color);
+            background: var(--green-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             text-align: center;
+            font-weight: 800;
         }
         
         .products-main-layout {
@@ -57,14 +90,32 @@
             position: sticky;
             top: 32px;
             align-self: flex-start;
-           
-            background: var(--success-color); 
+            background: var(--green-gradient-light);
             color: var(--text-color);
             border-radius: 12px;
             padding: 32px 28px;
             margin-top: 0;
-            box-shadow: var(--shadow); 
+            box-shadow: 0 8px 25px var(--green-shadow);
+            border: 2px solid var(--green-border);
+            position: relative;
+            overflow: hidden;
         }
+
+        .newsletter-sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--green-gradient);
+        }
+
+        .newsletter-sidebar .container {
+            position: relative;
+            z-index: 1;
+        }
+
         .products-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -82,8 +133,28 @@
             padding: 20px 24px;
             margin-bottom: 0;
             width: 100%;
-            border: 1px solid var(--border-color); 
+            border: 2px solid var(--green-border);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--green-gradient);
+        }
+
+        .product-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px var(--green-shadow);
+            border-color: var(--green-primary);
+        }
+
         .product-image {
             width: 260px;
             height: 120px;
@@ -92,7 +163,12 @@
             cursor: pointer;
             flex-shrink: 0;
             background: var(--input-bg); 
-            border: 1px solid var(--border-color);
+            border: 2px solid var(--green-border);
+            transition: border-color 0.2s;
+        }
+
+        .product-card:hover .product-image {
+            border-color: var(--green-primary);
         }
         
         .product-content {
@@ -117,7 +193,7 @@
         
         .product-rating {
             margin-bottom: 8px;
-            color: var(--star-color); 
+            color: var(--green-accent); 
             font-size: 1.2rem;
             display: flex;
             align-items: center;
@@ -132,7 +208,7 @@
         .product-price {
             font-size: 1.5rem;
             font-weight: 700;
-            color: var(--text-color); 
+            color: var(--green-primary); 
             margin-bottom: 8px;
         }
         
@@ -151,33 +227,37 @@
         .add-to-cart-btn {
             flex: 1;
             padding: 12px;
-            background: var(--secondary-color); 
-            color: var(--text-color); 
-            border: 1px solid var(--border-color);
+            background: var(--green-light);
+            color: var(--green-dark);
+            border: 2px solid var(--green-border);
             border-radius: 25px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.2s;
         }
         
         .add-to-cart-btn:hover {
-            background: var(--hover-color); 
+            background: var(--green-accent);
+            color: white;
+            border-color: var(--green-accent);
+            transform: translateY(-1px);
         }
         
         .buy-now-btn {
             flex: 1;
             padding: 12px;
-            background: var(--primary-color); 
+            background: var(--green-gradient);
             color: white;
             border: none;
             border-radius: 25px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.2s;
         }
         
         .buy-now-btn:hover {
-            background: var(--button-hover); 
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px var(--green-shadow);
         }
         
         .loading {
@@ -199,23 +279,26 @@
         .add-product-btn {
             display: inline-block;
             padding: 12px 24px;
-            background-color: var(--success-color); 
+            background: var(--green-gradient);
             color: white;
             text-decoration: none;
-            border-radius: 4px;
+            border-radius: 8px;
             font-weight: 600;
             margin-bottom: 20px;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
+            border: none;
         }
         
         .add-product-btn:hover {
-            background-color: var(--button-hover); 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--green-shadow);
         }
         
         .newsletter-sidebar h2 {
             font-size: 1.5rem;
             margin-bottom: 15px;
-            color: var(--text-color); 
+            color: var(--green-dark);
+            font-weight: 700;
         }
         
         .newsletter-sidebar p {
@@ -227,33 +310,59 @@
             width: 100%;
             padding: 15px;
             margin-bottom: 15px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
+            border: 2px solid var(--green-border);
+            border-radius: 8px;
             background: var(--input-bg);
             color: var(--text-color);
+            transition: border-color 0.2s;
+        }
+
+        .newsletter-form input[type="email"]:focus {
+            border-color: var(--green-primary);
+            box-shadow: 0 0 0 3px var(--green-shadow);
+            outline: none;
         }
         
         .newsletter-btn {
             width: 100%;
             padding: 15px;
-            background-color: var(--button-orange); 
+            background: var(--green-gradient);
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
         }
         
         .newsletter-btn:hover {
-            background-color: var(--button-orange-hover); 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--green-shadow);
         }
 
         .hero-section {
             padding: 40px 0;
             text-align: center;
-            background: var(--card-bg);
-            border-bottom: 1px solid var(--border-color);
+            background: var(--green-gradient-light);
+            border-bottom: 2px solid var(--green-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--green-gradient);
+            opacity: 0.05;
+        }
+
+        .hero-section .container {
+            position: relative;
+            z-index: 1;
         }
 
         .navbar {
@@ -263,6 +372,7 @@
             z-index: 1000;
             background-color: var(--bg-color);
             backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--green-light);
         }
 
         .nav-content {
@@ -274,7 +384,10 @@
         .nav-brand {
             font-size: 1.5rem;
             font-weight: 700;
-            color: var(--text-color);
+            background: var(--green-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             text-decoration: none;
         }
 
@@ -289,22 +402,44 @@
             text-decoration: none;
             font-weight: 500;
             transition: color 0.2s;
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--green-gradient);
+            transition: width 0.3s ease;
         }
 
         .nav-link:hover {
-            color: var(--primary-color);
+            color: var(--green-primary);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
         }
 
         .search-bar {
             display: flex;
             align-items: center;
             background: var(--input-bg);
-            border: 1px solid var(--border-color);
+            border: 2px solid var(--green-border);
             border-radius: 8px;
             padding: 8px 16px;
             margin: 0 24px;
             flex: 1;
             max-width: 400px;
+            transition: border-color 0.2s;
+        }
+
+        .search-bar:focus-within {
+            border-color: var(--green-primary);
+            box-shadow: 0 0 0 3px var(--green-shadow);
         }
 
         .search-input {
@@ -431,7 +566,7 @@
                 <div class="nav-links">
                     <a href="products.html" class="nav-link">Products</a>
                     <a href="addproduct.html" class="nav-link">Add Product</a>
-                    <a href="login.html" class="nav-link">Login</a>
+                    <a href="http://127.0.0.1:5500/Digital-Oncely/public/login.html" class="nav-link">Login</a>
                     <button class="theme-toggle" id="theme-toggle">
                         <i class="fas fa-moon"></i>
                     </button>
@@ -450,9 +585,9 @@
     </nav>
 
     <div class="mobile-menu" id="mobile-menu">
-        <a href="/products" class="nav-link">Products</a>
-        <a href="/addproduct" class="nav-link">Add Product</a>
-        <a href="/login" class="nav-link">Login</a>
+        <a href="./products.html" class="nav-link">Products</a>
+        <a href="./addproduct.html" class="nav-link">Add Product</a>
+        <a href="./login.html" class="nav-link">Login</a>
     </div>
 
     <div class="container">
@@ -502,18 +637,15 @@
                     // Get the JWT token from localStorage
                     const token = localStorage.getItem('jwtToken');
                     if (!token) {
-                        // If no token, redirect to login
-                        window.location.href = '/login';
+                        window.location.href = 'http://127.0.0.1:5500/Digital-Oncely/public/login.html';
                         return;
                     }
 
                     const fetchRequestBody = {
                         task: 'fetch',
                         projectType: 'Product',
-                        website: 'todo-site',
                         limit: 50,
-                        page: 1,
-                        public: true
+                        page: 1
                     };
 
                     let fetchOptions;
@@ -521,8 +653,8 @@
                         fetchOptions = {
                             method: 'POST',
                             headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${token}`
+                                'Content-Type': 'text/plain',
+                                ...(token ? { 'Authorization': `Bearer ${token}` } : {})
                             },
                             body: JSON.stringify(fetchRequestBody)
                         };
@@ -530,15 +662,15 @@
                         fetchOptions = {
                             method: 'POST',
                             headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${token}`
+                                'Content-Type': 'text/plain',
+                                ...(token ? { 'Authorization': `Bearer ${token}` } : {})
                             },
                             body: JSON.stringify({
                                 url: 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api',
                                 method: 'POST',
                                 headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': `Bearer ${token}`
+                                    'Content-Type': 'text/plain',
+                                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
                                 },
                                 body: JSON.stringify(fetchRequestBody)
                             })
@@ -549,10 +681,10 @@
 
                     if (response.status === 401) {
                         // If token is invalid or expired, redirect to login
-                        localStorage.removeItem('jwtToken');
-                        localStorage.removeItem('userData');
-                        window.location.href = '/login';
-                        return;
+                        // localStorage.removeItem('jwtToken');
+                        // localStorage.removeItem('userData');
+                        // window.location.href = 'http://127.0.0.1:5500/Digital-Oncely/public/login.html';
+                        // return;
                     }
 
                     if (!response.ok) {
@@ -583,6 +715,7 @@
                     console.error('Error fetching products:', error);
                     errorMessage.textContent = error.message;
                     errorMessage.style.display = 'block';
+                    // Remove mock products fallback
                 } finally {
                     loadingElement.style.display = 'none';
                 }
@@ -595,12 +728,12 @@
                     productCard.className = 'product-card';
                     
                     const productSlug = product.productName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-                    const productUrl = `/product.html?slug=${productSlug}`;
+                    const productUrl = `./product.html?slug=${productSlug}`;
                     
                     productCard.innerHTML = `
                         <img src="${product.imageUrls?.[0] || 'images/placeholder.jpg'}" alt="${product.productName || 'Product'}" class="product-image">
                         <div class="product-content">
-                            <h3 class="product-title">${product.productName || 'Untitled Product'}</h3>
+                            <h3 class="product-title"><a href="${productUrl}" style="color:inherit;text-decoration:none;">${product.productName || 'Untitled Product'}</a></h3>
                             <p class="product-description">${product.brief || 'No description available'}</p>
                             <div class="product-rating">
                                 ★★★☆☆ <span class="rating-text">No reviews</span>
@@ -612,7 +745,14 @@
                             </div>
                         </div>
                     `;
-                   
+                    // Make the whole card clickable
+                    productCard.style.cursor = 'pointer';
+                    productCard.addEventListener('click', function(e) {
+                        // Prevent navigation if a button or link is clicked
+                        if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') return;
+                        window.location.href = productUrl;
+                    });
+                    // Also keep image click for redundancy
                     const img = productCard.querySelector('.product-image');
                     img.addEventListener('click', function(e) {
                         window.location.href = productUrl;

@@ -7,6 +7,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="/css/theme.css">
     <style>
+        /* Green Color Enhancements */
+        :root {
+            --green-primary: #2DC854;
+            --green-secondary: #4CAF50;
+            --green-light: #E8F5E9;
+            --green-dark: #1B5E20;
+            --green-accent: #8BC34A;
+            --green-gradient: linear-gradient(135deg, #2DC854 0%, #4CAF50 50%, #8BC34A 100%);
+            --green-gradient-light: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 50%, #A5D6A7 100%);
+            --green-shadow: rgba(45, 200, 84, 0.15);
+            --green-border: #A5D6A7;
+            --green-hover: #66BB6A;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -25,6 +39,7 @@
             background-color: var(--card-bg);
             padding: 1rem 0;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-bottom: 2px solid var(--green-light);
         }
 
         .navbar .container {
@@ -37,7 +52,10 @@
         }
 
         .navbar-brand {
-            color: var(--primary-color);
+            background: var(--green-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             font-size: 1.5rem;
             font-weight: bold;
             text-decoration: none;
@@ -54,10 +72,26 @@
             text-decoration: none;
             font-weight: 500;
             transition: color 0.2s;
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--green-gradient);
+            transition: width 0.3s ease;
         }
 
         .nav-link:hover {
-            color: var(--primary-color);
+            color: var(--green-primary);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
         }
 
         #logout-btn {
@@ -68,10 +102,11 @@
             cursor: pointer;
             font-size: 1rem;
             padding: 0;
+            transition: color 0.2s;
         }
 
         #logout-btn:hover {
-            color: var(--primary-color);
+            color: var(--green-primary);
         }
 
         .container {
@@ -81,15 +116,38 @@
         }
 
         .header {
-            background-color: var(--card-bg);
+            background: var(--green-gradient-light);
             padding: 20px 0;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
+            border-bottom: 3px solid var(--green-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--green-gradient);
+            opacity: 0.05;
+        }
+
+        .header .container {
+            position: relative;
+            z-index: 1;
         }
 
         .header h1 {
-            color: var(--primary-color);
+            background: var(--green-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             text-align: center;
+            font-weight: 800;
         }
 
         .product-layout {
@@ -105,20 +163,38 @@
 
         .sidebar {
             width: var(--sidebar-width);
-            background: var(--card-bg);
+            background: var(--green-gradient-light);
             border-radius: var(--card-radius);
-            box-shadow: var(--card-shadow);
+            box-shadow: 0 8px 25px var(--green-shadow);
             padding: 32px 28px;
             position: sticky;
             top: 32px;
             align-self: flex-start;
+            border: 2px solid var(--green-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--green-gradient);
+        }
+
+        .sidebar .container {
+            position: relative;
+            z-index: 1;
         }
 
         .sidebar h2 {
             font-size: 2rem;
             font-weight: 800;
             margin-bottom: 8px;
-            color: var(--text-color);
+            color: var(--green-dark);
         }
 
         .sidebar .product-desc {
@@ -128,7 +204,7 @@
         }
 
         .sidebar .product-rating {
-            color: var(--star-color);
+            color: var(--green-accent);
             font-size: 1.2rem;
             margin-bottom: 8px;
         }
@@ -140,19 +216,20 @@
         }
 
         .sidebar .deal-badge {
-            background: var(--light-color);
-            color: var(--dark-color);
+            background: var(--green-light);
+            color: var(--green-dark);
             font-weight: 600;
             border-radius: 6px;
             padding: 4px 12px;
             display: inline-block;
             margin-bottom: 12px;
+            border: 1px solid var(--green-border);
         }
 
         .sidebar .product-price {
             font-size: 2rem;
             font-weight: 800;
-            color: var(--text-color);
+            color: var(--green-primary);
             margin-bottom: 8px;
         }
 
@@ -168,10 +245,17 @@
             width: 100%;
             padding: 10px;
             border-radius: 6px;
-            border: 1px solid var(--border-color);
+            border: 2px solid var(--green-border);
             margin-bottom: 10px;
             background-color: var(--card-bg);
             color: var(--text-color);
+            transition: border-color 0.2s;
+        }
+
+        .sidebar select:focus {
+            border-color: var(--green-primary);
+            box-shadow: 0 0 0 3px var(--green-shadow);
+            outline: none;
         }
 
         .sidebar .watch-deal {
@@ -192,43 +276,48 @@
 
         .sidebar .add-to-cart-btn {
             padding: 14px;
-            background: var(--card-bg);
-            color: var(--text-color);
-            border: 2px solid var(--text-color);
+            background: var(--green-light);
+            color: var(--green-dark);
+            border: 2px solid var(--green-border);
             border-radius: 32px;
             font-weight: 700;
             font-size: 1.1rem;
             cursor: pointer;
-            transition: background 0.2s, color 0.2s;
+            transition: all 0.2s;
         }
 
         .sidebar .add-to-cart-btn:hover {
-            background: var(--bg-color);
+            background: var(--green-accent);
+            color: white;
+            border-color: var(--green-accent);
+            transform: translateY(-1px);
         }
 
         .sidebar .buy-now-btn {
             padding: 14px;
-            background: var(--button-orange);
+            background: var(--green-gradient);
             color: #fff;
             border: none;
             border-radius: 32px;
             font-weight: 700;
             font-size: 1.1rem;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.2s;
         }
 
         .sidebar .buy-now-btn:hover {
-            background: var(--button-orange-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px var(--green-shadow);
         }
 
         .sidebar .deal-highlights {
-            background: var(--bg-color);
+            background: var(--card-bg);
             border-radius: 12px;
             padding: 18px 16px;
             margin-top: 18px;
             font-size: 1.05rem;
             color: var(--text-color);
+            border: 1px solid var(--green-border);
         }
 
         .sidebar .deal-highlights li {
@@ -243,6 +332,19 @@
             border-radius: 18px;
             padding: 32px 32px 24px 32px;
             margin-bottom: 32px;
+            border: 2px solid var(--green-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-gallery::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--green-gradient);
         }
 
         .main-gallery .gallery-img {
@@ -254,6 +356,12 @@
             background: var(--card-bg);
             margin-bottom: 18px;
             display: block;
+            border: 2px solid var(--green-border);
+            transition: border-color 0.2s;
+        }
+
+        .main-gallery .gallery-img:hover {
+            border-color: var(--green-primary);
         }
 
         .main-gallery .gallery-thumbs {
@@ -266,13 +374,19 @@
             height: 70px;
             object-fit: cover;
             border-radius: 8px;
-            border: 2px solid var(--border-color);
+            border: 2px solid var(--green-border);
             cursor: pointer;
             background: var(--card-bg);
+            transition: border-color 0.2s;
+        }
+
+        .main-gallery .gallery-thumb:hover {
+            border-color: var(--green-accent);
         }
 
         .main-gallery .gallery-thumb.selected {
-            border: 2px solid var(--primary-color);
+            border: 2px solid var(--green-primary);
+            box-shadow: 0 0 0 3px var(--green-shadow);
         }
 
         @media (max-width: 1100px) {
@@ -304,15 +418,18 @@
         .back-button {
             display: inline-block;
             padding: 10px 20px;
-            background-color: var(--secondary-color);
+            background: var(--green-gradient);
             color: white;
             text-decoration: none;
-            border-radius: 4px;
+            border-radius: 8px;
             margin-bottom: 20px;
+            transition: all 0.2s;
+            border: none;
         }
 
         .back-button:hover {
-            background-color: var(--button-orange-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--green-shadow);
         }
 
         .overview-para, .plans-para {
@@ -337,15 +454,17 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            transition: color 0.2s;
         }
 
         .theme-toggle:hover {
-            color: var(--primary-color);
+            color: var(--green-primary);
         }
 
         .plan-card {
             background: var(--card-bg) !important;
             color: var(--text-color) !important;
+            border: 1px solid var(--green-border) !important;
         }
 
         .btn-lg {
@@ -361,13 +480,26 @@
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 20px;
-            border: 1px solid var(--border-color);
+            border: 2px solid var(--green-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .qa-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--green-gradient);
         }
 
         .qa-item .question h3 {
-            color: var(--text-color);
+            color: var(--green-dark);
             font-size: 1.2rem;
             margin-bottom: 12px;
+            font-weight: 700;
         }
 
         .qa-item .answer {
@@ -381,7 +513,19 @@
             border-radius: 12px;
             padding: 24px;
             margin: 24px 0;
-            border: 1px solid var(--border-color);
+            border: 2px solid var(--green-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reviews-summary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--green-gradient);
         }
 
         .average-rating {
@@ -389,13 +533,13 @@
         }
 
         .average-rating .stars {
-            color: var(--star-color);
+            color: var(--green-accent);
             font-size: 2rem;
             margin-bottom: 8px;
         }
 
         .average-rating .rating-text {
-            color: var(--text-color);
+            color: var(--green-dark);
             font-size: 1.2rem;
             font-weight: 600;
             margin-bottom: 4px;
@@ -415,7 +559,19 @@
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 20px;
-            border: 1px solid var(--border-color);
+            border: 2px solid var(--green-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .review-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--green-gradient);
         }
 
         .review-header {
@@ -426,13 +582,13 @@
         }
 
         .reviewer-name {
-            color: var(--text-color);
+            color: var(--green-dark);
             font-weight: 600;
             font-size: 1.1rem;
         }
 
         .review-rating {
-            color: var(--star-color);
+            color: var(--green-accent);
             font-size: 1.2rem;
         }
 
@@ -467,11 +623,12 @@
 <body>
     <nav class="navbar">
         <div class="container">
-            <a href="/" class="navbar-brand">Digital Oncely</a>
+            <a href="./" class="navbar-brand">Digital Oncely</a>
             <div class="navbar-nav">
-                <a href="/products" class="nav-link">Products</a>
-                <a href="/addproduct.html" class="nav-link">Add Product</a>
-                <button id="logout-btn" class="nav-link">Logout</button>
+                <a href="./products.html" class="nav-link">Products</a>
+                <a href="./addproduct.html" class="nav-link">Add Product</a>
+                <a href="./login.html" class="nav-link">Login</a>
+                <button id="logout-btn">Logout</button>
                 <button id="theme-toggle" class="theme-toggle">
                     <i class="fas fa-moon"></i>
                 </button>
@@ -486,7 +643,7 @@
     </div>
     
     <div class="container">
-        <a href="/products" class="back-button">← Back to Products</a>
+        <a href="./products.html" class="back-button">← Back to Products</a>
         
         <div class="error-message" id="error-message">
             An error occurred while loading the product. Please try again later.
@@ -545,12 +702,12 @@
             
             document.getElementById('logout-btn').addEventListener('click', function() {
                 localStorage.removeItem('jwtToken');
-                window.location.href = '/login.html';
+                window.location.href = './login.html';
             });
 
             const token = localStorage.getItem('jwtToken');
             if (!token) {
-                window.location.href = '/login.html';
+                window.location.href = './login.html';
                 return;
             }
 
@@ -579,7 +736,7 @@
                         fetchOptions = {
                             method: 'POST',
                             headers: {
-                                'Content-Type': 'application/json',
+                                'Content-Type': 'text/plain',
                                 'Authorization': `Bearer ${token}`
                             },
                             body: JSON.stringify(fetchRequestBody)
@@ -588,15 +745,13 @@
                         fetchOptions = {
                             method: 'POST',
                             headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${token}`
+                                'Content-Type': 'text/plain'
                             },
                             body: JSON.stringify({
                                 url: 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api',
                                 method: 'POST',
                                 headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': `Bearer ${token}`
+                                    'Content-Type': 'text/plain'
                                 },
                                 body: JSON.stringify(fetchRequestBody)
                             })
@@ -640,7 +795,7 @@
                     
                     if (error.message.includes('login')) {
                         setTimeout(() => {
-                            window.location.href = '/login.html';
+                            window.location.href = './login.html';
                         }, 2000);
                     }
                 }

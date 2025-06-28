@@ -7,12 +7,51 @@
     <link rel="stylesheet" href="/css/theme.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* Green Color Enhancements */
+        :root {
+            --green-primary: #2DC854;
+            --green-secondary: #4CAF50;
+            --green-light: #E8F5E9;
+            --green-dark: #1B5E20;
+            --green-accent: #8BC34A;
+            --green-gradient: linear-gradient(135deg, #2DC854 0%, #4CAF50 50%, #8BC34A 100%);
+            --green-gradient-light: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 50%, #A5D6A7 100%);
+            --green-shadow: rgba(45, 200, 84, 0.15);
+            --green-border: #A5D6A7;
+        }
        
         .hero-section {
             padding: 80px 0;
             text-align: center;
-            background: var(--card-bg);
-            border-bottom: 1px solid var(--border-color);
+            background: var(--green-gradient-light);
+            border-bottom: 1px solid var(--green-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--green-gradient);
+            opacity: 0.05;
+            z-index: 1;
+        }
+
+        .hero-section .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-section h1 {
+            background: var(--green-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
         }
 
         .product-grid {
@@ -24,15 +63,33 @@
 
         .product-card {
             background: var(--card-bg);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--green-border);
             border-radius: 12px;
             overflow: hidden;
             transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--green-gradient);
+            z-index: 1;
         }
 
         .product-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 16px var(--shadow);
+            box-shadow: 0 8px 25px var(--green-shadow);
+            border-color: var(--green-primary);
+        }
+
+        .product-card:active {
+            transform: translateY(-2px);
         }
 
         .product-image {
@@ -63,7 +120,8 @@
 
         .product-price {
             font-weight: 600;
-            color: var(--primary-color);
+            color: var(--green-primary);
+            font-size: 1.1rem;
         }
 
         .navbar {
@@ -73,6 +131,7 @@
             z-index: 1000;
             background-color: var(--bg-color);
             backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--green-light);
         }
 
         .container {
@@ -90,7 +149,10 @@
         .nav-brand {
             font-size: 1.5rem;
             font-weight: 700;
-            color: var(--text-color);
+            background: var(--green-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             text-decoration: none;
         }
 
@@ -105,22 +167,44 @@
             text-decoration: none;
             font-weight: 500;
             transition: color 0.2s;
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--green-gradient);
+            transition: width 0.3s ease;
         }
 
         .nav-link:hover {
-            color: var(--primary-color);
+            color: var(--green-primary);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
         }
 
         .search-bar {
             display: flex;
             align-items: center;
             background: var(--input-bg);
-            border: 1px solid var(--border-color);
+            border: 2px solid var(--green-border);
             border-radius: 8px;
             padding: 8px 16px;
             margin: 0 24px;
             flex: 1;
             max-width: 400px;
+            transition: border-color 0.2s;
+        }
+
+        .search-bar:focus-within {
+            border-color: var(--green-primary);
+            box-shadow: 0 0 0 3px var(--green-shadow);
         }
 
         .search-input {
@@ -142,8 +226,24 @@
 
         .featured-section {
             padding: 40px 0;
-            background: var(--secondary-color);
-            
+            background: var(--green-light);
+            position: relative;
+        }
+
+        .featured-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--green-gradient);
+            opacity: 0.03;
+        }
+
+        .featured-section .container {
+            position: relative;
+            z-index: 1;
         }
 
         .section-title {
@@ -151,6 +251,19 @@
             color: var(--text-color);
             margin-bottom: 24px;
             text-align: center;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: var(--green-gradient);
+            border-radius: 2px;
         }
 
         .featured-grid {
@@ -165,16 +278,35 @@
             border-radius: 12px;
             text-align: center;
             transition: transform 0.2s;
+            border: 1px solid var(--green-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--green-gradient);
         }
 
         .category-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 8px 25px var(--green-shadow);
         }
 
         .category-icon {
             font-size: 2rem;
-            color: var(--primary-color);
+            color: var(--green-primary);
             margin-bottom: 12px;
+            transition: transform 0.2s;
+        }
+
+        .category-card:hover .category-icon {
+            transform: scale(1.1);
         }
 
         .mobile-menu-btn {
@@ -223,6 +355,25 @@
             display: block;
             padding: 12px 0;
             border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Enhanced button styles */
+        .btn-primary {
+            background: var(--green-gradient);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--green-shadow);
         }
 
         @media (max-width: 768px) {
@@ -278,7 +429,7 @@
     <nav class="navbar">
         <div class="container">
             <div class="nav-content">
-                <a href="/" class="nav-brand">Digital Oncely</a>
+                <a href="./" class="nav-brand">Digital Oncely</a>
                 
                 <div class="search-bar">
                     <i class="fas fa-search" style="color: var(--secondary-text)"></i>
@@ -286,9 +437,9 @@
                 </div>
                 
                 <div class="nav-links">
-                    <a href="/products.html" class="nav-link">Products</a>
-                    <a href="/addproduct.html" class="nav-link">Add Product</a>
-                    <a href="/login.html" class="nav-link">Login</a>
+                    <a href="./products.html" class="nav-link">Products</a>
+                    <a href="./addproduct.html" class="nav-link">Add Product</a>
+                    <a href="./login.html" class="nav-link">Login</a>
                     <button class="theme-toggle" id="theme-toggle">
                         <i class="fas fa-moon"></i>
                     </button>
@@ -307,9 +458,9 @@
     </nav>
 
     <div class="mobile-menu" id="mobile-menu">
-        <a href="/products" class="nav-link">Products</a>
-        <a href="/addproduct.html" class="nav-link">Add Product</a>
-        <a href="/login.html" class="nav-link">Login</a>
+        <a href="./products.html" class="nav-link">Products</a>
+        <a href="./addproduct.html" class="nav-link">Add Product</a>
+        <a href="./login.html" class="nav-link">Login</a>
     </div>
 
     <section class="hero-section">
@@ -319,7 +470,7 @@
                 Discover and share amazing digital products. From software tools to digital assets,
                 find everything you need to boost your digital workflow.
             </p>
-            <a href="/products" class="btn btn-primary">Explore Products</a>
+            <a href="./products.html" class="btn btn-primary">Explore Products</a>
         </div>
     </section>
 
@@ -409,7 +560,7 @@
                 const response = await fetch(API_BASE_URL, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'text/plain',
                         'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify({
@@ -425,7 +576,7 @@
                 console.log('Fetched products:', data.items);
                 if (data.items && data.items.length > 0) {
                     productGrid.innerHTML = data.items.map(product => `
-                        <div class="product-card">
+                        <div class="product-card" onclick="navigateToProduct('${product.slug}')">
                             <img src="${product.imageUrls[0]}" alt="${product.productName}" class="product-image">
                             <div class="product-info">
                                 <h3 class="product-title">${product.productName}</h3>
@@ -441,7 +592,7 @@
                             <p style="color: var(--secondary-text); margin-bottom: 24px;">
                                 Be the first to add a product to our marketplace!
                             </p>
-                            <a href="/addproduct.html" class="btn btn-primary" style="display: inline-block; padding: 12px 24px; background: var(--primary-color); color: white; text-decoration: none; border-radius: 6px;">
+                            <a href="./addproduct.html" class="btn btn-primary" style="display: inline-block; padding: 12px 24px; background: var(--primary-color); color: white; text-decoration: none; border-radius: 6px;">
                                 Add Your First Product
                             </a>
                         </div>
@@ -451,8 +602,15 @@
                 console.error('Error loading products:', error);
                 
                 if (error.message.includes('login') || error.message.includes('unauthorized')) {
-                    window.location.href = '/login.html';
+                    window.location.href = './login.html';
                 }
+            }
+        }
+
+        // Function to navigate to individual product details
+        function navigateToProduct(slug) {
+            if (slug) {
+                window.location.href = `./product.html?slug=${encodeURIComponent(slug)}`;
             }
         }
 

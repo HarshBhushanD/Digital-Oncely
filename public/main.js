@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/api/proxy', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'text/plain',
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify({
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/api/proxy', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'text/plain',
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify({
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/api/proxy', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'text/plain',
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify({
@@ -187,7 +187,7 @@ async function apiRequest(body, token) {
         return fetch(API_BASE_URL, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'text/plain',
                 ...(token ? { 'Authorization': `Bearer ${token}` } : {})
             },
             body: JSON.stringify(body)
@@ -196,14 +196,14 @@ async function apiRequest(body, token) {
         return fetch(API_BASE_URL, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'text/plain',
                 ...(token ? { 'Authorization': `Bearer ${token}` } : {})
             },
             body: JSON.stringify({
                 url: 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api',
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'text/plain',
                     ...(token ? { 'Authorization': `Bearer ${token}` } : {})
                 },
                 body: JSON.stringify(body)

@@ -500,7 +500,7 @@
     <nav class="navbar">
         <div class="container">
             <div class="nav-content">
-                <a href="/" class="nav-brand">Digital Oncely</a>
+                <a href="./" class="nav-brand">Digital Oncely</a>
                 
                 <div class="search-bar">
                     <i class="fas fa-search" style="color: var(--secondary-text)"></i>
@@ -508,9 +508,9 @@
                 </div>
                 
                 <div class="nav-links">
-                    <a href="/products" class="nav-link">Products</a>
-                    <a href="/addproduct.html" class="nav-link">Add Product</a>
-                    <a href="/login.html" class="nav-link">Login</a>
+                    <a href="./products.html" class="nav-link">Products</a>
+                    <a href="./addproduct.html" class="nav-link">Add Product</a>
+                    <a href="./login.html" class="nav-link">Login</a>
                     <button class="theme-toggle" id="theme-toggle">
                         <i class="fas fa-moon"></i>
                     </button>
@@ -529,9 +529,9 @@
     </nav>
 
     <div class="mobile-menu" id="mobile-menu">
-        <a href="/products" class="nav-link">Products</a>
-        <a href="/addproduct.html" class="nav-link">Add Product</a>
-        <a href="/login.html" class="nav-link">Login</a>
+        <a href="./products.html" class="nav-link">Products</a>
+        <a href="./addproduct.html" class="nav-link">Add Product</a>
+        <a href="./login.html" class="nav-link">Login</a>
     </div>
 
     <section class="hero-section">
@@ -552,7 +552,7 @@
     <div class="container">
         <div class="alert alert-success" id="success-alert">
             <i class="fas fa-check-circle"></i>
-            Product submitted successfully! You'll be redirected to the product page shortly.
+            Product submitted successfully! You'll be redirected to the homepage shortly.
         </div>
 
         <div class="alert alert-danger" id="error-alert">
@@ -746,10 +746,7 @@
     <script src="/js/theme.js"></script>
     <script>
         // ENVIRONMENT SWITCH
-        const IS_PRODUCTION = window.location.hostname !== 'localhost';
-        const API_BASE_URL = IS_PRODUCTION
-            ? 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api'
-            : '/api/proxy';
+        const API_BASE_URL = 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api';
 
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('product-form');
@@ -1104,45 +1101,22 @@
                     }
                     
                     console.log('Submitting product with data:', productData);
-                    let fetchOptions;
-                    if (IS_PRODUCTION) {
-                        fetchOptions = {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json',
-                                'Authorization': `Bearer ${token}`
-                            },
-                            body: JSON.stringify(productData)
-                        };
-                    } else {
-                        fetchOptions = {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json',
-                                'Authorization': `Bearer ${token}`
-                            },
-                            body: JSON.stringify({
-                                url: 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api',
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'Accept': 'application/json',
-                                    'Authorization': `Bearer ${token}`
-                                },
-                                body: JSON.stringify(productData)
-                            })
-                        };
-                    }
-                    const response = await fetch('/api/proxy', fetchOptions);
-                    console.log('Proxy response status:', response.status);
+                    const fetchOptions = {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'text/plain'
+                        },
+                        body: JSON.stringify(productData)
+                    };
+                    const response = await fetch(API_BASE_URL, fetchOptions);
+                    console.log('API response status:', response.status);
                     let data;
                     try {
                         data = await response.clone().json();
-                        console.log('Proxy response data:', data);
+                        console.log('API response data:', data);
                     } catch (e) {
-                        console.log('Proxy response is not JSON:', e);
+                        console.log('API response is not JSON:', e);
                     }
                     if (!response.ok) {
                         const errorData = data || {};
@@ -1150,8 +1124,15 @@
                         throw new Error(errorData.error || errorData.details?.error || 'Failed to create product');
                     }
 
-                    // Redirect to products page on success
-                    window.location.href = '/products';
+                    // Show success message and redirect to the index page
+                    successAlert.textContent = 'Product created successfully! Redirecting to homepage...';
+                    successAlert.style.display = 'block';
+                    successAlert.scrollIntoView({ behavior: 'smooth' });
+
+                    // Redirect to index page after successful submission
+                    setTimeout(() => {
+                        window.location.href = './index.html';
+                    }, 1500);
                 } catch (error) {
                     console.error('Error submitting product:', error);
                     errorAlert.textContent = error.message || 'An error occurred while submitting the product. Please try again.';

@@ -198,7 +198,10 @@
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme) {
             document.body.classList.add(savedTheme);
-            updateThemeIcon(savedTheme === 'dark-theme');
+            if (savedTheme === 'dark-theme') {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            }
         } else {
             
             if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -208,10 +211,17 @@
         }
         
         themeToggle.addEventListener('click', () => {
-            const isDark = document.body.classList.toggle('dark-theme');
-            document.body.classList.remove(isDark ? 'light-theme' : 'dark-theme');
-            localStorage.setItem('theme', isDark ? 'dark-theme' : 'light-theme');
-            updateThemeIcon(isDark);
+            document.body.classList.toggle('dark-theme');
+            let theme = 'light-theme';
+            if (document.body.classList.contains('dark-theme')) {
+                theme = 'dark-theme';
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+            localStorage.setItem('theme', theme);
         });
         
         function updateThemeIcon(isDark) {
@@ -224,6 +234,23 @@
         const loginSpinner = document.getElementById('login-spinner');
         const loginText = document.getElementById('login-text');
 
+        // Helper for API requests
+        async function apiRequest(body, token) {
+            const url = IS_PRODUCTION
+                ? 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api'
+                : '/api/proxy';
+            
+            return fetch(url, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                },
+                body: JSON.stringify(body)
+            });
+        }
+        
+        // Handle login form submission
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -246,169 +273,81 @@
                     throw new Error('Please enter a valid email address');
                 }
 
-                // Step 1: Login request
                 console.log('Sending login request...');
-                const loginRequestBody = {
-                    task: 'auth',
-                    action: 'login',
-                    email: email.toLowerCase(),
-                    password: password,
-                    website: 'todo-site'
-                };
-                let loginFetchOptions;
+                let response;
                 if (IS_PRODUCTION) {
-                    loginFetchOptions = {
+                    // Direct API call in production
+                    response = await fetch('https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api', {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(loginRequestBody)
-                    };
-                } else {
-                    loginFetchOptions = {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
                         },
                         body: JSON.stringify({
-                            url: 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api',
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(loginRequestBody)
+                            task: 'auth',
+                            action: 'login',
+                            email: email,
+                            password: password,
+                            website: 'todo-site'
                         })
-                    };
-                }
-                const loginResponse = await fetch(API_BASE_URL, loginFetchOptions);
-                const loginData = await loginResponse.json();
-                console.log('Login response:', loginData);
-
-                if (!loginResponse.ok) {
-                    if (loginResponse.status === 401) {
-                        throw new Error('Invalid email or password. Please try again.');
-                    } else if (loginResponse.status === 404) {
-                        throw new Error('Account not found. Please sign up first.');
-                    } else {
-                        throw new Error(loginData.error || 'Login failed. Please try again.');
-                    }
-                }
-
-                if (!loginData.token) {
-                    throw new Error('No authentication token received');
-                }
-
-                // Store the token
-                localStorage.setItem('jwtToken', loginData.token);
-                console.log('Token stored successfully');
-
-                // Step 2: Verify login status and get user data
-                console.log('Verifying login status...');
-                const verifyRequestBody = {
-                    task: 'verify',
-                    website: 'todo-site'
-                };
-                let verifyFetchOptions;
-                if (IS_PRODUCTION) {
-                    verifyFetchOptions = {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${loginData.token}`
-                        },
-                        body: JSON.stringify(verifyRequestBody)
-                    };
+                    });
                 } else {
-                    verifyFetchOptions = {
+                    // Proxy call in development
+                    response = await fetch('/api/proxy', {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${loginData.token}`
+                            'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
                             url: 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api',
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${loginData.token}`
+                                'Accept': 'application/json'
                             },
-                            body: JSON.stringify(verifyRequestBody)
+                            body: {
+                                task: 'auth',
+                                action: 'login',
+                                email: email,
+                                password: password,
+                                website: 'todo-site'
+                            }
                         })
-                    };
+                    });
                 }
-                const verifyResponse = await fetch(API_BASE_URL, verifyFetchOptions);
-                const verifyData = await verifyResponse.json();
-                console.log('Verify response:', verifyData);
-
-                if (!verifyResponse.ok || !verifyData.isLoggedIn) {
-                    throw new Error('Login verification failed');
-                }
-
-                // Store user data
-                if (verifyData.user) {
-                    localStorage.setItem('userData', JSON.stringify(verifyData.user));
-                }
-
-                successMessage.textContent = loginData.message || 'Login successful! Redirecting...';
-                successMessage.style.display = 'block';
-                
-                // Step 3: Fetch initial data
-                console.log('Fetching initial data...');
-                const fetchRequestBody = {
-                    task: 'fetch',
-                    action: 'products',
-                    website: 'todo-site',
-                    limit: 10,
-                    page: 1
-                };
-                let fetchFetchOptions;
-                if (IS_PRODUCTION) {
-                    fetchFetchOptions = {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${loginData.token}`
-                        },
-                        body: JSON.stringify(fetchRequestBody)
-                    };
+                const data = await response.json();
+                if (response.ok) {
+                    localStorage.setItem('jwtToken', data.token);
+                    successMessage.textContent = 'Login successful! Redirecting...';
+                    successMessage.style.display = 'block';
+                    setTimeout(() => {
+                        window.location.href = 'http://127.0.0.1:5500/Digital-Oncely/public/products.html';
+                    }, 1000);
                 } else {
-                    fetchFetchOptions = {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${loginData.token}`
-                        },
-                        body: JSON.stringify({
-                            url: 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api',
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${loginData.token}`
-                            },
-                            body: JSON.stringify(fetchRequestBody)
-                        })
-                    };
+                    showError(data.error || 'Invalid credentials');
                 }
-                const fetchResponse = await fetch(API_BASE_URL, fetchFetchOptions);
-                const fetchData = await fetchResponse.json();
-                console.log('Fetch response:', fetchData);
-
-                if (!fetchResponse.ok) {
-                    console.warn('Failed to fetch initial data:', fetchData);
-                }
-
-                // Redirect after successful login
-                setTimeout(() => {
-                    window.location.href = '/products';
-                }, 1500);
-
             } catch (error) {
                 console.error('Login error:', error);
-                errorMessage.textContent = error.message || 'An error occurred during login';
-                errorMessage.style.display = 'block';
+                showError('Failed to connect to the server.');
             } finally {
                 loginSpinner.style.display = 'none';
                 loginText.textContent = 'Sign In';
             }
         });
+
+        // Function to display error messages
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+
+        // Check if user is already logged in
+        const token = localStorage.getItem('token');
+        if (token) {
+            // Optional: Verify token with the backend
+            // For now, just redirect to a protected page
+            // window.location.href = '/dashboard.html';
+        }
     </script>
 </body>
 </html> 

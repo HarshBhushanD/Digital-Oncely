@@ -169,7 +169,7 @@
 </head>
 <body>
     <div class="signup-container">
-        <a href="/" class="back-to-home">
+        <a href="./" class="back-to-home">
             <i class="fas fa-arrow-left"></i>
             Back to Home
         </a>
@@ -228,7 +228,7 @@
             </form>
 
             <div class="signup-footer">
-                <p>Already have an account? <a href="/login.html">Sign in</a></p>
+                <p>Already have an account? <a href="./login.html">Sign in</a></p>
             </div>
         </div>
     </div>
@@ -318,18 +318,17 @@
                 console.log('Sending signup request...');
                 const response = await fetch('/api', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
                     body: JSON.stringify({
-                        task: 'auth',
-                        action: 'signup',
-                        email: email.toLowerCase(),
-                        password: password,
+                        task: 'create',
+                        action: 'user',
+                        website: 'todo-site',
                         name: name,
-                        website: 'todo-site'
-                    })
+                        email: email,
+                        password: password
+                    }),
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    }
                 });
 
                 console.log('Signup response status:', response.status);
