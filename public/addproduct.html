@@ -215,7 +215,7 @@
         }
 
         .form-control {
-            width: 95%;
+            width: 85%;
             margin-left: auto;
             margin-right: auto;
             display: block;
@@ -226,6 +226,8 @@
             color: #22223b;
             font-size: 1rem;
             transition: border-color 0.2s, box-shadow 0.2s;
+            padding-left: 18px;
+            padding-right: 18px;
         }
 
         .form-control:focus {
@@ -493,6 +495,62 @@
             .mobile-menu .nav-link:hover {
                 background-color: var(--hover-color);
             }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 6px;
+            }
+            .navbar, .header {
+                padding: 10px 0;
+            }
+            .header h1 {
+                font-size: 1.2rem;
+            }
+            .form-container {
+                padding: 12px 4px;
+                margin-top: 12px;
+                border-radius: 10px;
+            }
+            .form-section {
+                margin-bottom: 16px;
+                padding-bottom: 10px;
+                border-radius: 8px;
+            }
+            .form-section h2 {
+                font-size: 1rem;
+                margin-bottom: 10px;
+            }
+            .form-group {
+                margin-bottom: 14px;
+            }
+            .form-group label {
+                font-size: 0.95rem;
+            }
+            .form-control {
+                width: 90%;
+                padding: 10px 8px;
+                font-size: 0.98rem;
+                border-radius: 6px;
+            }
+            textarea.form-control {
+                min-height: 60px;
+            }
+            .btn, .btn-primary, .btn-secondary {
+                padding: 10px 12px;
+                font-size: 1rem;
+                border-radius: 6px;
+            }
+            .mobile-menu {
+                padding: 0 4px;
+            }
+            .mobile-menu .nav-link {
+                padding: 10px 0;
+            }
+        }
+        html, body {
+            max-width: 100vw;
+            overflow-x: hidden;
         }
     </style>
 </head>

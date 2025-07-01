@@ -550,6 +550,96 @@
                 height: 200px;
             }
         }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 6px;
+            }
+            .header {
+                padding: 10px 0;
+            }
+            .header h1 {
+                font-size: 1.2rem;
+            }
+            .products-main-layout {
+                flex-direction: column;
+                gap: 0;
+            }
+            .newsletter-sidebar {
+                display: block;
+                position: static;
+                max-width: 100%;
+                min-width: 0;
+                margin-top: 18px;
+                padding: 16px 10px;
+                border-radius: 10px;
+            }
+            .products-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                margin-top: 12px;
+            }
+            .product-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 10px;
+                border-radius: 10px;
+            }
+            .product-image {
+                width: 100%;
+                height: 120px;
+                border-radius: 8px;
+            }
+            .product-title {
+                font-size: 1.1rem;
+            }
+            .product-description {
+                font-size: 0.95rem;
+            }
+            .product-price {
+                font-size: 1.1rem;
+            }
+            .add-to-cart-btn, .buy-now-btn {
+                padding: 10px;
+                font-size: 1rem;
+                border-radius: 8px;
+            }
+            .add-product-btn {
+                padding: 10px 12px;
+                font-size: 1rem;
+                border-radius: 6px;
+            }
+            .newsletter-sidebar h2 {
+                font-size: 1.1rem;
+            }
+            .newsletter-form input[type="email"] {
+                padding: 10px;
+                font-size: 1rem;
+                border-radius: 6px;
+            }
+            .newsletter-btn {
+                padding: 10px;
+                font-size: 1rem;
+                border-radius: 6px;
+            }
+            .search-bar {
+                margin: 0 4px;
+                padding: 6px 8px;
+                border-radius: 6px;
+                max-width: 100%;
+            }
+            .mobile-menu {
+                padding: 0 4px;
+            }
+            .mobile-menu .nav-link {
+                padding: 10px 0;
+            }
+        }
+        html, body {
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
     </style>
 </head>
 <body>
