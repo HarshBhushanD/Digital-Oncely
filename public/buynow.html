@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy Now - Digital Oncely</title>
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --green-primary: #2DC854;
+            --green-secondary: #4CAF50;
+            --green-light: #E8F5E9;
+            --green-dark: #1B5E20;
+            --green-accent: #8BC34A;
+            --green-gradient: linear-gradient(135deg, #2DC854 0%, #4CAF50 50%, #8BC34A 100%);
+            --green-gradient-light: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 50%, #A5D6A7 100%);
+            --green-shadow: rgba(45, 200, 84, 0.15);
+            --green-border: #A5D6A7;
+            --green-hover: #66BB6A;
+            --bg-color: #f6fff8;
+            --card-bg: #fff;
+            --text-color: #22223b;
+            --secondary-text: #6c757d;
+            --input-bg: #f9fafb;
+        }
+        body { background: var(--bg-color); color: var(--text-color); }
+        .buy-container { max-width: 500px; margin: 40px auto; background: var(--card-bg); border-radius: 16px; box-shadow: 0 4px 24px var(--green-shadow); padding: 32px 18px; }
+        .buy-title { font-size: 2rem; font-weight: 800; background: var(--green-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-align: center; margin-bottom: 32px; }
+        .product-summary { background: var(--green-light); border-radius: 10px; padding: 18px; margin-bottom: 24px; }
+        .product-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 4px; }
+        .product-price { color: var(--green-primary); font-weight: 600; font-size: 1.1rem; }
+        .buy-form-group { margin-bottom: 18px; }
+        .buy-label { display: block; margin-bottom: 6px; font-weight: 500; }
+        .buy-input { width: 95%; padding: 12px; border: 1.5px solid var(--green-border); border-radius: 8px; background: var(--input-bg); color: var(--text-color); font-size: 1rem; }
+        .buy-btn { width: 100%; padding: 14px; background: var(--green-gradient); color: #fff; border: none; border-radius: 8px; font-weight: 700; font-size: 1.2rem; cursor: pointer; transition: background 0.2s; }
+        .buy-btn:hover { background: var(--green-hover); }
+        @media (max-width: 600px) { .buy-container { padding: 10px 2px; } .buy-title { font-size: 1.2rem; } }
+
+        .buy-product-img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            border: 1.5px solid var(--green-border);
+            background: var(--input-bg);
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar (reuse from other pages) -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <a href="index.html" class="nav-brand">Digital Oncely</a>
+                
+                <div class="search-bar">
+                    <i class="fas fa-search" style="color: var(--secondary-text)"></i>
+                    <input type="text" class="search-input" placeholder="Search products...">
+                </div>
+                
+                <div class="nav-links">
+                    <a href="products.html" class="nav-link">Products</a>
+                    <a href="blog.html" class="nav-link">Blogs</a>
+                    <a href="login.html" class="nav-link">Login</a>
+                    <button class="theme-toggle" id="theme-toggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+
+                <div class="mobile-controls">
+                    <button class="theme-toggle" id="mobile-theme-toggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="mobile-menu-btn" id="mobile-menu-btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="./products.html" class="nav-link">Products</a>
+        <a href="./blog.html" class="nav-link">Blogs</a>
+        <a href="./login.html" class="nav-link">Login</a>
+    </div>
+    <div class="buy-container">
+        <div class="buy-title"><i class="fas fa-bolt"></i> Buy Now</div>
+        <div class="product-summary" id="product-summary">
+            <img class="buy-product-img" src="" alt="Product Image">
+            <div class="product-name">Sample Product</div>
+            <div class="product-price">$49.00</div>
+        </div>
+        <form id="buy-form">
+            <div class="buy-form-group">
+                <label class="buy-label" for="name">Full Name</label>
+                <input class="buy-input" type="text" id="name" required placeholder="Enter your name">
+            </div>
+            <div class="buy-form-group">
+                <label class="buy-label" for="email">Email Address</label>
+                <input class="buy-input" type="email" id="email" required placeholder="Enter your email">
+            </div>
+            <div class="buy-form-group">
+                <label class="buy-label" for="card">Card Number</label>
+                <input class="buy-input" type="text" id="card" required placeholder="Card number">
+            </div>
+            <button class="buy-btn" type="submit">Pay & Complete Purchase</button>
+        </form>
+    </div>
+    <script src="/js/theme.js"></script>
+    <script>
+        // Mobile menu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('active');
+                });
+            }
+
+            if (mobileThemeToggle) {
+                mobileThemeToggle.addEventListener('click', function() {
+                    const themeToggle = document.getElementById('theme-toggle');
+                    if (themeToggle) {
+                        themeToggle.click();
+                    }
+                });
+            }
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(e) {
+                if (mobileMenu && mobileMenu.classList.contains('active')) {
+                    if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                        mobileMenu.classList.remove('active');
+                    }
+                }
+            });
+        });
+
+        // Buy Now logic: read from localStorage
+        const productSummary = document.getElementById('product-summary');
+        const buyData = JSON.parse(localStorage.getItem('buynow') || 'null');
+        if (buyData) {
+            productSummary.innerHTML = `
+                <img class="buy-product-img" src="${buyData.imageUrls?.[0] || 'images/placeholder.jpg'}" alt="${buyData.productName}">
+                <div class="product-name">${buyData.productName}</div>
+                <div class="product-price">$${buyData.price}</div>
+            `;
+        } else {
+            productSummary.innerHTML = '<div style="color:var(--secondary-text);padding:32px 0;text-align:center;">No product selected for purchase.</div>';
+        }
+        document.getElementById('buy-form').onsubmit = function(e) {
+            e.preventDefault();
+            alert('Thank you for your purchase! (Demo only)');
+        };
+    </script>
+</body>
+</html> 

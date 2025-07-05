@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart - Digital Oncely</title>
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --green-primary: #2DC854;
+            --green-secondary: #4CAF50;
+            --green-light: #E8F5E9;
+            --green-dark: #1B5E20;
+            --green-accent: #8BC34A;
+            --green-gradient: linear-gradient(135deg, #2DC854 0%, #4CAF50 50%, #8BC34A 100%);
+            --green-gradient-light: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 50%, #A5D6A7 100%);
+            --green-shadow: rgba(45, 200, 84, 0.15);
+            --green-border: #A5D6A7;
+            --green-hover: #66BB6A;
+            --bg-color: #f6fff8;
+            --card-bg: #fff;
+            --text-color: #22223b;
+            --secondary-text: #6c757d;
+            --input-bg: #f9fafb;
+        }
+        body { background: var(--bg-color); color: var(--text-color); }
+        .cart-container { max-width: 700px; margin: 40px auto; background: var(--card-bg); border-radius: 16px; box-shadow: 0 4px 24px var(--green-shadow); padding: 32px 18px; }
+        .cart-title { font-size: 2rem; font-weight: 800; background: var(--green-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-align: center; margin-bottom: 32px; }
+        .cart-list { list-style: none; padding: 0; margin: 0 0 24px 0; }
+        .cart-item { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; border-bottom: 1px solid var(--green-border); }
+        .cart-item:last-child { border-bottom: none; }
+        .cart-item-info { flex: 1; }
+        .cart-item-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 4px; }
+        .cart-item-price { color: var(--green-primary); font-weight: 600; }
+        .cart-qty-controls { display: flex; align-items: center; gap: 8px; }
+        .cart-qty-btn { background: var(--green-gradient); color: #fff; border: none; border-radius: 6px; width: 28px; height: 28px; font-size: 1.1rem; cursor: pointer; transition: background 0.2s; }
+        .cart-qty-btn:hover { background: var(--green-hover); }
+        .cart-total { text-align: right; font-size: 1.3rem; font-weight: 700; margin: 24px 0; color: var(--green-dark); }
+        .checkout-btn { width: 100%; padding: 14px; background: var(--green-gradient); color: #fff; border: none; border-radius: 8px; font-weight: 700; font-size: 1.2rem; cursor: pointer; transition: background 0.2s; }
+        .checkout-btn:hover { background: var(--green-hover); }
+        @media (max-width: 600px) { .cart-container { padding: 10px 2px; } .cart-title { font-size: 1.2rem; } }
+
+        .cart-item-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 16px;
+            border: 1.5px solid var(--green-border);
+            background: var(--input-bg);
+        }
+        .remove-cart-btn {
+            background: #f87171;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 0.98rem;
+            font-weight: 600;
+            margin-left: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .remove-cart-btn:hover {
+            background: #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar (reuse from other pages) -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <a href="index.html" class="nav-brand">Digital Oncely</a>
+                
+                <div class="search-bar">
+                    <i class="fas fa-search" style="color: var(--secondary-text)"></i>
+                    <input type="text" class="search-input" placeholder="Search products...">
+                </div>
+                
+                <div class="nav-links">
+                    <a href="products.html" class="nav-link">Products</a>
+                    <a href="blog.html" class="nav-link">Blogs</a>
+                    <a href="login.html" class="nav-link">Login</a>
+                    <button class="theme-toggle" id="theme-toggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+
+                <div class="mobile-controls">
+                    <button class="theme-toggle" id="mobile-theme-toggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="mobile-menu-btn" id="mobile-menu-btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="./products.html" class="nav-link">Products</a>
+        <a href="./blog.html" class="nav-link">Blogs</a>
+        <a href="./login.html" class="nav-link">Login</a>
+    </div>
+    <div class="cart-container">
+        <div class="cart-title"><i class="fas fa-shopping-cart"></i> Your Cart</div>
+        <ul class="cart-list" id="cart-list">
+            <!-- Cart items will be rendered here -->
+        </ul>
+        <div class="cart-total" id="cart-total">Total: $0.00</div>
+        <button class="checkout-btn" id="checkout-btn">Proceed to Checkout</button>
+    </div>
+    <script src="/js/theme.js"></script>
+    <script>
+        // Mobile menu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('active');
+                });
+            }
+
+            if (mobileThemeToggle) {
+                mobileThemeToggle.addEventListener('click', function() {
+                    const themeToggle = document.getElementById('theme-toggle');
+                    if (themeToggle) {
+                        themeToggle.click();
+                    }
+                });
+            }
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(e) {
+                if (mobileMenu && mobileMenu.classList.contains('active')) {
+                    if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                        mobileMenu.classList.remove('active');
+                    }
+                }
+            });
+        });
+
+        // Cart logic: read from localStorage
+        const cartList = document.getElementById('cart-list');
+        const cartTotal = document.getElementById('cart-total');
+        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        function renderCart() {
+            cartList.innerHTML = '';
+            let total = 0;
+            if (cart.length === 0) {
+                cartList.innerHTML = '<li style="text-align:center;color:var(--secondary-text);padding:32px 0;">Your cart is empty.</li>';
+                cartTotal.textContent = 'Total: $0.00';
+                return;
+            }
+            cart.forEach(item => {
+                // Remove any $ sign and parse as float
+                let price = parseFloat((item.price + '').replace(/[^0-9.]/g, '')) || 0;
+                total += price * (item.qty || 1);
+                const li = document.createElement('li');
+                li.className = 'cart-item';
+                li.innerHTML = `
+                    <img class="cart-item-img" src="${item.imageUrls?.[0] || 'images/placeholder.jpg'}" alt="${item.productName}">
+                    <div class="cart-item-info">
+                        <div class="cart-item-title">${item.productName}</div>
+                        <div class="cart-item-price">${item.price}</div>
+                    </div>
+                    <div class="cart-qty-controls">
+                        <button class="cart-qty-btn" onclick="updateQty('${item.productName}', -1)">-</button>
+                        <span>${item.qty || 1}</span>
+                        <button class="cart-qty-btn" onclick="updateQty('${item.productName}', 1)">+</button>
+                        <button class="remove-cart-btn" onclick="removeFromCart('${item.productName}')">Remove</button>
+                    </div>
+                `;
+                cartList.appendChild(li);
+            });
+            cartTotal.textContent = `Total: $${total.toFixed(2)}`;
+        }
+        window.updateQty = function(productName, delta) {
+            cart = cart.map(item => item.productName === productName ? { ...item, qty: Math.max(1, (item.qty || 1) + delta) } : item);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+        };
+        window.removeFromCart = function(productName) {
+            cart = cart.filter(item => item.productName !== productName);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+        };
+        renderCart();
+    </script>
+</body>
+</html> 

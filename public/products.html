@@ -78,6 +78,7 @@
             display: flex;
             gap: 40px;
             align-items: flex-start;
+            justify-content: center;
         }
         .products-main-layout > div {
             flex: 2.5;
@@ -121,6 +122,7 @@
             grid-template-columns: 1fr;
             gap: 24px;
             margin-top: 30px;
+            justify-items: center;
         }
         .product-card {
             display: flex;
@@ -538,9 +540,15 @@
                 flex-direction: column;
             }
 
+            .products-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                margin-top: 12px;
+                justify-items: center;
+            }
             .product-card {
                 flex-direction: column;
-                align-items: flex-start;
+                align-items: center;
                 gap: 16px;
                 padding: 16px;
             }
@@ -578,12 +586,15 @@
                 grid-template-columns: 1fr;
                 gap: 10px;
                 margin-top: 12px;
+                justify-items: center;
             }
             .product-card {
                 flex-direction: column;
-                align-items: flex-start;
+                align-items: center;
+                justify-content: center;
                 gap: 10px;
-                padding: 10px;
+                padding: 12px;
+                margin-left: 50px;
                 border-radius: 10px;
             }
             .product-image {
@@ -816,18 +827,14 @@
                 products.forEach(product => {
                     const productCard = document.createElement('div');
                     productCard.className = 'product-card';
-                    
                     const productSlug = product.productName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
                     const productUrl = `./product.html?slug=${productSlug}`;
-                    
                     productCard.innerHTML = `
                         <img src="${product.imageUrls?.[0] || 'images/placeholder.jpg'}" alt="${product.productName || 'Product'}" class="product-image">
                         <div class="product-content">
                             <h3 class="product-title"><a href="${productUrl}" style="color:inherit;text-decoration:none;">${product.productName || 'Untitled Product'}</a></h3>
                             <p class="product-description">${product.brief || 'No description available'}</p>
-                            <div class="product-rating">
-                                ★★★☆☆ <span class="rating-text">No reviews</span>
-                            </div>
+                            <div class="product-rating">★★★☆☆ <span class="rating-text">No reviews</span></div>
                             <div class="product-price">${product.price || 'Free'}<span class="price-suffix">/lifetime</span></div>
                             <div class="action-buttons">
                                 <button class="add-to-cart-btn">Add to cart</button>
@@ -838,15 +845,32 @@
                     // Make the whole card clickable
                     productCard.style.cursor = 'pointer';
                     productCard.addEventListener('click', function(e) {
-                        // Prevent navigation if a button or link is clicked
                         if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') return;
                         window.location.href = productUrl;
                     });
-                    // Also keep image click for redundancy
                     const img = productCard.querySelector('.product-image');
                     img.addEventListener('click', function(e) {
                         window.location.href = productUrl;
                         e.stopPropagation();
+                    });
+                    // Add to cart logic
+                    productCard.querySelector('.add-to-cart-btn').addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                        const exists = cart.find(item => item.productName === product.productName);
+                        if (exists) {
+                            exists.qty = (exists.qty || 1) + 1;
+                        } else {
+                            cart.push({ ...product, qty: 1 });
+                        }
+                        localStorage.setItem('cart', JSON.stringify(cart));
+                        window.location.href = 'cart.html';
+                    });
+                    // Buy now logic
+                    productCard.querySelector('.buy-now-btn').addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        localStorage.setItem('buynow', JSON.stringify(product));
+                        window.location.href = 'buynow.html';
                     });
                     productsGrid.appendChild(productCard);
                 });
