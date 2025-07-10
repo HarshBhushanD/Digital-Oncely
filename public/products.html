@@ -5,8 +5,248 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="css/theme.css">
+    <!-- theme.css removed; all styles are inlined below. -->
     <style>
+        :root {
+            --green-primary: #2DC854;
+            --green-secondary: #4CAF50;
+            --green-light: #E8F5E9;
+            --green-dark: #1B5E20;
+            --green-accent: #8BC34A;
+            --green-gradient: linear-gradient(135deg, #2DC854 0%, #4CAF50 50%, #8BC34A 100%);
+            --green-gradient-light: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 50%, #A5D6A7 100%);
+            --green-shadow: rgba(45, 200, 84, 0.15);
+            --green-border: #A5D6A7;
+            --card-bg: #fff;
+            --text-color: #1a1a1a;
+            --secondary-text: #666;
+            --primary-color: #2DC854;
+            --secondary-color: #4CAF50;
+        }
+        body {
+            background: #fff;
+            color: var(--text-color);
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 80px;
+            background: #000;
+            color: #00ff88;
+            border-bottom: 2px solid #222;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+            padding: 0;
+            max-width: 100vw;
+        }
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        .nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 80px;
+        }
+        .nav-brand {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            margin-right: 32px;
+        }
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: #222;
+            border-radius: 6px;
+            padding: 8px 16px;
+            margin-right: 32px;
+            flex: 1;
+            max-width: 500px;
+        }
+        .search-bar i {
+            color: #00ff88;
+        }
+        .search-input {
+            border: none;
+            background: none;
+            color: #fff;
+            width: 100%;
+            padding: 0 8px;
+            outline: none;
+            font-size: 1.1rem;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+        .nav-link {
+            color: #00ff88;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: color 0.2s;
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #00ff88, #00cc6a);
+            transition: width 0.3s;
+            border-radius: 2px;
+        }
+        .nav-link.active,
+        .nav-link:hover {
+            color: #fff;
+        }
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+        .mobile-controls {
+            display: none !important;
+        }
+        /* Remove any duplicate/legacy .mobile-menu CSS and make mobile menu fully independent */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 80vw;
+            max-width: 320px;
+            height: 100vh;
+            background: linear-gradient(135deg, #2DC854 0%, #4CAF50 100%);
+            box-shadow: 2px 0 20px rgba(0,0,0,0.08);
+            z-index: 3000;
+            border-right: 2px solid #222;
+            transform: translateX(-100%);
+            transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+            padding-top: 80px;
+            padding-left: 0;
+            padding-right: 0;
+            overflow-y: auto;
+        }
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+        .mobile-menu .nav-link {
+            display: block;
+            padding: 18px 24px;
+            border-bottom: 1px solid #222;
+            font-size: 1.1rem;
+            color: #fff;
+            text-align: left;
+        }
+        .mobile-menu .nav-link:last-child {
+            border-bottom: none;
+        }
+        .header, .hero-section {
+            padding: 152px 0 80px 0;
+            text-align: center;
+            background: var(--green-gradient-light);
+            border-bottom: 2px solid var(--green-border);
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before, .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--green-gradient);
+            opacity: 0.05;
+        }
+        .header .container, .hero-section .container {
+            position: relative;
+            z-index: 1;
+        }
+        .header h1, .hero-section h1 {
+            background: var(--green-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            font-weight: 800;
+        }
+        @media (max-width: 900px) {
+            .search-bar {
+                max-width: 220px;
+                margin-right: 8px;
+            }
+        }
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            .mobile-controls {
+                display: flex !important;
+                align-items: center;
+                gap: 8px;
+            }
+            .mobile-menu-btn {
+                display: block !important;
+                background: none;
+                border: none;
+                color: #00ff88;
+                font-size: 1.5rem;
+                cursor: pointer;
+                padding: 8px;
+            }
+            .container {
+                padding: 0 8px;
+                max-width: 100vw;
+            }
+            .nav-content {
+                height: 64px;
+                gap: 0;
+            }
+            .nav-brand {
+                font-size: 1.3rem;
+                margin-right: 8px;
+            }
+            .search-bar {
+                max-width: 180px;
+                margin: 0 8px 0 0;
+                padding: 4px 8px;
+            }
+            .header, .hero-section {
+                padding: 112px 0 32px 0;
+                text-align: center;
+            }
+            /* Center product cards on mobile */
+            .products-grid {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 16px;
+                margin-top: 12px;
+            }
+            .product-card {
+                max-width: 350px;
+                width: 100%;
+                margin: 0 auto;
+                flex-direction: column;
+                align-items: center;
+                gap: 16px;
+                padding: 16px;
+            }
+        }
         /* Green Color Enhancements */
         :root {
             --green-primary: #2DC854;
@@ -25,18 +265,19 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
         }
         
         body {
             line-height: 1.6;
+            margin-top: 64px !important;
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 20px;
-            margin-top: 20px;
+            padding: 8px 8px;
+            margin-top: 0 !important;
         }
         
         .header {
@@ -123,6 +364,7 @@
             gap: 24px;
             margin-top: 30px;
             justify-items: center;
+            justify-content: center;
         }
         .product-card {
             display: flex;
@@ -366,47 +608,75 @@
             position: relative;
             z-index: 1;
         }
-
+/* 
         .navbar {
-            padding: 16px 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background-color: var(--bg-color);
-            backdrop-filter: blur(10px);
-            border-bottom: 2px solid var(--green-light);
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 1000 !important;
+            height: 64px !important;
+            min-height: 0 !important;
+            padding: 0 !important;
+            line-height: 1 !important;
+            max-width: 100vw;
+            background: #000 !important;
+            box-shadow: 0 2px 12px 0 rgba(0,0,0,0.18);
         }
-
         .nav-content {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+            height: 100%;
+            gap: 16px;
         }
-
         .nav-brand {
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: var(--green-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 1.5rem !important;
+            font-weight: 800 !important;
+            color: #00ff88 !important;
+            margin-right: 18px !important;
             text-decoration: none;
         }
-
         .nav-links {
             display: flex;
-            gap: 24px;
+            gap: 18px !important;
             align-items: center;
         }
-
         .nav-link {
-            color: var(--text-color);
+            color: #00ff88 !important;
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 1.08rem;
             transition: color 0.2s;
             position: relative;
         }
-
+        .nav-link:hover {
+            color: #fff !important;
+        }
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: #181818;
+            border-radius: 8px;
+            padding: 6px 16px;
+            margin: 0 18px 0 0;
+            max-width: 320px;
+        }
+        .search-input {
+            background: none;
+            border: none;
+            color: #fff;
+            width: 100%;
+            padding: 0 8px;
+            outline: none;
+            font-size: 1rem;
+        }
+        .search-input::placeholder {
+            color: #aaa;
+        }
+        .container {
+            margin-top: 0 !important;
+        }
         .nav-link::after {
             content: '';
             position: absolute;
@@ -426,19 +696,6 @@
             width: 100%;
         }
 
-        .search-bar {
-            display: flex;
-            align-items: center;
-            background: var(--input-bg);
-            border: 2px solid var(--green-border);
-            border-radius: 8px;
-            padding: 8px 16px;
-            margin: 0 24px;
-            flex: 1;
-            max-width: 400px;
-            transition: border-color 0.2s;
-        }
-
         .search-bar:focus-within {
             border-color: var(--green-primary);
             box-shadow: 0 0 0 3px var(--green-shadow);
@@ -455,6 +712,21 @@
 
         .search-input::placeholder {
             color: var(--secondary-text);
+        } */
+        /* .navbar {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 1000 !important;
+            height: 84px !important;
+            min-height: 0 !important;
+            padding: 0 !important;
+            line-height: 1 !important;
+            max-width: 100vw;
+        } */
+        body {
+            margin-top: 64px !important;
         }
 
         .theme-toggle {
@@ -462,7 +734,7 @@
         }
 
         .mobile-menu-btn {
-            display: none;
+            display: none !important;
             background: none;
             border: none;
             color: var(--text-color);
@@ -487,7 +759,7 @@
             cursor: pointer;
         }
 
-        .mobile-menu {
+        /* .mobile-menu {
             display: none;
             position: fixed;
             top: 0px;
@@ -497,16 +769,38 @@
             padding: 0px;
             box-shadow: 0 4px 6px var(--shadow);
             z-index: 1000;
+        } */
+        .mobile-menu {
+            position: fixed;
+            top: 72px;
+            left: 0;
+            width: 50vw;
+            max-width: 320px;
+            height: 45vh;
+            background: #000;
+            box-shadow: 2px 0 20px rgba(0,0,0,0.08);
+            z-index: 1200;
+            display: none;
+            flex-direction: column;
+            gap: 0;
+            padding: 0;
+            transition: transform 0.3s, left 0.3s;
+            align-items: flex-start;
+            transform: translateX(-100%);
         }
 
         .mobile-menu.active {
-            display: block;
+            display: flex;
+            transform: translateX(0);
         }
 
         .mobile-menu .nav-link {
+            padding: 18px 32px;
+            border-bottom: 1px solid #222;
+            color: #00ff88;
+            text-align: left;
+            width: 100%;
             display: block;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border-color);
         }
 
         @media (max-width: 1200px) {
@@ -529,7 +823,7 @@
             }
 
             .mobile-menu-btn {
-                display: block;
+                display: block !important;
             }
 
             .newsletter-sidebar {
@@ -651,6 +945,14 @@
             max-width: 100vw;
             overflow-x: hidden;
         }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 80px;
+        }
     </style>
 </head>
 <body>
@@ -658,29 +960,19 @@
         <div class="container">
             <div class="nav-content">
                 <a href="index.html" class="nav-brand">Digital Oncely</a>
-                
                 <div class="search-bar">
                     <i class="fas fa-search" style="color: var(--secondary-text)"></i>
                     <input type="text" class="search-input" placeholder="Search products...">
                 </div>
-                
                 <div class="nav-links">
-                    <!-- <a href="products.html" class="nav-link">Products</a> -->
-                    <a href="addproduct.html" class="nav-link">Add Product</a>
+                    <a href="products.html" class="nav-link">Products</a>
+                    <a href="blog.html" class="nav-link">Blogs</a>
                     <a href="login.html" class="nav-link">Login</a>
-                    <a href="blog.html" class="nav-link">Blog</a>
                     <a href="addblog.html" class="nav-link">Add Blog</a>
                     <a href="cart.html" class="nav-link">Cart</a>
                     <a href="buynow.html" class="nav-link">Buy Now</a>
-                    <!-- <button class="theme-toggle" id="theme-toggle">
-                        <i class="fas fa-moon"></i>
-                    </button> -->
                 </div>
-
                 <div class="mobile-controls">
-                    <button class="theme-toggle" id="mobile-theme-toggle">
-                        <i class="fas fa-moon"></i>
-                    </button>
                     <button class="mobile-menu-btn" id="mobile-menu-btn">
                         <i class="fas fa-bars"></i>
                     </button>
@@ -688,11 +980,9 @@
             </div>
         </div>
     </nav>
-
     <div class="mobile-menu" id="mobile-menu">
-        <!-- <a href="./products.html" class="nav-link">Products</a> -->
-        <a href="./addproduct.html" class="nav-link">Add Product</a>
-        <a href="./login.html" class="nav-link">Login</a>
+        <a href="products.html" class="nav-link">Products</a>
+        <a href="login.html" class="nav-link">Login</a>
         <a href="blog.html" class="nav-link">Blog</a>
         <a href="addblog.html" class="nav-link">Add Blog</a>
         <a href="cart.html" class="nav-link">Cart</a>
@@ -700,16 +990,13 @@
     </div>
 
     <div class="container">
-        <a href="/addproduct" class="add-product-btn">+ Add New Product</a>
-        
+        <div id="user-products-message"></div>
         <div class="error-message" id="error-message">
             An error occurred while loading products. Please try again later.
         </div>
-        
         <div class="loading" id="loading">
             Loading products...
         </div>
-        
         <div class="products-main-layout">
             <div>
                 <div class="products-grid" id="products-grid"></div>
@@ -727,205 +1014,365 @@
     
     <script src="js/theme.js"></script>
     <script>
+        const token = localStorage.getItem('jwtToken');
+        if (!token) {
+            window.location.href = 'login.html';
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!token) {
+                document.getElementById('user-products-message').innerHTML = `
+                    <div style="text-align: center; padding: 20px; background: var(--card-bg); border-radius: 12px; margin: 20px 0;">
+                        <h3>Login Required</h3>
+                        <p>Please <a href='./login.html' style='color: var(--primary-color); text-decoration: underline;'>login</a> to view your products.</p>
+                    </div>
+                `;
+                document.getElementById('loading').style.display = 'none';
+                return;
+            }
+            fetchProducts();
+        });
+
+        // Check if user is authenticated (optional for viewing)
+        // const token = localStorage.getItem('jwtToken');
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const slug = urlParams.get('slug');
+
         // ENVIRONMENT SWITCH
         const IS_PRODUCTION = window.location.hostname !== 'localhost';
         const API_BASE_URL = IS_PRODUCTION
             ? 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api'
             : '/api/proxy';
 
-        document.addEventListener('DOMContentLoaded', function() {
+        // Mock server for testing without authentication
+        const USE_MOCK_SERVER = true; // Set to false to use real AWS API
+        const MOCK_SERVER_URL = '/mock-api';
+
+        // Mock data storage
+        if (!localStorage.getItem('mockProducts')) {
+            localStorage.setItem('mockProducts', JSON.stringify([
+                {
+                    productName: "Mock Product 1",
+                    brief: "This is a mock product stored locally",
+                    price: "$29",
+                    imageUrls: ["https://picsum.photos/300/200?random=1"],
+                    bestFeatures: "Feature 1\nFeature 2\nFeature 3",
+                    overview: "This is a mock product overview",
+                    founder: {
+                        name: "Mock Founder",
+                        title: "CEO",
+                        image: "https://picsum.photos/100/100?random=1",
+                        message: "This is a mock founder message"
+                    }
+                }
+            ]));
+        }
+
+        async function fetchProducts() {
             const loadingElement = document.getElementById('loading');
             const productsGrid = document.getElementById('products-grid');
             const errorMessage = document.getElementById('error-message');
             
-            async function fetchProducts() {
-                try {
-                    loadingElement.style.display = 'block';
-                    errorMessage.style.display = 'none';
+            try {
+                loadingElement.style.display = 'block';
+                errorMessage.style.display = 'none';
 
-                    // Get the JWT token from localStorage
-                    const token = localStorage.getItem('jwtToken');
-                    if (!token) {
-                        window.location.href = './login.html';
-                        return;
-                    }
+                const fetchRequestBody = {
+                    task: 'fetch',
+                    projectType: 'Product',
+                    website: 'digital-oncely'
+                };
+                const fetchOptions = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(fetchRequestBody)
+                };
+                
+                console.log('Request data:', fetchRequestBody);
+                // console.log('Token available:', !!token);
+                // if (token) {
+                //     console.log('Token length:', token.length);
+                //     console.log('Token preview:', token.substring(0, 20) + '...');
+                // }
 
-                    const fetchRequestBody = {
-                        task: 'fetch',
-                        projectType: 'Product',
-                        limit: 50,
-                        page: 1
-                    };
-
-                    let fetchOptions;
-                    if (IS_PRODUCTION) {
-                        fetchOptions = {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'text/plain',
-                                ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-                            },
-                            body: JSON.stringify(fetchRequestBody)
-                        };
-                    } else {
-                        fetchOptions = {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'text/plain',
-                                ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-                            },
-                            body: JSON.stringify({
-                                url: 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api',
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'text/plain',
-                                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-                                },
-                                body: JSON.stringify(fetchRequestBody)
-                            })
-                        };
-                    }
-
-                    const response = await fetch(API_BASE_URL, fetchOptions);
-
-                    if (response.status === 401) {
-                        // If token is invalid or expired, redirect to login
-                        // localStorage.removeItem('jwtToken');
-                        // localStorage.removeItem('userData');
-                        // window.location.href = 'http://127.0.0.1:5500/Digital-Oncely/public/login.html';
-                        // return;
-                    }
-
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.error || 'Failed to fetch products');
-                    }
-
-                    const data = await response.json();
-                    console.log('API Response:', data);
-
-                    if (!data.items || data.items.length === 0) {
-                        productsGrid.innerHTML = `
-                            <div style="text-align: center; padding: 40px; background: var(--card-bg); border-radius: 12px; margin: 20px 0;">
-                                <h2 style="margin-bottom: 16px; color: var(--text-color)">No Products Found</h2>
-                                <p style="color: var(--secondary-text); margin-bottom: 24px;">
-                                    Be the first to add a product to our marketplace!
-                                </p>
-                                <a href="/addproduct" class="btn btn-primary" style="display: inline-block; padding: 12px 24px; background: var(--primary-color); color: white; text-decoration: none; border-radius: 6px;">
-                                    Add Your First Product
-                                </a>
-                            </div>
-                        `;
-                        return;
-                    }
-
-                    displayProducts(data.items);
-                } catch (error) {
-                    console.error('Error fetching products:', error);
-                    errorMessage.textContent = error.message;
-                    errorMessage.style.display = 'block';
-                    // Remove mock products fallback
-                } finally {
-                    loadingElement.style.display = 'none';
+                let response;
+                if (IS_PRODUCTION) {
+                    response = await fetch(API_BASE_URL, fetchOptions);
+                } else {
+                    // Proxy for local dev
+                    fetchOptions.body = JSON.stringify({
+                        url: 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api',
+                        method: 'POST',
+                        headers: fetchOptions.headers,
+                        body: fetchOptions.body
+                    });
+                    response = await fetch('/api/proxy', fetchOptions);
                 }
-            }
-            
-            function displayProducts(products) {
-                productsGrid.innerHTML = '';
-                products.forEach(product => {
-                    const productCard = document.createElement('div');
-                    productCard.className = 'product-card';
-                    const productSlug = product.productName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-                    const productUrl = `./product.html?slug=${productSlug}`;
-                    productCard.innerHTML = `
-                        <img src="${product.imageUrls?.[0] || 'images/placeholder.jpg'}" alt="${product.productName || 'Product'}" class="product-image">
-                        <div class="product-content">
-                            <h3 class="product-title"><a href="${productUrl}" style="color:inherit;text-decoration:none;">${product.productName || 'Untitled Product'}</a></h3>
-                            <p class="product-description">${product.brief || 'No description available'}</p>
-                            <div class="product-rating">★★★☆☆ <span class="rating-text">No reviews</span></div>
-                            <div class="product-price">${product.price || 'Free'}<span class="price-suffix">/lifetime</span></div>
-                            <div class="action-buttons">
-                                <button class="add-to-cart-btn">Add to cart</button>
-                                <button class="buy-now-btn">Buy now</button>
+                
+                console.log('Response status:', response.status);
+                
+                // if (response.status === 401) {
+                //     // Handle authentication errors
+                //     if (token) {
+                //         // User is logged in but token is invalid/expired
+                //         localStorage.removeItem('jwtToken');
+                //         localStorage.removeItem('userData');
+                //         // Don't redirect to login, just show an error message
+                //         errorMessage.innerHTML = `
+                //             <div style="text-align: center; padding: 20px; background: var(--card-bg); border-radius: 12px; margin: 20px 0;">
+                //                 <h3>Session Expired</h3>
+                //                 <p>Your session has expired. Please <a href="./login.html" style="color: var(--primary-color); text-decoration: underline;">login again</a> to add products.</p>
+                //             </div>
+                //         `;
+                //         errorMessage.style.display = 'block';
+                //         return;
+                //     } else {
+                //         // User is not logged in - this is expected for public access
+                //         console.log('Public access - no authentication required');
+                //     }
+                // }
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to fetch products');
+                }
+
+                const data = await response.json();
+                console.log('API Response:', data);
+
+                if (!data.items || data.items.length === 0) {
+                    productsGrid.innerHTML = `
+                        <div style="text-align: center; padding: 40px; background: var(--card-bg); border-radius: 12px; margin: 20px 0;">
+                            <h2 style="margin-bottom: 16px; color: var(--text-color)">No Products Found</h2>
+                            <p style="color: var(--secondary-text); margin-bottom: 24px;">
+                                You have not added any products yet.
+                            </p>
+                            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                                <a href="./addproduct.html" class="btn btn-primary" style="display: inline-block; padding: 12px 24px; background: var(--primary-color); color: white; text-decoration: none; border-radius: 6px;">
+                                    Add a Product
+                                </a>
                             </div>
                         </div>
                     `;
-                    // Make the whole card clickable
-                    productCard.style.cursor = 'pointer';
-                    productCard.addEventListener('click', function(e) {
-                        if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') return;
-                        window.location.href = productUrl;
-                    });
-                    const img = productCard.querySelector('.product-image');
-                    img.addEventListener('click', function(e) {
-                        window.location.href = productUrl;
-                        e.stopPropagation();
-                    });
-                    // Add to cart logic
-                    productCard.querySelector('.add-to-cart-btn').addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-                        const exists = cart.find(item => item.productName === product.productName);
-                        if (exists) {
-                            exists.qty = (exists.qty || 1) + 1;
-                        } else {
-                            cart.push({ ...product, qty: 1 });
-                        }
-                        localStorage.setItem('cart', JSON.stringify(cart));
-                        window.location.href = 'cart.html';
-                    });
-                    // Buy now logic
-                    productCard.querySelector('.buy-now-btn').addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        localStorage.setItem('buynow', JSON.stringify(product));
-                        window.location.href = 'buynow.html';
-                    });
-                    productsGrid.appendChild(productCard);
-                });
+                    return;
+                }
+
+                displayProducts(data.items, productsGrid, loadingElement);
+            } catch (error) {
+                console.error('Error fetching products:', error);
                 
+                // if (error.message.includes('Authentication required') || error.message.includes('401')) {
+                //     if (!token) {
+                //         // User is not logged in - show sample products
+                //         const sampleProducts = [
+                //             {
+                //                 productName: "Sample Product 1",
+                //                 brief: "This is a sample product to demonstrate the marketplace.",
+                //                 price: "$29",
+                //                 imageUrls: ["https://picsum.photos/300/200?random=1"]
+                //             },
+                //             {
+                //                 productName: "Sample Product 2", 
+                //                 brief: "Another sample product to show the layout.",
+                //                 price: "$49",
+                //                 imageUrls: ["https://picsum.photos/300/200?random=2"]
+                //             }
+                //         ];
+                        
+                //         displayProducts(sampleProducts, productsGrid, loadingElement);
+                        
+                //         // Show login prompt
+                //         errorMessage.innerHTML = `
+                //             <div style="text-align: center; padding: 20px; background: var(--card-bg); border-radius: 12px; margin: 20px 0;">
+                //                 <h3>Login to View Real Products</h3>
+                //                 <p>You're seeing sample products. Please <a href="./login.html" style="color: var(--primary-color); text-decoration: underline;">login</a> to view and add real products!</p>
+                //             </div>
+                //         `;
+                //         errorMessage.style.display = 'block';
+                //     } else {
+                //         // User is logged in but got 401 - try alternative approach
+                //         console.log('Trying alternative API approach...');
+                //         try {
+                //             const altRequestBody = {
+                //                 task: 'data',
+                //                 operation: 'get',
+                //                 projectType: 'Product',
+                //                 website: 'digital-oncely'
+                //             };
+                            
+                //             const altResponse = await fetch(API_BASE_URL, {
+                //                 method: 'POST',
+                //                 headers: {
+                //                     'Content-Type': 'application/json',
+                //                     'Authorization': `Bearer ${token}`
+                //                 },
+                //                 body: JSON.stringify(altRequestBody)
+                //             });
+                            
+                //             if (altResponse.ok) {
+                //                 const altData = await altResponse.json();
+                //                 if (altData.items && altData.items.length > 0) {
+                //                     displayProducts(altData.items, productsGrid, loadingElement);
+                //                     return;
+                //                 }
+                //             }
+                //         } catch (altError) {
+                //             console.log('Alternative approach also failed:', altError);
+                //         }
+                        
+                //         // If all approaches fail, show session expired message
+                //         localStorage.removeItem('jwtToken');
+                //         localStorage.removeItem('userData');
+                //         errorMessage.innerHTML = `
+                //             <div style="text-align: center; padding: 20px; background: var(--card-bg); border-radius: 12px; margin: 20px 0;">
+                //                 <h3>Session Expired</h3>
+                //                 <p>Your session has expired. Please <a href="./login.html" style="color: var(--primary-color); text-decoration: underline;">login again</a> to view products.</p>
+                //             </div>
+                //         `;
+                //         errorMessage.style.display = 'block';
+                //     }
+                // } else {
+                    errorMessage.textContent = error.message;
+                    errorMessage.style.display = 'block';
+                // }
+            } finally {
                 loadingElement.style.display = 'none';
-                productsGrid.style.display = 'grid';
             }
+        }
+        
+        function displayProducts(products, productsGrid, loadingElement) {
+            productsGrid.innerHTML = '';
             
+            // Add prominent login prompt for non-authenticated users
+            // if (!token) {
+                const loginBanner = document.createElement('div');
+                loginBanner.style.cssText = `
+                    background: linear-gradient(135deg, #2DC854, #4CAF50);
+                    color: white;
+                    padding: 20px;
+                    border-radius: 12px;
+                    margin-bottom: 24px;
+                    text-align: center;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                    font-size: 1.1rem;
+                `;
+                loginBanner.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                        <div>
+                            <strong>🔐 Authentication Required</strong>
+                            <span style="margin-left: 12px; opacity: 0.9;">Please login to view and add real products to the marketplace.</span>
+                        </div>
+                        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                            <a href="./login.html" style="background: rgba(255,255,255,0.2); color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: 600;">
+                                Login Now
+                            </a>
+                            <a href="./signup.html" style="background: white; color: #2DC854; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: 600;">
+                                Create Account
+                            </a>
+                        </div>
+                    </div>
+                `;
+                productsGrid.appendChild(loginBanner);
+            // }
+            
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                const productSlug = product.productName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                const productUrl = `./product.html?slug=${productSlug}`;
+                productCard.innerHTML = `
+                    <img src="${product.imageUrls?.[0] || 'images/placeholder.jpg'}" alt="${product.productName || 'Product'}" class="product-image">
+                    <div class="product-content">
+                        <h3 class="product-title"><a href="${productUrl}" style="color:inherit;text-decoration:none;">${product.productName || 'Untitled Product'}</a></h3>
+                        <p class="product-description">${product.brief || 'No description available'}</p>
+                        <div class="product-rating">★★★☆☆ <span class="rating-text">No reviews</span></div>
+                        <div class="product-price">${product.price || 'Free'}<span class="price-suffix">/lifetime</span></div>
+                        <div class="action-buttons">
+                            <button class="add-to-cart-btn">Add to cart</button>
+                            <button class="buy-now-btn">Buy now</button>
+                        </div>
+                    </div>
+                `;
+                // Make the whole card clickable
+                productCard.style.cursor = 'pointer';
+                productCard.addEventListener('click', function(e) {
+                    if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') return;
+                    window.location.href = productUrl;
+                });
+                const img = productCard.querySelector('.product-image');
+                img.addEventListener('click', function(e) {
+                    window.location.href = productUrl;
+                    e.stopPropagation();
+                });
+                // Add to cart logic
+                productCard.querySelector('.add-to-cart-btn').addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                    const exists = cart.find(item => item.productName === product.productName);
+                    if (exists) {
+                        exists.qty = (exists.qty || 1) + 1;
+                    } else {
+                        cart.push({ ...product, qty: 1 });
+                    }
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    window.location.href = 'cart.html';
+                });
+                // Buy now logic
+                productCard.querySelector('.buy-now-btn').addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    localStorage.setItem('buynow', JSON.stringify(product));
+                    window.location.href = 'buynow.html';
+                });
+                productsGrid.appendChild(productCard);
+            });
+            
+            loadingElement.style.display = 'none';
+            productsGrid.style.display = 'grid';
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
             fetchProducts();
         });
 
-    
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
+        // Mobile menu functionality (copied from viewblog.html)
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('active');
+                });
+            }
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(e) {
+                if (mobileMenu && mobileMenu.classList.contains('active')) {
+                    if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                        mobileMenu.classList.remove('active');
+                    }
+                }
+            });
+        });
+
+        // Only add theme toggle logic if the element exists
         const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
         const desktopThemeToggle = document.getElementById('theme-toggle');
-
         function syncThemeIcons() {
             const isDark = document.body.classList.contains('dark-theme');
             const icon = isDark ? 'fa-sun' : 'fa-moon';
-            mobileThemeToggle.querySelector('i').className = `fas ${icon}`;
-            desktopThemeToggle.querySelector('i').className = `fas ${icon}`;
-        }
-
-        mobileThemeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('dark-theme');
-            syncThemeIcons();
-        });
-
-        syncThemeIcons();
-
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('active');
-            
-            const icon = mobileMenuBtn.querySelector('i');
-            icon.classList.toggle('fa-bars');
-            icon.classList.toggle('fa-times');
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
-                mobileMenu.classList.remove('active');
-                const icon = mobileMenuBtn.querySelector('i');
-                icon.classList.add('fa-bars');
-                icon.classList.remove('fa-times');
+            if (mobileThemeToggle && mobileThemeToggle.querySelector('i')) {
+                mobileThemeToggle.querySelector('i').className = `fas ${icon}`;
             }
-        });
+        }
+        if (mobileThemeToggle) {
+            mobileThemeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-theme');
+                syncThemeIcons();
+            });
+            syncThemeIcons();
+        }
     </script>
 </body>
 </html>

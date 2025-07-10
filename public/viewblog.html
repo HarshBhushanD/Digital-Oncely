@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Blog - Digital Oncely</title>
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .blog-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 32px;
+            margin-top: 150px;
+        }
+        .blog-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: var(--text-color);
+        }
+        .blog-meta {
+            color: var(--secondary-text);
+            margin-bottom: 18px;
+            font-size: 1rem;
+        }
+        .blog-content {
+            color: var(--text-color);
+            font-size: 1.15rem;
+            line-height: 1.7;
+            margin-bottom: 32px;
+        }
+        .blog-actions {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .blog-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: none;
+            cursor: pointer;
+        }
+        .blog-btn-upvote { background: #e8f5e9; color: #2DC854; }
+        .blog-btn-downvote { background: #ffebee; color: #F44336; }
+        .blog-btn-share { background: #e3f2fd; color: #1976d2; }
+        .blog-btn-upvote.active, .blog-btn-downvote.active { font-weight: bold; }
+        .comments-section {
+            margin-top: 32px;
+        }
+        .comment-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 24px 0;
+        }
+        .comment-item {
+            background: var(--input-bg);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            color: var(--text-color);
+        }
+        .comment-form textarea {
+            width: 100%;
+            min-height: 60px;
+            border-radius: 8px;
+            border: 1px solid var(--input-border);
+            padding: 10px;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+        .comment-form button {
+            background: var(--green-gradient);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 18px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        body {
+            margin-top: 0 !important;
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 80px;
+        }
+        .mobile-menu {
+            position: fixed;
+            top: 72px;
+            left: 0;
+            left: auto;
+            width: 50vw;
+            max-width: 320px;
+            height: 45vh;
+            background: var(--card-bg);
+            box-shadow: 2px 0 20px rgba(0,0,0,0.08);
+            z-index: 1200;
+            display: none;
+            flex-direction: column;
+            gap: 0;
+            padding: 0;
+            transition: transform 0.3s, left 0.3s;
+            align-items: flex-start;
+            transform: translateX(-100%);
+        }
+        .mobile-menu.active {
+            display: flex;
+            transform: translateX(0);
+        }
+        .mobile-menu .nav-link {
+            padding: 18px 32px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-color);
+            text-align: left;
+            width: 100%;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <a href="index.html" class="nav-brand">Digital Oncely</a>
+                <div class="search-bar">
+                    <i class="fas fa-search" style="color: var(--secondary-text)"></i>
+                    <input type="text" class="search-input" placeholder="Search blogs...">
+                </div>
+                <div class="nav-links">
+                    <a href="products.html" class="nav-link">Products</a>
+                    <a href="blog.html" class="nav-link">Blogs</a>
+                    <a href="login.html" class="nav-link">Login</a>
+                    <a href="addblog.html" class="nav-link">Add Blog</a>
+                    <a href="cart.html" class="nav-link">Cart</a>
+                    <a href="buynow.html" class="nav-link">Buy Now</a>
+                </div>
+                <div class="mobile-controls">
+                   
+                    <button class="mobile-menu-btn" id="mobile-menu-btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="products.html" class="nav-link">Products</a>
+        <a href="login.html" class="nav-link">Login</a>
+        <a href="blog.html" class="nav-link">Blog</a>
+        <a href="addblog.html" class="nav-link">Add Blog</a>
+        <a href="cart.html" class="nav-link">Cart</a>
+        <a href="buynow.html" class="nav-link">Buy Now</a>
+    </div>
+    <div class="blog-container" id="blog-container">
+        <!-- Blog content will be rendered here -->
+    </div>
+    <script>
+        // Mobile menu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('active');
+                });
+            }
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(e) {
+                if (mobileMenu && mobileMenu.classList.contains('active')) {
+                    if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                        mobileMenu.classList.remove('active');
+                    }
+                }
+            });
+        });
+        // Get blog id from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const blogId = urlParams.get('id');
+        const blogContainer = document.getElementById('blog-container');
+
+        async function fetchBlogById(id) {
+            const IS_PRODUCTION = window.location.hostname !== 'localhost';
+            const API_BASE_URL = IS_PRODUCTION
+                ? 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api'
+                : '/api/proxy';
+            const fetchRequestBody = {
+                task: 'fetch',
+                projectType: 'Blog',
+                website: 'digital-oncely',
+                filter: { id }
+            };
+            const token = localStorage.getItem('jwtToken');
+            if (!token) {
+                blogContainer.innerHTML = `<div style='color:var(--danger-color);text-align:center;padding:40px;'>You must be logged in to view this blog. <a href='login.html'>Login</a></div>`;
+                return;
+            }
+            try {
+                const response = await fetch(API_BASE_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(fetchRequestBody)
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to fetch blog');
+                }
+                const data = await response.json();
+                const blog = (data.items && data.items.length > 0) ? data.items[0] : null;
+                renderBlog(blog);
+            } catch (error) {
+                blogContainer.innerHTML = `<div style='text-align:center;color:var(--danger-color);font-size:1.2rem;'>Error loading blog: ${error.message}</div>`;
+            }
+        }
+
+        async function fetchComments(blogId) {
+            const IS_PRODUCTION = window.location.hostname !== 'localhost';
+            const API_BASE_URL = IS_PRODUCTION
+                ? 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api'
+                : '/api/proxy';
+            const token = localStorage.getItem('jwtToken');
+            if (!token) {
+                document.getElementById('comment-list').innerHTML = '<li class="comment-item">Login to view comments.</li>';
+                return;
+            }
+            try {
+                const response = await fetch(API_BASE_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        task: 'fetchComments',
+                        projectType: 'Blog',
+                        blogId,
+                        website: 'digital-oncely'
+                    })
+                });
+                if (!response.ok) {
+                    document.getElementById('comment-list').innerHTML = '<li class="comment-item">Failed to load comments.</li>';
+                    return;
+                }
+                const data = await response.json();
+                const comments = data.comments || [];
+                if (comments.length === 0) {
+                    document.getElementById('comment-list').innerHTML = '<li class="comment-item">No comments yet. Be the first to comment!</li>';
+                } else {
+                    document.getElementById('comment-list').innerHTML = comments.map(c => `<li class='comment-item'>${c.text || c.comment || c}</li>`).join('');
+                }
+            } catch (error) {
+                document.getElementById('comment-list').innerHTML = '<li class="comment-item">Error loading comments.</li>';
+            }
+        }
+
+        async function fetchVotes(blogId) {
+            const IS_PRODUCTION = window.location.hostname !== 'localhost';
+            const API_BASE_URL = IS_PRODUCTION
+                ? 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api'
+                : '/api/proxy';
+            const token = localStorage.getItem('jwtToken');
+            if (!token) return;
+            try {
+                const response = await fetch(API_BASE_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        task: 'fetchVotes',
+                        projectType: 'Blog',
+                        blogId,
+                        website: 'digital-oncely'
+                    })
+                });
+                if (!response.ok) return;
+                const data = await response.json();
+                document.getElementById('upvote-count').textContent = data.upvotes || 0;
+                document.getElementById('downvote-count').textContent = data.downvotes || 0;
+            } catch (error) {
+                // Ignore vote fetch errors
+            }
+        }
+
+        function renderBlog(blog) {
+            if (!blog) {
+                blogContainer.innerHTML = `<div style='text-align:center;color:var(--danger-color);font-size:1.2rem;'>Blog not found.</div>`;
+                return;
+            }
+            blogContainer.innerHTML = `
+                <div class="blog-title">${blog.title}</div>
+                <div class="blog-meta">By <b>${blog.author || 'Anonymous'}</b> &bull; ${blog.date || ''}</div>
+                <div class="blog-content">${(blog.content || '').replace(/\n/g, '<br>')}</div>
+                <div class="blog-actions">
+                    <button class="blog-btn blog-btn-share" id="share-btn"><i class="fas fa-share"></i> Share</button>
+                </div>
+            `;
+            document.getElementById('share-btn').onclick = function() {
+                navigator.clipboard.writeText(window.location.href);
+                alert('Blog link copied to clipboard!');
+            };
+        }
+
+        if (!blogId) {
+            blogContainer.innerHTML = `<div style='text-align:center;color:var(--danger-color);font-size:1.2rem;'>Blog not found.</div>`;
+        } else {
+            const token = localStorage.getItem('jwtToken');
+            if (!token) {
+                window.location.href = 'login.html';
+            }
+            fetchBlogById(blogId);
+        }
+    </script>
+</body>
+</html> 

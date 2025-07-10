@@ -207,9 +207,7 @@
             Back to Home
         </a>
 
-        <button class="theme-toggle" id="theme-toggle">
-            <i class="fas fa-moon"></i>
-        </button>
+        
 
         <div class="login-card">
             <div class="login-header">
@@ -341,13 +339,13 @@
                             'Content-Type': 'application/json',
                             'Accept': 'application/json'
                         },
-                        body: JSON.stringify({
-                            task: 'auth',
-                            action: 'login',
-                            email: email,
-                            password: password,
-                            website: 'todo-site'
-                        })
+                                                    body: JSON.stringify({
+                                task: 'auth',
+                                action: 'login',
+                                email: email,
+                                password: password,
+                                website: 'digital-oncely'
+                            })
                     });
                 } else {
                     // Proxy call in development
@@ -368,7 +366,7 @@
                                 action: 'login',
                                 email: email,
                                 password: password,
-                                website: 'todo-site'
+                                website: 'digital-oncely'
                             }
                         })
                     });

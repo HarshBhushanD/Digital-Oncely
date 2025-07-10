@@ -91,7 +91,7 @@
         }
 
         .form-input {
-            width: 95%;
+            width: 90%;
             padding: 16px 20px;
             border: 2px solid var(--border-color);
             border-radius: 12px;
@@ -316,6 +316,41 @@
                 font-size: 1rem;
             }
         }
+        .navbar {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 1000 !important;
+            height: 72px !important;
+            min-height: 0 !important;
+            padding: 0 !important;
+            line-height: 1 !important;
+            max-width: 100vw;
+        }
+        body {
+            margin-top: 72px !important;
+        }
+        /* .navbar {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 1000 !important;
+            height: 72px !important;
+            min-height: 0 !important;
+            padding: 0 !important;
+            line-height: 1 !important;
+            max-width: 100vw;
+        }
+        body {
+            margin-top: 72px !important;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 8px 8px;
+        } */
     </style>
 </head>
 <body>
@@ -343,9 +378,7 @@
                 </div>
 
                 <div class="mobile-controls">
-                    <button class="theme-toggle" id="mobile-theme-toggle">
-                        <i class="fas fa-moon"></i>
-                    </button>
+                    
                     <button class="mobile-menu-btn" id="mobile-menu-btn">
                         <i class="fas fa-bars"></i>
                     </button>
@@ -387,6 +420,13 @@
                         <i class="fas fa-user"></i> Author Name
                     </label>
                     <input type="text" id="blog-author" class="form-input" placeholder="Your name (optional)">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="blog-email">
+                        <i class="fas fa-envelope"></i> Author Email *
+                    </label>
+                    <input type="email" id="blog-email" class="form-input" placeholder="Enter your email address" required>
                 </div>
 
                 <div class="form-group">
@@ -473,6 +513,7 @@
         const form = document.getElementById('add-blog-form');
         const titleInput = document.getElementById('blog-title');
         const authorInput = document.getElementById('blog-author');
+        const emailInput = document.getElementById('blog-email');
         const contentInput = document.getElementById('blog-content');
         const characterCount = document.querySelector('.character-count .count');
         const previewToggle = document.getElementById('preview-toggle');
@@ -518,43 +559,67 @@
         });
 
         // Form submission
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', async function(e) {
             e.preventDefault();
-            
             const title = titleInput.value.trim();
             const author = authorInput.value.trim();
+            const email = emailInput.value.trim();
             const content = contentInput.value.trim();
-            
-            if (!title || !content) {
+            if (!title || !content || !email) {
                 alert('Please fill in all required fields.');
                 return;
             }
-
+            if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+                alert('Please enter a valid email address.');
+                return;
+            }
             if (content.length < 50) {
                 alert('Blog content should be at least 50 characters long.');
                 return;
             }
-
-            // Get existing blogs
-            const blogs = JSON.parse(localStorage.getItem('blogs') || '[]');
-            
-            // Add new blog at the beginning
-            blogs.unshift({
-                title,
-                author,
-                content,
-                date: new Date().toLocaleDateString(),
-                timestamp: new Date().getTime()
-            });
-            
-            // Save to localStorage
-            localStorage.setItem('blogs', JSON.stringify(blogs));
-            
-            // Show success message
-            alert('Blog post published successfully!');
-            
-            // Redirect to blog page
-            window.location.href = 'blog.html';
+            // Prepare request body for serverless API
+            const blogData = {
+                task: 'data',
+                operation: 'add',
+                projectType: 'Blog',
+                website: 'digital-oncely',
+                data: {
+                    title,
+                    author,
+                    email,
+                    content,
+                    date: new Date().toLocaleDateString(),
+                    timestamp: new Date().getTime()
+                }
+            };
+            // ENVIRONMENT SWITCH
+            const IS_PRODUCTION = window.location.hostname !== 'localhost';
+            const API_BASE_URL = IS_PRODUCTION
+                ? 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api'
+                : '/api/proxy';
+            const token = localStorage.getItem('jwtToken');
+            if (!token) {
+                alert('You must be logged in to add a blog.');
+                return;
+            }
+            try {
+                const response = await fetch(API_BASE_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(blogData)
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to add blog');
+                }
+                alert('Blog post published successfully!');
+                window.location.href = 'blog.html';
+            } catch (error) {
+                alert('Error publishing blog: ' + error.message);
+            }
         });
 
         // Auto-save draft (every 30 seconds)
@@ -562,15 +627,16 @@
         function autoSave() {
             const title = titleInput.value.trim();
             const author = authorInput.value.trim();
+            const email = emailInput.value.trim();
             const content = contentInput.value.trim();
             
             if (title || content) {
-                localStorage.setItem('blog-draft', JSON.stringify({ title, author, content }));
+                localStorage.setItem('blog-draft', JSON.stringify({ title, author, email, content }));
             }
         }
 
         // Set up auto-save
-        [titleInput, authorInput, contentInput].forEach(input => {
+        [titleInput, authorInput, emailInput, contentInput].forEach(input => {
             input.addEventListener('input', () => {
                 clearTimeout(autoSaveTimer);
                 autoSaveTimer = setTimeout(autoSave, 30000); // 30 seconds
@@ -582,6 +648,7 @@
             const draft = JSON.parse(localStorage.getItem('blog-draft') || '{}');
             if (draft.title) titleInput.value = draft.title;
             if (draft.author) authorInput.value = draft.author;
+            if (draft.email) emailInput.value = draft.email;
             if (draft.content) {
                 contentInput.value = draft.content;
                 characterCount.textContent = draft.content.length;

@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({
                     task: 'fetch',
                     action: 'subscriber_count',
-                    website: 'todo-site'
+                    website: 'digital-oncely'
                 })
             });
 
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({
                     task: 'create',
                     action: 'discount',
-                    website: 'todo-site',
+                    website: 'digital-oncely',
                     email: email,
                     discountCode: code
                 })
@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({
                     task: 'create',
                     action: 'subscriber',
-                    website: 'todo-site',
+                    website: 'digital-oncely',
                     email: email
                 })
             });

@@ -305,6 +305,22 @@
                 gap: 8px;
             }
         }
+
+        .navbar {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 1000 !important;
+            height: 72px !important;
+            min-height: 0 !important;
+            padding: 0 !important;
+            line-height: 1 !important;
+            max-width: 100vw;
+        }
+        body {
+            margin-top: 72px !important;
+        }
     </style>
 </head>
 <body>
@@ -329,9 +345,7 @@
                     </button> -->
                 </div>
                 <div class="mobile-controls">
-                    <button class="theme-toggle" id="mobile-theme-toggle">
-                        <i class="fas fa-moon"></i>
-                    </button>
+                
                     <button class="mobile-menu-btn" id="mobile-menu-btn">
                         <i class="fas fa-bars"></i>
                     </button>
@@ -419,7 +433,49 @@
 
         // Enhanced Blog Logic
         const blogList = document.getElementById('blog-list');
-        let blogs = JSON.parse(localStorage.getItem('blogs') || '[]');
+        let blogs = [];
+
+        async function fetchBlogs() {
+            const IS_PRODUCTION = window.location.hostname !== 'localhost';
+            const API_BASE_URL = IS_PRODUCTION
+                ? 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api'
+                : '/api/proxy';
+            const fetchRequestBody = {
+                task: 'fetch',
+                projectType: 'Blog',
+                website: 'digital-oncely'
+            };
+            const token = localStorage.getItem('jwtToken');
+            if (!token) {
+                window.location.href = 'login.html';
+            }
+            try {
+                const response = await fetch(API_BASE_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(fetchRequestBody)
+                });
+                if (response.status === 401) {
+                    localStorage.removeItem('jwtToken');
+                    localStorage.removeItem('userData');
+                    blogList.innerHTML = `<div style='color:var(--danger-color);text-align:center;padding:40px;'>Session expired. Please <a href='login.html'>login</a> again.</div>`;
+                    return;
+                }
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to fetch blogs');
+                }
+                const data = await response.json();
+                blogs = data.items || [];
+                renderBlogs();
+                updateStats();
+            } catch (error) {
+                blogList.innerHTML = `<div style='color:var(--danger-color);text-align:center;padding:40px;'>Error loading blogs: ${error.message}</div>`;
+            }
+        }
 
         function updateStats() {
             const totalBlogs = blogs.length;
@@ -437,7 +493,6 @@
 
         function renderBlogs() {
             blogList.innerHTML = '';
-            
             if (blogs.length === 0) {
                 blogList.innerHTML = `
                     <div class="empty-state">
@@ -452,16 +507,12 @@
                 `;
                 return;
             }
-
             blogs.forEach((blog, index) => {
                 const li = document.createElement('div');
                 li.className = 'blog-item';
-                
-                // Truncate content for preview
                 const contentPreview = blog.content.length > 200 
                     ? blog.content.substring(0, 200) + '...' 
                     : blog.content;
-
                 li.innerHTML = `
                     <div class="blog-item-title">${blog.title}</div>
                     <div class="blog-item-meta">
@@ -471,69 +522,27 @@
                         </div>
                         <div class="meta-item">
                             <i class="fas fa-calendar"></i>
-                            <span>${blog.date || new Date().toLocaleDateString()}</span>
+                            <span>${blog.date || ''}</span>
                         </div>
                         <div class="meta-item">
                             <i class="fas fa-clock"></i>
-                            <span>${Math.ceil(blog.content.length / 200)} min read</span>
+                            <span>${Math.ceil((blog.content || '').length / 200)} min read</span>
                         </div>
                     </div>
                     <div class="blog-item-content">${contentPreview}</div>
                     <div class="blog-item-actions">
-                        <a href="#" class="blog-btn blog-btn-primary" onclick="readFullBlog(${index})">
+                        <a href="viewblog.html?id=${encodeURIComponent(blog.id || blog.timestamp || index)}" class="blog-btn blog-btn-primary">
                             <i class="fas fa-book-open"></i>
                             Read More
                         </a>
-                        <button class="blog-btn blog-btn-secondary" onclick="editBlog(${index})">
-                            <i class="fas fa-edit"></i>
-                            Edit
-                        </button>
-                        <button class="blog-btn blog-btn-secondary" onclick="deleteBlog(${index})">
-                            <i class="fas fa-trash"></i>
-                            Delete
-                        </button>
                     </div>
                 `;
                 blogList.appendChild(li);
             });
         }
 
-        function readFullBlog(index) {
-            const blog = blogs[index];
-            alert(`Full Blog Post:\n\nTitle: ${blog.title}\nAuthor: ${blog.author || 'Anonymous'}\nDate: ${blog.date}\n\n${blog.content}`);
-        }
-
-        function editBlog(index) {
-            const blog = blogs[index];
-            const newTitle = prompt('Edit blog title:', blog.title);
-            const newAuthor = prompt('Edit author name:', blog.author || '');
-            const newContent = prompt('Edit blog content:', blog.content);
-            
-            if (newTitle && newContent) {
-                blogs[index] = {
-                    title: newTitle,
-                    author: newAuthor,
-                    content: newContent,
-                    date: blog.date
-                };
-                localStorage.setItem('blogs', JSON.stringify(blogs));
-                renderBlogs();
-                updateStats();
-            }
-        }
-
-        function deleteBlog(index) {
-            if (confirm('Are you sure you want to delete this blog post?')) {
-                blogs.splice(index, 1);
-                localStorage.setItem('blogs', JSON.stringify(blogs));
-                renderBlogs();
-                updateStats();
-            }
-        }
-
-        // Initialize
-        renderBlogs();
-        updateStats();
+        // Fetch blogs on page load
+        fetchBlogs();
     </script>
 </body>
 </html> 
