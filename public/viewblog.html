@@ -307,7 +307,11 @@
             }
             blogContainer.innerHTML = `
                 <div class="blog-title">${blog.title}</div>
-                <div class="blog-meta">By <b>${blog.author || 'Anonymous'}</b> &bull; ${blog.date || ''}</div>
+                <div class="blog-meta">
+                  By <b>${blog.author || 'Anonymous'}</b>
+                  ${blog.email ? `&lt;<a href="mailto:${blog.email}" style="color:var(--secondary-text);text-decoration:underline;">${blog.email}</a>&gt;` : ''}
+                  &bull; ${blog.date || ''}
+                </div>
                 <div class="blog-content">${(blog.content || '').replace(/\n/g, '<br>')}</div>
                 <div class="blog-actions">
                     <button class="blog-btn blog-btn-share" id="share-btn"><i class="fas fa-share"></i> Share</button>

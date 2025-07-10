@@ -770,7 +770,7 @@
             box-shadow: 0 4px 6px var(--shadow);
             z-index: 1000;
         } */
-        .mobile-menu {
+        /* .mobile-menu {
             position: fixed;
             top: 72px;
             left: 0;
@@ -778,6 +778,25 @@
             max-width: 320px;
             height: 45vh;
             background: #000;
+            box-shadow: 2px 0 20px rgba(0,0,0,0.08);
+            z-index: 1200;
+            display: none;
+            flex-direction: column;
+            gap: 0;
+            padding: 0;
+            transition: transform 0.3s, left 0.3s;
+            align-items: flex-start;
+            transform: translateX(-100%);
+        } */
+        .mobile-menu {
+            position: fixed;
+            top: 72px;
+            left: 0;
+            left: auto;
+            width: 50vw;
+            max-width: 320px;
+            height: 45vh;
+            background: black;
             box-shadow: 2px 0 20px rgba(0,0,0,0.08);
             z-index: 1200;
             display: none;
