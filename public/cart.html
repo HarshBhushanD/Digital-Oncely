@@ -119,6 +119,26 @@
         body {
             margin-top: 72px !important;
         }
+        .mobile-menu {
+            position: fixed;
+            top: 72px;
+            left: 0;
+            width: 50vw;
+            max-width: 320px;
+            height: 45vh;
+            background-color: var(--card-bg);
+            box-shadow: 0 4px 24px var(--green-shadow);
+            border-radius: 0 16px 16px 0;
+            z-index: 999;
+            overflow-y: auto;
+            transition: transform 0.3s ease-in-out;
+        }
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+        .mobile-menu.inactive {
+            transform: translateX(-100%);
+        }
     </style>
 </head>
 <body>
