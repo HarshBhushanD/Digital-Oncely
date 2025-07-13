@@ -241,6 +241,7 @@
         </div>
     </div>
 
+    <script src="js/theme.js"></script>
     <script>
         // ENVIRONMENT SWITCH
         const IS_PRODUCTION = window.location.hostname !== 'localhost';
@@ -248,13 +249,22 @@
             ? 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api'
             : '/api/proxy';
         
+        // Define updateThemeIcon function first
+        function updateThemeIcon(isDark) {
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeIcon = themeToggle ? themeToggle.querySelector('i') : null;
+            if (themeIcon) {
+                themeIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            }
+        }
+        
         const themeToggle = document.getElementById('theme-toggle');
-        const themeIcon = themeToggle.querySelector('i');
+        const themeIcon = themeToggle ? themeToggle.querySelector('i') : null;
         
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme) {
             document.body.classList.add(savedTheme);
-            if (savedTheme === 'dark-theme') {
+            if (savedTheme === 'dark-theme' && themeIcon) {
                 themeIcon.classList.remove('fa-moon');
                 themeIcon.classList.add('fa-sun');
             }
@@ -266,24 +276,22 @@
             }
         }
         
-        themeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('dark-theme');
-            let theme = 'light-theme';
-            if (document.body.classList.contains('dark-theme')) {
-                theme = 'dark-theme';
-                themeIcon.classList.remove('fa-moon');
-                themeIcon.classList.add('fa-sun');
-            } else {
-                themeIcon.classList.remove('fa-sun');
-                themeIcon.classList.add('fa-moon');
-            }
-            localStorage.setItem('theme', theme);
-        });
-        
-        function updateThemeIcon(isDark) {
-            themeIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+        if (themeToggle && themeIcon) {
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-theme');
+                let theme = 'light-theme';
+                if (document.body.classList.contains('dark-theme')) {
+                    theme = 'dark-theme';
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                } else {
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                }
+                localStorage.setItem('theme', theme);
+            });
         }
-
+        
         const loginForm = document.getElementById('login-form');
         const errorMessage = document.getElementById('error-message');
         const successMessage = document.getElementById('success-message');

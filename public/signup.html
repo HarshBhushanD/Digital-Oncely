@@ -497,33 +497,51 @@
         </div>
     </div>
 
+    <script src="js/theme.js"></script>
     <script>
         // Theme Toggle Functionality
         const themeToggle = document.getElementById('theme-toggle');
-        const themeIcon = themeToggle.querySelector('i');
         
-        // Check for saved theme preference
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            document.body.classList.add(savedTheme);
-            updateThemeIcon(savedTheme === 'dark-theme');
-        } else {
-            // Check system preference
-            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.body.classList.add('dark-theme');
-                updateThemeIcon(true);
+        // Only add theme toggle functionality if the element exists
+        if (themeToggle) {
+            const themeIcon = themeToggle.querySelector('i');
+            
+            // Check for saved theme preference
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.body.classList.add(savedTheme);
+                updateThemeIcon(savedTheme === 'dark-theme');
+            } else {
+                // Check system preference
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.body.classList.add('dark-theme');
+                    updateThemeIcon(true);
+                }
             }
-        }
-        
-        themeToggle.addEventListener('click', () => {
-            const isDark = document.body.classList.toggle('dark-theme');
-            document.body.classList.remove(isDark ? 'light-theme' : 'dark-theme');
-            localStorage.setItem('theme', isDark ? 'dark-theme' : 'light-theme');
-            updateThemeIcon(isDark);
-        });
-        
-        function updateThemeIcon(isDark) {
-            themeIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            
+            themeToggle.addEventListener('click', () => {
+                const isDark = document.body.classList.toggle('dark-theme');
+                document.body.classList.remove(isDark ? 'light-theme' : 'dark-theme');
+                localStorage.setItem('theme', isDark ? 'dark-theme' : 'light-theme');
+                updateThemeIcon(isDark);
+            });
+            
+            function updateThemeIcon(isDark) {
+                if (themeIcon) {
+                    themeIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+                }
+            }
+        } else {
+            // Fallback theme handling without toggle button
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.body.classList.add(savedTheme);
+            } else {
+                // Check system preference
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.body.classList.add('dark-theme');
+                }
+            }
         }
 
         // Password validation

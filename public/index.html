@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Oncely - Your Digital Product Marketplace</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- All styles are now inlined below; theme.css is not used. -->
+    <link rel="stylesheet" href="css/theme.css">
     <style>
+        /* Index page specific styles */
         :root {
             --green-primary: #2DC854;
             --green-secondary: #4CAF50;
@@ -23,109 +24,8 @@
             --primary-color: #2DC854;
             --secondary-color: #4CAF50;
         }
-        body {
-            background: #fff;
-            color: var(--text-color);
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            height: 72px;
-            background: #000;
-            color: #00ff88;
-            border-bottom: 2px solid #222;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.18);
-            padding: 0;
-            max-width: 100vw;
-        }
-        .container {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-        .nav-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 80px;
-        }
-        .nav-brand {
-            font-size: 2rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #00ff88, #00cc6a);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-decoration: none;
-            margin-right: 32px;
-        }
-        .search-bar {
-            display: flex;
-            align-items: center;
-            background: #222;
-            border-radius: 6px;
-            padding: 8px 16px;
-            margin-right: 32px;
-            flex: 1;
-            max-width: 500px;
-        }
-        .search-bar i {
-            color: #00ff88;
-        }
-        .search-input {
-            border: none;
-            background: none;
-            color: #fff;
-            width: 100%;
-            padding: 0 8px;
-            outline: none;
-            font-size: 1.1rem;
-        }
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 32px;
-        }
-        .nav-link {
-            color: #00ff88;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1.1rem;
-            transition: color 0.2s;
-            position: relative;
-        }
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, #00ff88, #00cc6a);
-            transition: width 0.3s;
-            border-radius: 2px;
-        }
-        .nav-link.active,
-        .nav-link:hover {
-            color: #fff;
-        }
-        .nav-link:hover::after,
-        .nav-link.active::after {
-            width: 100%;
-        }
-        .mobile-controls {
-            display: none;
-        }
-        .mobile-menu {
-            display: none;
-        }
         .hero-section {
-            padding: 152px 0 80px 0;
+            padding: 152px 0 72px 0;
             text-align: center;
             background: var(--green-gradient-light);
             border-bottom: 1px solid var(--green-border);
@@ -305,80 +205,6 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 20px var(--green-shadow);
         }
-        @media (max-width: 900px) {
-            .search-bar {
-                max-width: 220px;
-                margin-right: 8px;
-            }
-        }
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-            .mobile-controls {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            }
-            .mobile-menu-btn {
-                display: block;
-                background: none;
-                border: none;
-                color: #00ff88;
-                font-size: 1.5rem;
-                cursor: pointer;
-                padding: 8px;
-            }
-            .mobile-menu {
-                display: block;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 50vw;
-                max-width: 320px;
-                height: 100vh;
-                background: #000;
-                box-shadow: 2px 0 20px rgba(0,0,0,0.08);
-                z-index: 2000;
-                border-right: 2px solid #222;
-                transform: translateX(-100%);
-                transition: transform 0.3s cubic-bezier(.4,0,.2,1);
-                padding-top: 72px;
-                padding-left: 0;
-                padding-right: 0;
-                overflow-y: auto;
-            }
-            .mobile-menu.active {
-                transform: translateX(0);
-            }
-            .mobile-menu .nav-link {
-                display: block;
-                padding: 18px 24px;
-                border-bottom: 1px solid #222;
-                font-size: 1.1rem;
-                color: #00ff88;
-                text-align: left;
-            }
-            .mobile-menu .nav-link:last-child {
-                border-bottom: none;
-            }
-            .container {
-                padding: 0 8px;
-                max-width: 100vw;
-            }
-            .nav-content {
-                height: 64px;
-                gap: 0;
-            }
-            .nav-brand {
-                font-size: 1.3rem;
-                margin-right: 8px;
-            }
-            .search-bar {
-                max-width: 180px;
-                margin: 0 8px 0 0;
-                padding: 4px 8px;
-            }
             .hero-section {
                 padding: 112px 0 32px 0;
                 text-align: center;
@@ -509,43 +335,8 @@
         </div>
     </main>
 
-    <script src="/js/theme.js"></script>
+    <script src="js/theme.js"></script>
     <script>
-        // --- Mobile Menu Logic (consistent with blog.html) ---
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        
-        function openMobileMenu() {
-            mobileMenu.classList.add('active');
-            mobileMenuBtn.setAttribute('aria-expanded', 'true');
-            mobileMenu.setAttribute('aria-hidden', 'false');
-            document.body.style.overflow = 'hidden';
-        }
-        function closeMobileMenu() {
-            mobileMenu.classList.remove('active');
-            mobileMenuBtn.setAttribute('aria-expanded', 'false');
-            mobileMenu.setAttribute('aria-hidden', 'true');
-            document.body.style.overflow = '';
-        }
-        mobileMenuBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (mobileMenu.classList.contains('active')) {
-                closeMobileMenu();
-            } else {
-                openMobileMenu();
-            }
-        });
-        // Close menu on outside click
-        document.addEventListener('click', (e) => {
-            if (mobileMenu.classList.contains('active') && !mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-                closeMobileMenu();
-            }
-        });
-        // Close menu on link click
-        mobileMenu.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', closeMobileMenu);
-        });
-        // --- End Mobile Menu Logic ---
        
         const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
         const desktopThemeToggle = document.getElementById('theme-toggle');
@@ -554,15 +345,17 @@
         function syncThemeIcons() {
             const isDark = document.body.classList.contains('dark-theme');
             const icon = isDark ? 'fa-sun' : 'fa-moon';
-            if (mobileThemeToggle) {
+            if (mobileThemeToggle && mobileThemeToggle.querySelector('i')) {
                 mobileThemeToggle.querySelector('i').className = `fas ${icon}`;
             }
         }
 
-        mobileThemeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('dark-theme');
-            syncThemeIcons();
-        });
+        if (mobileThemeToggle) {
+            mobileThemeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-theme');
+                syncThemeIcons();
+            });
+        }
 
         syncThemeIcons();
 
@@ -586,14 +379,12 @@
                     },
                     body: JSON.stringify({
                         task: 'fetch',
-                        projectType: 'Product',
+                        projectType: 'Product', // Use existing collection for now
                         website: 'digital-oncely',
-                        shared: true,
-                        global: true,
-                        allUsers: true,
-                        includeAll: true,
-                        bypassUserFilter: true,
-                        publicAccess: true
+                        // Add global indicators for future backend support
+                        globalCollection: true,
+                        publicAccess: true,
+                        accessibleByAll: true
                     })
                 });
 
@@ -613,15 +404,17 @@
 
                 const data = await response.json();
                 const productGrid = document.getElementById('product-grid');
-                console.log('Fetched products:', data.items);
-                if (data.items && data.items.length > 0) {
-                    productGrid.innerHTML = data.items.map(product => `
-                        <div class="product-card" onclick="navigateToProduct('${product.slug}')">
-                            <img src="${product.imageUrls[0]}" alt="${product.productName}" class="product-image">
+                const products = data.products || data.items || [];
+                console.log('Fetched products:', products);
+                if (products && products.length > 0) {
+                    productGrid.innerHTML = products.map(product => `
+                        <div class="product-card" onclick="navigateToProduct('${product.id || product.productId || product.productName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}')">
+                            <img src="${product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls[0] : '/images/placeholder.svg'}" alt="${product.productName}" class="product-image">
                             <div class="product-info">
                                 <h3 class="product-title">${product.productName}</h3>
-                                <p class="product-description">${product.brief}</p>
-                                <p class="product-price">${product.price}</p>
+                                <p class="product-description">${product.brief || 'No description available'}</p>
+                                <p class="product-price">${product.price || 'Price not set'}</p>
+                                ${product.createdBy ? `<p class="product-author" style="font-size: 0.9em; color: var(--secondary-text); margin-top: 8px;">by ${product.createdBy}</p>` : ''}
                             </div>
                         </div>
                     `).join('');
@@ -669,6 +462,10 @@
             }
         }
         
+        function navigateToProduct(productId) {
+            window.location.href = `product.html?id=${productId}`;
+        }
+
         // Call loadProducts when the page loads
         document.addEventListener('DOMContentLoaded', loadProducts);
     </script>
