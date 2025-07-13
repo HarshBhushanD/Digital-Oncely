@@ -1059,7 +1059,7 @@
                         qa: qaData,
                         reviews: reviewsData,
                         // Store creator information for attribution
-                        createdBy: localStorage.getItem('userEmail') || 'anonymous',
+                        createdBy: 'anonymous', // Will be set by backend based on authenticated user
                         createdAt: Date.now(),
                         // Generate a unique ID for global access
                         productId: 'prod_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),

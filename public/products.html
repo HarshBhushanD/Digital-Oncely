@@ -521,36 +521,9 @@
             ? 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api'
             : '/api/proxy';
         
-        // Helper function to get user email
-        function getUserEmail() {
-            // Try multiple sources for user email
-            const userEmail = localStorage.getItem('userEmail');
-            const userData = localStorage.getItem('userData');
-            
-            if (userEmail) {
-                return userEmail;
-            }
-            
-            if (userData) {
-                try {
-                    const parsed = JSON.parse(userData);
-                    return parsed.email || parsed.userEmail || null;
-                } catch (e) {
-                    console.log('Error parsing userData:', e);
-                }
-            }
-            
-            // Try to extract from JWT token (basic decode)
-            const token = localStorage.getItem('jwtToken');
-            if (token) {
-                try {
-                    const payload = JSON.parse(atob(token.split('.')[1]));
-                    return payload.email || payload.userEmail || null;
-                } catch (e) {
-                    console.log('Error decoding JWT:', e);
-                }
-            }
-            
+        // Helper function to get user email from API
+        async function getUserEmail() {
+            // For now, return null - ownership will be determined by backend
             return null;
         }
         
@@ -970,21 +943,17 @@
                 return;
             }
             
-            const currentUserEmail = getUserEmail();
-            
             products.forEach(product => {
                 const productCard = document.createElement('div');
                 productCard.className = 'product-card';
                 
-                // Determine if this is the current user's product
-                const isMyProduct = product.createdBy === currentUserEmail || product.userEmail === currentUserEmail;
+                // Show all products - ownership determined by backend
                 const createdBy = product.createdBy || product.userEmail || 'Unknown';
                 
                 productCard.innerHTML = `
                     <div class="product-image">
                         <img src="${product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls[0] : 'images/placeholder.svg'}" alt="${product.productName || product.name}" onerror="this.src='images/placeholder.svg'" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
-                        ${!isMyProduct ? `<div class="shared-badge">By ${createdBy}</div>` : ''}
-                        ${isMyProduct ? `<div class="my-product-badge">My Product</div>` : ''}
+                        <div class="shared-badge">By ${createdBy}</div>
                     </div>
                     <div class="product-content">
                         <h3 class="product-title">${product.productName || product.name}</h3>
@@ -992,7 +961,6 @@
                         <div class="product-price">${product.price || '$0.00'}</div>
                         <div class="product-actions">
                             <button class="btn btn-primary" onclick="viewProduct('${product.productId || product.id || product._id}')">View Details</button>
-                            ${isMyProduct ? `<button class="btn btn-secondary" onclick="editProduct('${product.productId || product.id || product._id}')">Edit</button>` : ''}
                         </div>
                     </div>
                 `;
@@ -1006,49 +974,10 @@
         // API-only viewProduct function
         async function viewProduct(productId) {
             try {
-                // Try to fetch the specific product from API
-                const token = localStorage.getItem('jwtToken');
-                const response = await fetch(API_BASE_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                        task: 'fetch',
-                        projectType: 'Product',
-                        website: 'digital-oncely',
-                        id: productId,
-                        globalAccess: true,
-                        includeAll: true
-                    })
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    const product = data.product || data.items?.find(p => (p.productId || p.id) === productId);
-                    
-                    if (product) {
-                        // Store product data for the product detail page
-                        localStorage.setItem('selectedProduct', JSON.stringify(product));
-                        window.location.href = `product.html?id=${productId}`;
-                        return;
-                    }
-                }
-                
-                // If not found via API, try to find in current products list
-                const allProducts = await fetchAllProducts();
-                const product = allProducts.find(p => (p.productId || p.id) === productId);
-                
-                if (product) {
-                    localStorage.setItem('selectedProduct', JSON.stringify(product));
-                    window.location.href = `product.html?id=${productId}`;
-                } else {
-                    alert('Product not found');
-                }
-                
+                // Navigate directly to product page - let it fetch from API
+                window.location.href = `product.html?id=${productId}`;
             } catch (error) {
-                console.error('Error fetching product:', error);
+                console.error('Error navigating to product:', error);
                 alert('Error loading product details');
             }
         }
@@ -1056,40 +985,10 @@
         // API-only editProduct function
         async function editProduct(productId) {
             try {
-                const currentUserEmail = getUserEmail();
-                
-                // Try to fetch the specific product
-                const token = localStorage.getItem('jwtToken');
-                const response = await fetch(API_BASE_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                        task: 'fetch',
-                        projectType: 'Product',
-                        website: 'digital-oncely',
-                        id: productId
-                    })
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    const product = data.product || data.items?.find(p => (p.productId || p.id) === productId);
-                    
-                    if (product && (product.createdBy === currentUserEmail || product.userEmail === currentUserEmail)) {
-                        localStorage.setItem('editProduct', JSON.stringify(product));
-                        window.location.href = `addproduct.html?edit=${productId}`;
-                    } else {
-                        alert('You can only edit your own products');
-                    }
-                } else {
-                    alert('Product not found');
-                }
-                
+                // Navigate directly to edit page - let it fetch from API
+                window.location.href = `addproduct.html?edit=${productId}`;
             } catch (error) {
-                console.error('Error fetching product for edit:', error);
+                console.error('Error navigating to edit product:', error);
                 alert('Error loading product for editing');
             }
         }

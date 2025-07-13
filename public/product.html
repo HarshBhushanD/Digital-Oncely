@@ -896,22 +896,8 @@
 
             async function fetchProductData() {
                 try {
-                    // First, check if product is in localStorage (from viewProduct function)
-                    const selectedProduct = localStorage.getItem('selectedProduct');
-                    if (selectedProduct) {
-                        const product = JSON.parse(selectedProduct);
-                        console.log('Found product in localStorage:', product);
-                        
-                        // Check if this is the correct product
-                        if (product.productId === productId || product.id === productId) {
-                            console.log('Displaying product from localStorage');
-                            displayProductData(product);
-                            return;
-                        }
-                    }
-                    
-                    // If not found in localStorage, try API with global access
-                    console.log('Product not found in localStorage, trying API with global access...');
+                    // Always fetch from API
+                    console.log('Fetching product from API...');
                     
                     const fetchRequestBody = {
                         task: 'fetch',
