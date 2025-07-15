@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="css/theme.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* View Blog page specific styles */
         .blog-container {
             max-width: 800px;
             margin: 40px auto;
@@ -125,7 +124,8 @@
                 <div class="nav-links">
                     <a href="products.html" class="nav-link">Products</a>
                     <a href="addproduct.html" class="nav-link">Add Product</a>
-                    <a href="login.html" class="nav-link">Login</a>
+                    <a href="login.html" class="nav-link" id="login-link">Login</a>
+                    <a href="#" class="nav-link" id="logout-link" style="display:none;">Logout</a>
                     <a href="blog.html" class="nav-link">Blog</a>
                     <a href="addblog.html" class="nav-link">Add Blog</a>
                     <a href="cart.html" class="nav-link">Cart</a>
@@ -142,27 +142,23 @@
     <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
         <a href="products.html" class="nav-link">Products</a>
         <a href="addproduct.html" class="nav-link">Add Product</a>
-        <a href="login.html" class="nav-link">Login</a>
+        <a href="login.html" class="nav-link" id="mobile-login-link">Login</a>
+        <a href="#" class="nav-link" id="mobile-logout-link" style="display:none;">Logout</a>
         <a href="blog.html" class="nav-link">Blog</a>
         <a href="addblog.html" class="nav-link">Add Blog</a>
         <a href="cart.html" class="nav-link">Cart</a>
         <a href="buynow.html" class="nav-link">Buy Now</a>
     </div>
     <div class="blog-container" id="blog-container">
-        <!-- Blog content will be rendered here -->
     </div>
     <script src="js/theme.js"></script>
     <script>
-        // Get blog id from URL
         const urlParams = new URLSearchParams(window.location.search);
         const blogId = urlParams.get('id');
         const blogContainer = document.getElementById('blog-container');
 
         async function fetchBlogById(id) {
-            const IS_PRODUCTION = window.location.hostname !== 'localhost';
-            const API_BASE_URL = IS_PRODUCTION
-                ? 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api'
-                : '/api/proxy';
+            const API_BASE_URL = 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api';
             const fetchRequestBody = {
                 task: 'fetch',
                 projectType: 'Blog',
@@ -196,10 +192,7 @@
         }
 
         async function fetchComments(blogId) {
-            const IS_PRODUCTION = window.location.hostname !== 'localhost';
-            const API_BASE_URL = IS_PRODUCTION
-                ? 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api'
-                : '/api/proxy';
+            const API_BASE_URL = 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api';
             const token = localStorage.getItem('jwtToken');
             if (!token) {
                 document.getElementById('comment-list').innerHTML = '<li class="comment-item">Login to view comments.</li>';
@@ -236,10 +229,7 @@
         }
 
         async function fetchVotes(blogId) {
-            const IS_PRODUCTION = window.location.hostname !== 'localhost';
-            const API_BASE_URL = IS_PRODUCTION
-                ? 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api'
-                : '/api/proxy';
+            const API_BASE_URL = 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api';
             const token = localStorage.getItem('jwtToken');
             if (!token) return;
             try {
@@ -261,7 +251,6 @@
                 document.getElementById('upvote-count').textContent = data.upvotes || 0;
                 document.getElementById('downvote-count').textContent = data.downvotes || 0;
             } catch (error) {
-                // Ignore vote fetch errors
             }
         }
 
@@ -297,6 +286,37 @@
             }
             fetchBlogById(blogId);
         }
+
+        function updateAuthLinks() {
+            const token = localStorage.getItem('jwtToken');
+            const loginLink = document.getElementById('login-link');
+            const logoutLink = document.getElementById('logout-link');
+            const mobileLoginLink = document.getElementById('mobile-login-link');
+            const mobileLogoutLink = document.getElementById('mobile-logout-link');
+            if (token) {
+                if (loginLink) loginLink.style.display = 'none';
+                if (logoutLink) logoutLink.style.display = '';
+                if (mobileLoginLink) mobileLoginLink.style.display = 'none';
+                if (mobileLogoutLink) mobileLogoutLink.style.display = '';
+            } else {
+                if (loginLink) loginLink.style.display = '';
+                if (logoutLink) logoutLink.style.display = 'none';
+                if (mobileLoginLink) mobileLoginLink.style.display = '';
+                if (mobileLogoutLink) mobileLogoutLink.style.display = 'none';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAuthLinks();
+            const logoutLink = document.getElementById('logout-link');
+            const mobileLogoutLink = document.getElementById('mobile-logout-link');
+            function doLogout(e) {
+                e.preventDefault();
+                localStorage.removeItem('jwtToken');
+                location.reload();
+            }
+            if (logoutLink) logoutLink.addEventListener('click', doLogout);
+            if (mobileLogoutLink) mobileLogoutLink.addEventListener('click', doLogout);
+        });
     </script>
 </body>
 </html> 

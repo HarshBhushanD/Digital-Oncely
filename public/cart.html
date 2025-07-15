@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/theme.css">
     <style>
-        /* Cart page specific styles */
         :root {
             --green-primary: #2DC854;
             --green-secondary: #4CAF50;
@@ -69,7 +68,6 @@
     </style>
 </head>
 <body>
-    <!-- Navbar (reuse from other pages) -->
     <nav class="navbar">
         <div class="container">
             <div class="nav-content">
@@ -81,7 +79,8 @@
                 <div class="nav-links">
                     <a href="products.html" class="nav-link">Products</a>
                     <a href="addproduct.html" class="nav-link">Add Product</a>
-                    <a href="login.html" class="nav-link">Login</a>
+                    <a href="login.html" class="nav-link" id="login-link">Login</a>
+                    <a href="#" class="nav-link" id="logout-link" style="display:none;">Logout</a>
                     <a href="blog.html" class="nav-link">Blog</a>
                     <a href="addblog.html" class="nav-link">Add Blog</a>
                     <a href="cart.html" class="nav-link">Cart</a>
@@ -98,7 +97,8 @@
     <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
         <a href="products.html" class="nav-link">Products</a>
         <a href="addproduct.html" class="nav-link">Add Product</a>
-        <a href="login.html" class="nav-link">Login</a>
+        <a href="login.html" class="nav-link" id="mobile-login-link">Login</a>
+        <a href="#" class="nav-link" id="mobile-logout-link" style="display:none;">Logout</a>
         <a href="blog.html" class="nav-link">Blog</a>
         <a href="addblog.html" class="nav-link">Add Blog</a>
         <a href="cart.html" class="nav-link">Cart</a>
@@ -107,7 +107,6 @@
     <div class="cart-container">
         <div class="cart-title"><i class="fas fa-shopping-cart"></i> Your Cart</div>
         <ul class="cart-list" id="cart-list">
-            <!-- Cart items will be rendered here -->
         </ul>
         <div class="cart-total" id="cart-total">Total: $0.00</div>
         <button class="checkout-btn" id="checkout-btn">Proceed to Checkout</button>
@@ -115,7 +114,6 @@
     <script src="js/theme.js"></script>
     <script>
 
-        // Cart logic: read from localStorage
         const cartList = document.getElementById('cart-list');
         const cartTotal = document.getElementById('cart-total');
         let cart = JSON.parse(localStorage.getItem('cart') || '[]');
@@ -128,7 +126,6 @@
                 return;
             }
             cart.forEach(item => {
-                // Remove any $ sign and parse as float
                 let price = parseFloat((item.price + '').replace(/[^0-9.]/g, '')) || 0;
                 total += price * (item.qty || 1);
                 const li = document.createElement('li');
@@ -161,6 +158,37 @@
             renderCart();
         };
         renderCart();
+
+        function updateAuthLinks() {
+            const token = localStorage.getItem('jwtToken');
+            const loginLink = document.getElementById('login-link');
+            const logoutLink = document.getElementById('logout-link');
+            const mobileLoginLink = document.getElementById('mobile-login-link');
+            const mobileLogoutLink = document.getElementById('mobile-logout-link');
+            if (token) {
+                if (loginLink) loginLink.style.display = 'none';
+                if (logoutLink) logoutLink.style.display = '';
+                if (mobileLoginLink) mobileLoginLink.style.display = 'none';
+                if (mobileLogoutLink) mobileLogoutLink.style.display = '';
+            } else {
+                if (loginLink) loginLink.style.display = '';
+                if (logoutLink) logoutLink.style.display = 'none';
+                if (mobileLoginLink) mobileLoginLink.style.display = '';
+                if (mobileLogoutLink) mobileLogoutLink.style.display = 'none';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAuthLinks();
+            const logoutLink = document.getElementById('logout-link');
+            const mobileLogoutLink = document.getElementById('mobile-logout-link');
+            function doLogout(e) {
+                e.preventDefault();
+                localStorage.removeItem('jwtToken');
+                location.reload();
+            }
+            if (logoutLink) logoutLink.addEventListener('click', doLogout);
+            if (mobileLogoutLink) mobileLogoutLink.addEventListener('click', doLogout);
+        });
     </script>
 </body>
 </html> 

@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="css/theme.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
-        /* Product page specific styles */
         :root {
             --green-primary: #2DC854;
             --green-secondary: #4CAF50;
@@ -294,7 +293,6 @@
             }
         }
         
-        /* Section Headers */
         .main-content h2 {
             font-size: 2rem;
             font-weight: 800;
@@ -315,7 +313,6 @@
             background: var(--green-gradient);
         }
         
-        /* Brief Section */
         .main-content > div:first-of-type {
             font-size: 1.18rem;
             line-height: 1.6;
@@ -327,7 +324,6 @@
             border: 2px solid var(--green-border);
         }
         
-        /* Features Section */
         .main-content ul {
             padding-left: 0;
             list-style: none;
@@ -349,7 +345,6 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         
-        /* TL;DR Section */
         .main-content > div:nth-of-type(3) {
             background: var(--green-gradient-light);
             padding: 32px;
@@ -403,7 +398,6 @@
             font-size: 1rem;
         }
         
-        /* Overview Section */
         .overview-para {
             font-size: 1.1rem;
             line-height: 1.7;
@@ -412,7 +406,6 @@
             text-align: justify;
         }
         
-        /* Plans Section */
         .plans-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -463,7 +456,6 @@
             border-bottom: none;
         }
         
-        /* Founders Section */
         .main-content > div:nth-of-type(6) {
             background: var(--green-gradient-light);
             padding: 32px;
@@ -598,7 +590,6 @@
             margin-bottom: 16px;
         }
         
-        /* Q&A Section */
         .qa-list {
             margin-top: 24px;
         }
@@ -633,7 +624,6 @@
             color: var(--text-color);
         }
         
-        /* Reviews Section */
         .reviews-summary {
             background: var(--green-gradient-light);
             padding: 24px;
@@ -785,7 +775,8 @@
                 <div class="nav-links">
                     <a href="products.html" class="nav-link">Products</a>
                     <a href="addproduct.html" class="nav-link">Add Product</a>
-                    <a href="login.html" class="nav-link">Login</a>
+                    <a href="login.html" class="nav-link" id="login-link">Login</a>
+                    <a href="#" class="nav-link" id="logout-link" style="display:none;">Logout</a>
                     <a href="blog.html" class="nav-link">Blog</a>
                     <a href="addblog.html" class="nav-link">Add Blog</a>
                     <a href="cart.html" class="nav-link">Cart</a>
@@ -802,7 +793,8 @@
     <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
         <a href="products.html" class="nav-link">Products</a>
         <a href="addproduct.html" class="nav-link">Add Product</a>
-        <a href="login.html" class="nav-link">Login</a>
+        <a href="login.html" class="nav-link" id="mobile-login-link">Login</a>
+        <a href="#" class="nav-link" id="mobile-logout-link" style="display:none;">Logout</a>
         <a href="blog.html" class="nav-link">Blog</a>
         <a href="addblog.html" class="nav-link">Add Blog</a>
         <a href="cart.html" class="nav-link">Cart</a>
@@ -865,8 +857,37 @@
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
 
-        // Mobile menu functionality (match products page)
+        function updateAuthLinks() {
+            const token = localStorage.getItem('jwtToken');
+            const loginLink = document.getElementById('login-link');
+            const logoutLink = document.getElementById('logout-link');
+            const mobileLoginLink = document.getElementById('mobile-login-link');
+            const mobileLogoutLink = document.getElementById('mobile-logout-link');
+            if (token) {
+                if (loginLink) loginLink.style.display = 'none';
+                if (logoutLink) logoutLink.style.display = '';
+                if (mobileLoginLink) mobileLoginLink.style.display = 'none';
+                if (mobileLogoutLink) mobileLogoutLink.style.display = '';
+            } else {
+                if (loginLink) loginLink.style.display = '';
+                if (logoutLink) logoutLink.style.display = 'none';
+                if (mobileLoginLink) mobileLoginLink.style.display = '';
+                if (mobileLogoutLink) mobileLogoutLink.style.display = 'none';
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
+            updateAuthLinks();
+            const logoutLink = document.getElementById('logout-link');
+            const mobileLogoutLink = document.getElementById('mobile-logout-link');
+            function doLogout(e) {
+                e.preventDefault();
+                localStorage.removeItem('jwtToken');
+                location.reload();
+            }
+            if (logoutLink) logoutLink.addEventListener('click', doLogout);
+            if (mobileLogoutLink) mobileLogoutLink.addEventListener('click', doLogout);
+
             const loadingElement = document.getElementById('loading');
             const productLayout = document.getElementById('product-layout');
             const errorMessage = document.getElementById('error-message');
@@ -876,7 +897,6 @@
                 window.location.href = 'login.html';
             }
 
-            // Get product ID from URL
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('id') || urlParams.get('slug');
         
@@ -888,26 +908,25 @@
             
             console.log('Product ID:', productId);
 
-            // ENVIRONMENT SWITCH
             const IS_PRODUCTION = window.location.hostname !== 'localhost';
-            const API_BASE_URL = IS_PRODUCTION
-                ? 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api'
-                : '/api/proxy';
+            const API_BASE_URL = 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api';
 
             async function fetchProductData() {
                 try {
-                    // Always fetch from API
                     console.log('Fetching product from API...');
                     
                     const fetchRequestBody = {
                         task: 'fetch',
-                        projectType: 'Product', // Use existing collection for now
+                        projectType: 'Product',
                         website: 'digital-oncely',
                         id: productId,
-                        // Add global indicators for future backend support
                         globalCollection: true,
                         publicAccess: true,
-                        accessibleByAll: true
+                        accessibleByAll: true,
+                        noUserFilter: true,
+                        ignoreUserFilter: true,
+                        includeAll: true,
+                        fetchAll: true
                     };
                     
                     console.log('Request data:', fetchRequestBody);
@@ -924,12 +943,9 @@
                     console.log('Response status:', response.status);
                     
                     if (response.status === 401) {
-                        // Handle authentication errors
                         if (token) {
-                            // User is logged in but token is invalid/expired
                             localStorage.removeItem('jwtToken');
                             localStorage.removeItem('userData');
-                            // Don't redirect to login, just show an error message
                             errorMessage.innerHTML = `
                                 <div style="text-align: center; padding: 40px; background: var(--card-bg); border-radius: 12px; margin: 20px 0;">
                                     <h2 style="margin-bottom: 16px; color: var(--text-color)">Session Expired</h2>
@@ -949,7 +965,6 @@
                             errorMessage.style.display = 'block';
                             return;
                         } else {
-                            // User is not logged in - this is expected for public access
                             console.log('Public access - no authentication required');
                         }
                     }
@@ -962,14 +977,23 @@
                     
                     const data = await response.json();
                     console.log('API Response:', data);
+                    console.log('Looking for product ID:', productId);
                     
                     if (!data.product && !data.items || (data.items && data.items.length === 0)) {
+                        console.log('No products in response');
                         throw new Error('No products found');
                     }
                     
-                    const product = data.product || data.items.find(p => p.id === productId || p.productId === productId);
+                    console.log('Available products:', data.items || data.products || []);
+                    
+                    const product = data.product || data.items.find(p => {
+                        const matches = p.id === productId || p.productId === productId || p._id === productId;
+                        console.log(`Checking product ${p.productName || p.name}: id=${p.id}, productId=${p.productId}, _id=${p._id}, matches=${matches}`);
+                        return matches;
+                    });
                     
                     if (!product) {
+                        console.log('Product not found in response');
                         throw new Error('Product not found');
                     }
                     
@@ -984,7 +1008,6 @@
                     errorMessage.textContent = error.message;
                     
                     if (error.message.includes('Authentication required') || error.message.includes('401')) {
-                        // Show a message but don't redirect for viewing
                         errorMessage.innerHTML = `
                             <div style="text-align: center; padding: 40px; background: var(--card-bg); border-radius: 12px; margin: 20px 0;">
                                 <h2 style="margin-bottom: 16px; color: var(--text-color)">Product Not Found</h2>
@@ -1002,7 +1025,6 @@
                             </div>
                         `;
                     } else if (error.message.includes('login')) {
-                        // Don't redirect, just show a message
                         errorMessage.innerHTML = `
                             <div style="text-align: center; padding: 40px; background: var(--card-bg); border-radius: 12px; margin: 20px 0;">
                                 <h2 style="margin-bottom: 16px; color: var(--text-color)">Product Not Found</h2>
@@ -1290,7 +1312,6 @@
             
             fetchProductData();
         });
-        // Close mobile menu when clicking outside
         document.addEventListener('DOMContentLoaded', function() {
             const mobileMenuBtn = document.getElementById('mobile-menu-btn');
             const mobileMenu = document.getElementById('mobile-menu');

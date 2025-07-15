@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/theme.css">
     <style>
-        /* Blog page specific styles */
         .blog-hero {
             background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
             padding: 60px 20px;
@@ -319,7 +318,8 @@
                 <div class="nav-links">
                     <a href="products.html" class="nav-link">Products</a>
                     <a href="addproduct.html" class="nav-link">Add Product</a>
-                    <a href="login.html" class="nav-link">Login</a>
+                    <a href="login.html" class="nav-link" id="login-link">Login</a>
+                    <a href="#" class="nav-link" id="logout-link" style="display:none;">Logout</a>
                     <a href="blog.html" class="nav-link">Blog</a>
                     <a href="addblog.html" class="nav-link">Add Blog</a>
                     <a href="cart.html" class="nav-link">Cart</a>
@@ -336,7 +336,8 @@
     <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
         <a href="products.html" class="nav-link">Products</a>
         <a href="addproduct.html" class="nav-link">Add Product</a>
-        <a href="login.html" class="nav-link">Login</a>
+        <a href="login.html" class="nav-link" id="mobile-login-link">Login</a>
+        <a href="#" class="nav-link" id="mobile-logout-link" style="display:none;">Logout</a>
         <a href="blog.html" class="nav-link">Blog</a>
         <a href="addblog.html" class="nav-link">Add Blog</a>
         <a href="cart.html" class="nav-link">Cart</a>
@@ -365,7 +366,6 @@
         </div>
 
         <div class="blog-list" id="blog-list">
-            <!-- Blog items will be rendered here -->
         </div>
 
         <div class="add-blog-section">
@@ -387,9 +387,7 @@
 
         async function fetchBlogs() {
             const IS_PRODUCTION = window.location.hostname !== 'localhost';
-            const API_BASE_URL = IS_PRODUCTION
-                ? 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api'
-                : '/api/proxy';
+            const API_BASE_URL = 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api';
             const fetchRequestBody = {
                 task: 'fetch',
                 projectType: 'Blog',
@@ -490,9 +488,38 @@
                 blogList.appendChild(li);
             });
         }
-
-        // Fetch blogs on page load
         fetchBlogs();
+
+        function updateAuthLinks() {
+            const token = localStorage.getItem('jwtToken');
+            const loginLink = document.getElementById('login-link');
+            const logoutLink = document.getElementById('logout-link');
+            const mobileLoginLink = document.getElementById('mobile-login-link');
+            const mobileLogoutLink = document.getElementById('mobile-logout-link');
+            if (token) {
+                if (loginLink) loginLink.style.display = 'none';
+                if (logoutLink) logoutLink.style.display = '';
+                if (mobileLoginLink) mobileLoginLink.style.display = 'none';
+                if (mobileLogoutLink) mobileLogoutLink.style.display = '';
+            } else {
+                if (loginLink) loginLink.style.display = '';
+                if (logoutLink) logoutLink.style.display = 'none';
+                if (mobileLoginLink) mobileLoginLink.style.display = '';
+                if (mobileLogoutLink) mobileLogoutLink.style.display = 'none';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAuthLinks();
+            const logoutLink = document.getElementById('logout-link');
+            const mobileLogoutLink = document.getElementById('mobile-logout-link');
+            function doLogout(e) {
+                e.preventDefault();
+                localStorage.removeItem('jwtToken');
+                location.reload();
+            }
+            if (logoutLink) logoutLink.addEventListener('click', doLogout);
+            if (mobileLogoutLink) mobileLogoutLink.addEventListener('click', doLogout);
+        });
     </script>
 </body>
 </html> 

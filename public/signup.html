@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="css/theme.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Green Color Enhancements */
         :root {
             --green-primary: #2DC854;
             --green-secondary: #4CAF50;
@@ -325,7 +324,6 @@
             color: var(--danger-color);
         }
 
-        /* Spinner animation */
         .spinner {
             display: inline-block;
             width: 18px;
@@ -341,13 +339,11 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Floating animation for card */
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-10px); }
         }
 
-        /* Responsive design */
         @media (max-width: 480px) {
             .signup-container {
                 padding: 8px;
@@ -402,7 +398,6 @@
             }
         }
 
-        /* Enhanced focus states for accessibility */
         .form-control:focus,
         .btn-signup:focus,
         .theme-toggle:focus,
@@ -411,14 +406,12 @@
             outline-offset: 2px;
         }
 
-        /* Loading state */
         .btn-signup:disabled {
             opacity: 0.7;
             cursor: not-allowed;
             transform: none;
         }
 
-        /* Success animation */
         @keyframes successPulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.05); }
@@ -499,20 +492,16 @@
 
     <script src="js/theme.js"></script>
     <script>
-        // Theme Toggle Functionality
         const themeToggle = document.getElementById('theme-toggle');
         
-        // Only add theme toggle functionality if the element exists
         if (themeToggle) {
             const themeIcon = themeToggle.querySelector('i');
             
-            // Check for saved theme preference
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme) {
                 document.body.classList.add(savedTheme);
                 updateThemeIcon(savedTheme === 'dark-theme');
             } else {
-                // Check system preference
                 if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
                     document.body.classList.add('dark-theme');
                     updateThemeIcon(true);
@@ -532,19 +521,16 @@
                 }
             }
         } else {
-            // Fallback theme handling without toggle button
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme) {
                 document.body.classList.add(savedTheme);
             } else {
-                // Check system preference
                 if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
                     document.body.classList.add('dark-theme');
                 }
             }
         }
 
-        // Password validation
         const password = document.getElementById('password');
         const requirements = document.querySelectorAll('.requirement');
 
@@ -591,22 +577,16 @@
                 const email = document.getElementById('email').value.trim();
                 const password = document.getElementById('password').value;
 
-                // Validate password
                 if (password.length < 8) {
                     throw new Error('Password must be at least 8 characters long');
                 }
 
-                // ENVIRONMENT SWITCH
                 const IS_PRODUCTION = window.location.hostname !== 'localhost';
-                const API_BASE_URL = IS_PRODUCTION
-                    ? 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api'
-                    : '/api/proxy';
+                const API_BASE_URL = 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api';
 
-                // Send signup request
                 console.log('Sending signup request...');
                 let response;
                 if (IS_PRODUCTION) {
-                    // Direct API call in production
                     response = await fetch('https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api', {
                         method: 'POST',
                         headers: {
@@ -620,30 +600,6 @@
                             email: email,
                             password: password,
                             website: 'digital-oncely'
-                        })
-                    });
-                } else {
-                    // Proxy call in development
-                    response = await fetch('/api/proxy', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            url: 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api',
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json'
-                            },
-                            body: {
-                                task: 'auth',
-                                action: 'signup',
-                                name: name,
-                                email: email,
-                                password: password,
-                                website: 'digital-oncely'
-                            }
                         })
                     });
                 }
@@ -680,6 +636,37 @@
                 signupSpinner.style.display = 'none';
                 signupText.textContent = 'Create Account';
             }
+        });
+
+        function updateAuthLinks() {
+            const token = localStorage.getItem('jwtToken');
+            const loginLink = document.getElementById('login-link');
+            const logoutLink = document.getElementById('logout-link');
+            const mobileLoginLink = document.getElementById('mobile-login-link');
+            const mobileLogoutLink = document.getElementById('mobile-logout-link');
+            if (token) {
+                if (loginLink) loginLink.style.display = 'none';
+                if (logoutLink) logoutLink.style.display = '';
+                if (mobileLoginLink) mobileLoginLink.style.display = 'none';
+                if (mobileLogoutLink) mobileLogoutLink.style.display = '';
+            } else {
+                if (loginLink) loginLink.style.display = '';
+                if (logoutLink) logoutLink.style.display = 'none';
+                if (mobileLoginLink) mobileLoginLink.style.display = '';
+                if (mobileLogoutLink) mobileLogoutLink.style.display = 'none';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAuthLinks();
+            const logoutLink = document.getElementById('logout-link');
+            const mobileLogoutLink = document.getElementById('mobile-logout-link');
+            function doLogout(e) {
+                e.preventDefault();
+                localStorage.removeItem('jwtToken');
+                location.reload();
+            }
+            if (logoutLink) logoutLink.addEventListener('click', doLogout);
+            if (mobileLogoutLink) mobileLogoutLink.addEventListener('click', doLogout);
         });
     </script>
 </body>

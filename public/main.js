@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const fetchSubscriberCount = async () => {
         try {
-            const response = await fetch('/api/proxy', {
+            const response = await fetch('https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'text/plain',
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const saveDiscountCode = async (email, code) => {
         try {
-            const response = await fetch('/api/proxy', {
+            const response = await fetch('https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'text/plain',
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.textContent = 'Joining...';
             submitBtn.disabled = true;
             
-            const response = await fetch('/api/proxy', {
+            const response = await fetch('https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'text/plain',
@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 emailInput.value = '';
                 showSuccess();
-                fetchSubscriberCount(); // Refresh the count
+                fetchSubscriberCount(); 
             } else {
                 showError('Subscription Failed', data.error || 'Something went wrong. Please try again.');
             }
@@ -175,39 +175,15 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchSubscriberCount();
 });
 
-// ENVIRONMENT SWITCH
-const IS_PRODUCTION = window.location.hostname !== 'localhost';
-const API_BASE_URL = IS_PRODUCTION
-    ? 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api'
-    : '/api/proxy';
+const API_BASE_URL = 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api';
 
-// Helper for API requests
 async function apiRequest(body, token) {
-    if (IS_PRODUCTION) {
-        return fetch(API_BASE_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'text/plain',
-                ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-            },
-            body: JSON.stringify(body)
-        });
-    } else {
-        return fetch(API_BASE_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'text/plain',
-                ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-            },
-            body: JSON.stringify({
-                url: 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api',
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'text/plain',
-                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-                },
-                body: JSON.stringify(body)
-            })
-        });
-    }
+    return fetch(API_BASE_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'text/plain',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify(body)
+    });
 }

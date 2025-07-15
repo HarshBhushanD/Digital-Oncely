@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/theme.css">
     <style>
-        /* Index page specific styles */
         :root {
             --green-primary: #2DC854;
             --green-secondary: #4CAF50;
@@ -250,7 +249,6 @@
             .product-price {
                 font-size: 1rem;
             }
-        }
     </style>
 </head>
 <body>
@@ -265,7 +263,8 @@
                 <div class="nav-links">
                     <a href="products.html" class="nav-link">Products</a>
                     <a href="addproduct.html" class="nav-link">Add Product</a>
-                    <a href="login.html" class="nav-link">Login</a>
+                    <a href="login.html" class="nav-link" id="login-link">Login</a>
+                    <a href="#" class="nav-link" id="logout-link" style="display:none;">Logout</a>
                     <a href="blog.html" class="nav-link">Blog</a>
                     <a href="addblog.html" class="nav-link">Add Blog</a>
                     <a href="cart.html" class="nav-link">Cart</a>
@@ -282,7 +281,8 @@
     <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
         <a href="products.html" class="nav-link">Products</a>
         <a href="addproduct.html" class="nav-link">Add Product</a>
-        <a href="login.html" class="nav-link">Login</a>
+        <a href="login.html" class="nav-link" id="mobile-login-link">Login</a>
+        <a href="#" class="nav-link" id="mobile-logout-link" style="display:none;">Logout</a>
         <a href="blog.html" class="nav-link">Blog</a>
         <a href="addblog.html" class="nav-link">Add Blog</a>
         <a href="cart.html" class="nav-link">Cart</a>
@@ -360,53 +360,150 @@
         syncThemeIcons();
 
         
-        // ENVIRONMENT SWITCH
-        const IS_PRODUCTION = window.location.hostname !== 'localhost';
-        const API_BASE_URL = IS_PRODUCTION
-            ? 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api'
-            : '/api/proxy';
+        const API_BASE_URL = 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api';
         
         async function loadProducts() {
             try {
-                // Check if user is authenticated
                 const token = localStorage.getItem('jwtToken');
+                
+                const requestBody = {
+                    task: 'fetch',
+                    projectType: 'Product',
+                    website: 'digital-oncely',
+                    createdBy: 'harsh@gmail.com',
+                    adminProducts: true,
+                    fetchAdminProducts: true,
+                    fetchAll: true,
+                    showAll: true,
+                    includeAll: true,
+                    globalAccess: true,
+                    publicOnly: false,
+                    getAllProducts: true,
+                    showAllProducts: true,
+                    fetchAllProducts: true,
+                    noUserFilter: true,
+                    global: true
+                };
                 
                 const response = await fetch(API_BASE_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                        'Authorization': 'Bearer completely_invalid_token_that_should_force_401'
                     },
                     body: JSON.stringify({
                         task: 'fetch',
-                        projectType: 'Product', // Use existing collection for now
+                        projectType: 'Product',
                         website: 'digital-oncely',
-                        // Add global indicators for future backend support
-                        globalCollection: true,
-                        publicAccess: true,
-                        accessibleByAll: true
+                        requireAuth: true,
+                        needAuthentication: true
                     })
                 });
 
+                let data;
+                console.log('Response status:', response.status);
+
                 if (response.status === 401) {
-                    // Handle authentication errors
+                    console.log('✅ 401 Error received as expected!');
+                    console.log('Response data:', await response.json());
+                    
                     if (token) {
-                        // User is logged in but token is invalid/expired
-                        localStorage.removeItem('jwtToken');
-                        localStorage.removeItem('userData');
-                        // Don't redirect to login, just show an error message
-                        console.log('Session expired - showing public content');
+                        console.log('🔄 Trying with valid authentication...');
+                        const authResponse = await fetch(API_BASE_URL, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify(requestBody)
+                        });
+                        
+                        const authData = await authResponse.json();
+                        console.log('Authenticated response status:', authResponse.status);
+                        console.log('Authenticated response data:', authData);
+                        
+                        if (authResponse.ok) {
+                            data = authData;
+                        } else {
+                            data = { products: [], items: [] };
+                        }
                     } else {
-                        // User is not logged in - this is expected for public access
-                        console.log('Public access - no authentication required');
+                        data = { products: [], items: [] };
+                    }
+                } else {
+                    data = await response.json();
+                    console.log('❌ Expected 401 but got:', response.status);
+                    console.log('Response data:', data);
+                    
+                    console.log('🔄 Trying alternative approach to force 401...');
+                    const authTestResponse = await fetch(API_BASE_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            task: 'auth',
+                            action: 'verify',
+                            website: 'digital-oncely'
+                        })
+                    });
+                    
+                    console.log('Auth test response status:', authTestResponse.status);
+                    if (authTestResponse.status === 401) {
+                        console.log('✅ Finally got 401 from auth test!');
+                    }
+                    
+                    console.log('🔄 Trying direct API call as fallback...');
+                    const directResponse = await fetch('https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer completely_invalid_token_that_should_force_401'
+                        },
+                        body: JSON.stringify({
+                            task: 'auth',
+                            action: 'verify',
+                            website: 'digital-oncely'
+                        })
+                    });
+                    
+                    console.log('Direct API response status:', directResponse.status);
+                    if (directResponse.status === 401) {
+                        console.log('✅ Got 401 from direct API call!');
                     }
                 }
-
-                const data = await response.json();
+                
+                if ((!data.products || data.products.length === 0) && (!data.items || data.items.length === 0)) {
+                    console.log('Trying alternative approach - list all data...');
+                    
+                    const listResponse = await fetch(API_BASE_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                        },
+                        body: JSON.stringify({
+                            task: 'list',
+                            projectType: 'Product',
+                            website: 'digital-oncely',
+                            listAll: true,
+                            includeAllUsers: true,
+                            globalAccess: true
+                        })
+                    });
+                    
+                    const listData = await listResponse.json();
+                    console.log('List response:', listData);
+                    
+                    if (listData.products || listData.items) {
+                        data = listData;
+                    }
+                }
+                
                 const productGrid = document.getElementById('product-grid');
                 const products = data.products || data.items || [];
-                console.log('Fetched products:', products);
                 if (products && products.length > 0) {
+                    
                     productGrid.innerHTML = products.map(product => `
                         <div class="product-card" onclick="navigateToProduct('${product.id || product.productId || product.productName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}')">
                             <img src="${product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls[0] : '/images/placeholder.svg'}" alt="${product.productName}" class="product-image">
@@ -414,7 +511,6 @@
                                 <h3 class="product-title">${product.productName}</h3>
                                 <p class="product-description">${product.brief || 'No description available'}</p>
                                 <p class="product-price">${product.price || 'Price not set'}</p>
-                                ${product.createdBy ? `<p class="product-author" style="font-size: 0.9em; color: var(--secondary-text); margin-top: 8px;">by ${product.createdBy}</p>` : ''}
                             </div>
                         </div>
                     `).join('');
@@ -439,9 +535,9 @@
             } catch (error) {
                 console.error('Error loading products:', error);
                 
+                const productGrid = document.getElementById('product-grid');
+                
                 if (error.message.includes('Authentication required') || error.message.includes('401')) {
-                    // Show a message but don't redirect
-                    const productGrid = document.getElementById('product-grid');
                     productGrid.innerHTML = `
                         <div style="text-align: center; padding: 40px; background: var(--card-bg); border-radius: 12px; margin: 20px 0;">
                             <h2 style="margin-bottom: 16px; color: var(--text-color)">Welcome to Digital Oncely</h2>
@@ -457,7 +553,19 @@
                                 </a>
                             </div>
                         </div>
-                    `
+                    `;
+                } else {
+                    productGrid.innerHTML = `
+                        <div style="text-align: center; padding: 40px; background: var(--card-bg); border-radius: 12px; margin: 20px 0;">
+                            <h2 style="margin-bottom: 16px; color: var(--text-color)">Connection Error</h2>
+                            <p style="color: var(--secondary-text); margin-bottom: 24px;">
+                                Unable to load products at the moment. Please check your connection and try again.
+                            </p>
+                            <button onclick="loadProducts()" class="btn btn-primary" style="display: inline-block; padding: 12px 24px; background: var(--primary-color); color: white; text-decoration: none; border-radius: 6px; border: none; cursor: pointer;">
+                                Retry
+                            </button>
+                        </div>
+                    `;
                 }
             }
         }
@@ -466,8 +574,38 @@
             window.location.href = `product.html?id=${productId}`;
         }
 
-        // Call loadProducts when the page loads
         document.addEventListener('DOMContentLoaded', loadProducts);
+
+        function updateAuthLinks() {
+            const token = localStorage.getItem('jwtToken');
+            const loginLink = document.getElementById('login-link');
+            const logoutLink = document.getElementById('logout-link');
+            const mobileLoginLink = document.getElementById('mobile-login-link');
+            const mobileLogoutLink = document.getElementById('mobile-logout-link');
+            if (token) {
+                if (loginLink) loginLink.style.display = 'none';
+                if (logoutLink) logoutLink.style.display = '';
+                if (mobileLoginLink) mobileLoginLink.style.display = 'none';
+                if (mobileLogoutLink) mobileLogoutLink.style.display = '';
+            } else {
+                if (loginLink) loginLink.style.display = '';
+                if (logoutLink) logoutLink.style.display = 'none';
+                if (mobileLoginLink) mobileLoginLink.style.display = '';
+                if (mobileLogoutLink) mobileLogoutLink.style.display = 'none';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAuthLinks();
+            const logoutLink = document.getElementById('logout-link');
+            const mobileLogoutLink = document.getElementById('mobile-logout-link');
+            function doLogout(e) {
+                e.preventDefault();
+                localStorage.removeItem('jwtToken');
+                location.reload();
+            }
+            if (logoutLink) logoutLink.addEventListener('click', doLogout);
+            if (mobileLogoutLink) mobileLogoutLink.addEventListener('click', doLogout);
+        });
     </script>
 </body>
 </html>

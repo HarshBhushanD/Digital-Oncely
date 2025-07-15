@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/theme.css">
     <style>
-        /* Add Blog page specific styles */
         .add-blog-hero {
             background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
             padding: 60px 20px;
@@ -267,7 +266,6 @@
             line-height: 1.6;
         }
 
-        /* Responsive Design */
         @media (max-width: 768px) {
             .add-blog-hero h1 {
                 font-size: 2.5rem;
@@ -450,7 +448,6 @@
         const previewDate = document.getElementById('preview-date');
         const previewText = document.getElementById('preview-text');
 
-        // Character count
         contentInput.addEventListener('input', function() {
             const count = this.value.length;
             characterCount.textContent = count;
@@ -464,28 +461,23 @@
             }
         });
 
-        // Preview functionality
         previewToggle.addEventListener('click', function() {
             const isVisible = previewContent.classList.contains('show');
             
             if (!isVisible) {
-                // Update preview content
                 previewTitle.textContent = titleInput.value || 'Your blog title will appear here';
                 previewAuthor.textContent = authorInput.value || 'Anonymous';
                 previewDate.textContent = new Date().toLocaleDateString();
                 previewText.textContent = contentInput.value || 'Your blog content will appear here...';
                 
-                // Show preview
                 previewContent.classList.add('show');
                 this.innerHTML = '<i class="fas fa-eye-slash"></i> Hide Preview';
             } else {
-                // Hide preview
                 previewContent.classList.remove('show');
                 this.innerHTML = '<i class="fas fa-eye"></i> Preview Post';
             }
         });
 
-        // Form submission
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
             const title = titleInput.value.trim();
@@ -504,7 +496,6 @@
                 alert('Blog content should be at least 50 characters long.');
                 return;
             }
-            // Prepare request body for serverless API
             const blogData = {
                 task: 'data',
                 operation: 'add',
@@ -519,11 +510,8 @@
                     timestamp: new Date().getTime()
                 }
             };
-            // ENVIRONMENT SWITCH
             const IS_PRODUCTION = window.location.hostname !== 'localhost';
-            const API_BASE_URL = IS_PRODUCTION
-                ? 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api'
-                : '/api/proxy';
+            const API_BASE_URL = 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api';
             const token = localStorage.getItem('jwtToken');
             if (!token) {
                 alert('You must be logged in to add a blog.');
@@ -549,7 +537,6 @@
             }
         });
 
-        // Auto-save draft (every 30 seconds)
         let autoSaveTimer;
         function autoSave() {
             const title = titleInput.value.trim();
@@ -562,7 +549,6 @@
             }
         }
 
-        // Set up auto-save
         [titleInput, authorInput, emailInput, contentInput].forEach(input => {
             input.addEventListener('input', () => {
                 clearTimeout(autoSaveTimer);
@@ -570,7 +556,6 @@
             });
         });
 
-        // Load draft on page load
         window.addEventListener('load', function() {
             const draft = JSON.parse(localStorage.getItem('blog-draft') || '{}');
             if (draft.title) titleInput.value = draft.title;
@@ -582,7 +567,6 @@
             }
         });
 
-        // Clear draft after successful submission
         form.addEventListener('submit', function() {
             localStorage.removeItem('blog-draft');
         });

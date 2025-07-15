@@ -243,13 +243,9 @@
 
     <script src="js/theme.js"></script>
     <script>
-        // ENVIRONMENT SWITCH
         const IS_PRODUCTION = window.location.hostname !== 'localhost';
-        const API_BASE_URL = IS_PRODUCTION
-            ? 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api'
-            : '/api/proxy';
+                        const API_BASE_URL = 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api';
         
-        // Define updateThemeIcon function first
         function updateThemeIcon(isDark) {
             const themeToggle = document.getElementById('theme-toggle');
             const themeIcon = themeToggle ? themeToggle.querySelector('i') : null;
@@ -298,7 +294,6 @@
         const loginSpinner = document.getElementById('login-spinner');
         const loginText = document.getElementById('login-text');
 
-        // Helper for API requests
         async function apiRequest(body, token) {
             const url = IS_PRODUCTION
                 ? 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api'
@@ -314,7 +309,6 @@
             });
         }
         
-        // Handle login form submission
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -328,7 +322,6 @@
                 const email = document.getElementById('email').value.trim();
                 const password = document.getElementById('password').value.trim();
 
-                // Basic validation
                 if (!email || !password) {
                     throw new Error('Please enter both email and password');
                 }
@@ -340,7 +333,6 @@
                 console.log('Sending login request...');
                 let response;
                 if (IS_PRODUCTION) {
-                    // Direct API call in production
                     response = await fetch('https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api', {
                         method: 'POST',
                         headers: {
@@ -354,29 +346,6 @@
                                 password: password,
                                 website: 'digital-oncely'
                             })
-                    });
-                } else {
-                    // Proxy call in development
-                    response = await fetch('/api/proxy', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            url: 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api',
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json'
-                            },
-                            body: {
-                                task: 'auth',
-                                action: 'login',
-                                email: email,
-                                password: password,
-                                website: 'digital-oncely'
-                            }
-                        })
                     });
                 }
                 const data = await response.json();
@@ -399,19 +368,46 @@
             }
         });
 
-        // Function to display error messages
         function showError(message) {
             errorMessage.textContent = message;
             errorMessage.style.display = 'block';
         }
 
-        // Check if user is already logged in
         const token = localStorage.getItem('token');
         if (token) {
-            // Optional: Verify token with the backend
-            // For now, just redirect to a protected page
-            // window.location.href = '/dashboard.html';
+           
         }
+
+        function updateAuthLinks() {
+            const token = localStorage.getItem('jwtToken');
+            const loginLink = document.getElementById('login-link');
+            const logoutLink = document.getElementById('logout-link');
+            const mobileLoginLink = document.getElementById('mobile-login-link');
+            const mobileLogoutLink = document.getElementById('mobile-logout-link');
+            if (token) {
+                if (loginLink) loginLink.style.display = 'none';
+                if (logoutLink) logoutLink.style.display = '';
+                if (mobileLoginLink) mobileLoginLink.style.display = 'none';
+                if (mobileLogoutLink) mobileLogoutLink.style.display = '';
+            } else {
+                if (loginLink) loginLink.style.display = '';
+                if (logoutLink) logoutLink.style.display = 'none';
+                if (mobileLoginLink) mobileLoginLink.style.display = '';
+                if (mobileLogoutLink) mobileLogoutLink.style.display = 'none';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAuthLinks();
+            const logoutLink = document.getElementById('logout-link');
+            const mobileLogoutLink = document.getElementById('mobile-logout-link');
+            function doLogout(e) {
+                e.preventDefault();
+                localStorage.removeItem('jwtToken');
+                location.reload();
+            }
+            if (logoutLink) logoutLink.addEventListener('click', doLogout);
+            if (mobileLogoutLink) mobileLogoutLink.addEventListener('click', doLogout);
+        });
     </script>
 </body>
 </html> 
