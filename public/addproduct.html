@@ -989,12 +989,6 @@
                     }
                 }
                 
-                if (userEmail !== 'harsh@gmail.com') {
-                    errorAlert.textContent = 'Access denied. Only admin (harsh@gmail.com) can add products.';
-                    errorAlert.style.display = 'block';
-                    errorAlert.scrollIntoView({ behavior: 'smooth' });
-                    return;
-                }
                 
                 successAlert.style.display = 'none';
                 errorAlert.style.display = 'none';
@@ -1074,10 +1068,9 @@
                         },
                         qa: qaData,
                         reviews: reviewsData,
-                        createdBy: 'harsh@gmail.com',
                         createdAt: Date.now(),
                         productId: 'prod_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-                        isPublic: true
+                        isPublic: false // Always set to false for admin approval
                     };
                     for (let i = 0; i < previewedImages.length; i++) {
                         const imageUrl = previewedImages[i].getAttribute('data-url');
