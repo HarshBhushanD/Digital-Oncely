@@ -1469,65 +1469,7 @@
     <script src="js/theme.js"></script>
     <script>
         const API_BASE_URL = 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api';
-        
-        // async function loadProducts() {
-        //     const token = localStorage.getItem('jwtToken');
-        //     const loading = document.getElementById('loading');
-        //     const errorMessage = document.getElementById('error-message');
-            
-        //     loading.style.display = 'block';
-        //     errorMessage.style.display = 'none';
-            
-        //     try {
-        //         const response = await fetch(API_BASE_URL, {
-        //             method: 'POST',
-        //             headers: {
-        //                 'Content-Type': 'application/json',
-        //                 ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-        //             },
-        //             body: JSON.stringify({
-        //                 task: 'fetch',
-        //                 projectType: 'Product',
-        //                 website: 'digital-oncely',
-        //                 listAll: true,
-        //                 includeAllUsers: true,
-        //                 globalAccess: true,
-        //                 noUserFilter: true,
-        //                 global: true,
-        //                 publicOnly: false,
-        //                 fetchAll: true,
-        //                 showAll: true,
-        //                 includeAll: true,
-        //                 adminProducts: true,
-        //                 fetchAdminProducts: true,
-        //                 getAllProducts: true,
-        //                 showAllProducts: true,
-        //                 fetchAllProducts: true
-        //             })
-        //         });
-                
-        //         loading.style.display = 'none';
-                
-        //         if (!response.ok) {
-        //             const errorText = await response.text();
-        //             console.error('API Error Response:', errorText);
-        //             throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-        //         }
-                
-        //         const data = await response.json();
-        //         const products = data.products || data.items || [];
-                    
-        //         if (products.length > 0) {
-        //             renderProducts(products);
-        //         } else {
-        //             showNoProductsMessage();
-        //         }
-        //     } catch (error) {
-        //         loading.style.display = 'none';
-        //         console.error('Error loading products:', error);
-        //         showErrorMessage();
-        //     }
-        // }
+
 
         async function loadProducts() {
     const token = localStorage.getItem('jwtToken');
