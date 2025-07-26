@@ -1146,7 +1146,7 @@
 
 
 
-
+<!-- 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -2080,7 +2080,7 @@
         </div>
     </div>
 
-    <!-- Floating Submit Button -->
+      Floating Submit Button
     <button type="submit" form="product-form" class="btn btn-primary floating-submit" id="floating-submit">
         <i class="fas fa-rocket"></i>
     </button>
@@ -2779,6 +2779,1943 @@
                     } else {
                         this.style.borderColor = 'var(--success)';
                         this.style.boxShadow = '0 0 0 3px rgba(16, 185, 129, 0.1)';
+                    }
+                });
+                
+                field.addEventListener('input', function() {
+                    if (this.value.trim()) {
+                        this.style.borderColor = 'var(--border)';
+                        this.style.boxShadow = 'none';
+                    }
+                });
+            });
+            
+            // Auto-save to localStorage (optional feature)
+            const autoSaveFields = ['product-name', 'price', 'brief', 'deep-explanation', 'best-features'];
+            autoSaveFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    // Load saved data
+                    const saved = localStorage.getItem(`addproduct_${fieldId}`);
+                    if (saved) {
+                        field.value = saved;
+                    }
+                    
+                    // Save on input
+                    field.addEventListener('input', function() {
+                        localStorage.setItem(`addproduct_${fieldId}`, this.value);
+                    });
+                }
+            });
+            
+            // Clear auto-saved data on successful submission
+            form.addEventListener('submit', function() {
+                setTimeout(() => {
+                    autoSaveFields.forEach(fieldId => {
+                        localStorage.removeItem(`addproduct_${fieldId}`);
+                    });
+                }, 5000);
+            });
+            
+            // Add tooltips for better UX
+            const tooltips = {
+                'product-name': 'Choose a clear, descriptive name that explains what your product does',
+                'price': 'Be transparent about your pricing. Use formats like "$49/month" or "Free"',
+                'brief': 'This appears in search results and product cards. Make it compelling!',
+                'founder-image': 'A professional headshot works best. Use a high-quality image URL'
+            };
+            
+            Object.entries(tooltips).forEach(([fieldId, tooltip]) => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.setAttribute('title', tooltip);
+                }
+            });
+        });
+    </script>
+</body>
+</html> -->
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product - Digital Oncely</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4338ca;
+            --primary-light: #8b5cf6;
+            --accent: #06d6a0;
+            --accent-dark: #059669;
+            --bg-primary: #0f0f23;
+            --bg-secondary: #1a1a2e;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --bg-glass: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            --border: rgba(255, 255, 255, 0.1);
+            --border-hover: rgba(255, 255, 255, 0.2);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.3);
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-accent: linear-gradient(135deg, #06d6a0 0%, #118ab2 100%);
+            --gradient-hero: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            --gradient-card: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            --blur: blur(20px);
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(6, 214, 160, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Enhanced Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(15, 15, 35, 0.85);
+            backdrop-filter: var(--blur);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .navbar.scrolled {
+            background: rgba(15, 15, 35, 0.95);
+            padding: 12px 0;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+        
+        .nav-brand {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-brand:hover {
+            transform: scale(1.05);
+            filter: brightness(1.2);
+        }
+        
+        .search-bar {
+            position: relative;
+            max-width: 400px;
+            flex: 1;
+            margin: 0 32px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 14px 20px 14px 48px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            backdrop-filter: var(--blur);
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        
+        .search-bar i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-link {
+            padding: 10px 16px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-primary);
+            transition: left 0.3s ease;
+            z-index: -1;
+            opacity: 0.1;
+        }
+        
+        .nav-link:hover {
+            color: var(--text-primary);
+            background: var(--bg-glass);
+        }
+        
+        .nav-link:hover::before {
+            left: 0;
+        }
+        
+        .mobile-controls {
+            display: none;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-btn:hover {
+            background: var(--bg-glass);
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 80px;
+            left: 0;
+            right: 0;
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: var(--blur);
+            border-top: 1px solid var(--border);
+            padding: 20px;
+            z-index: 999;
+        }
+
+        .mobile-menu .nav-link {
+            display: block;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            margin-top: 80px;
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
+            background: var(--gradient-hero);
+            background-size: 200% 200%;
+            animation: gradientShift 8s ease-in-out infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 15, 35, 0.7);
+            backdrop-filter: var(--blur);
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        .hero-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes titleGlow {
+            0% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
+            100% { text-shadow: 0 0 40px rgba(255, 255, 255, 0.8), 0 0 60px rgba(99, 102, 241, 0.6); }
+        }
+        
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Form Container */
+        .form-container {
+            max-width: 900px;
+            margin: 0 auto 120px;
+            background: var(--gradient-card);
+            backdrop-filter: var(--blur);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 48px;
+            box-shadow: var(--shadow-lg);
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient-primary);
+            opacity: 0.02;
+            z-index: -1;
+        }
+
+        .form-section {
+            margin-bottom: 48px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .form-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .form-section:nth-child(1) { animation-delay: 0.1s; }
+        .form-section:nth-child(2) { animation-delay: 0.2s; }
+        .form-section:nth-child(3) { animation-delay: 0.3s; }
+        .form-section:nth-child(4) { animation-delay: 0.4s; }
+        .form-section:nth-child(5) { animation-delay: 0.5s; }
+        .form-section:nth-child(6) { animation-delay: 0.6s; }
+        .form-section:nth-child(7) { animation-delay: 0.7s; }
+        .form-section:nth-child(8) { animation-delay: 0.8s; }
+
+        .form-section h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-section h2 i {
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 16px 20px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            backdrop-filter: var(--blur);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-muted);
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 24px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            backdrop-filter: var(--blur);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.75rem;
+        }
+
+        .btn-lg {
+            padding: 18px 36px;
+            font-size: 1.125rem;
+        }
+
+        /* Image Preview Styles */
+        .image-preview-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        .image-preview-wrapper {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            background: var(--gradient-card);
+            border: 1px solid var(--border);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: var(--blur);
+        }
+
+        .image-preview-wrapper:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .image-preview {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .remove-image {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            opacity: 0;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .image-preview-wrapper:hover .remove-image {
+            opacity: 1;
+        }
+
+        .remove-image:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.5);
+        }
+
+        .image-url-text {
+            padding: 16px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            word-break: break-all;
+            background: rgba(255, 255, 255, 0.02);
+            border-top: 1px solid var(--border);
+        }
+
+        /* Entry Cards */
+        .plan-entry, .qa-entry, .review-entry {
+            background: var(--gradient-card);
+            backdrop-filter: var(--blur);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plan-entry::before, .qa-entry::before, .review-entry::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: -1;
+        }
+
+        .plan-entry:hover, .qa-entry:hover, .review-entry:hover {
+            transform: translateY(-4px) scale(1.01);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        .plan-entry:hover::before, .qa-entry:hover::before, .review-entry:hover::before {
+            opacity: 0.05;
+        }
+
+        /* Fixed Image List */
+        .fixed-image-list {
+            background: var(--gradient-card);
+            backdrop-filter: var(--blur);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .fixed-image-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .fixed-image-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background: var(--bg-glass);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            backdrop-filter: var(--blur);
+        }
+
+        .fixed-image-name {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Image URL Entry */
+        .image-url-entry {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+
+        .image-url-entry .form-control {
+            flex: 1;
+        }
+
+        /* Alert Styles */
+        .alert {
+            padding: 16px 20px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            display: none;
+            font-weight: 500;
+            animation: slideDown 0.3s ease-out;
+            backdrop-filter: var(--blur);
+            border: 1px solid;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background: rgba(6, 214, 160, 0.1);
+            color: var(--accent);
+            border-color: rgba(6, 214, 160, 0.2);
+        }
+
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+            border-color: rgba(245, 158, 11, 0.2);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-top: 32px;
+            display: none;
+        }
+
+        .progress {
+            height: 8px;
+            background: var(--bg-glass);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--gradient-accent);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 8px;
+        }
+
+        .progress-text {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Floating Action Button for Submit */
+        .floating-submit {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            z-index: 100;
+            border-radius: 50%;
+            width: 64px;
+            height: 64px;
+            padding: 0;
+            box-shadow: var(--shadow-glow);
+            display: none;
+        }
+
+        .floating-submit.show {
+            display: flex;
+        }
+
+        .floating-submit:hover {
+            transform: translateY(-4px) scale(1.1);
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.6);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-controls {
+                display: block;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .mobile-menu[aria-hidden="false"] {
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .search-bar {
+                max-width: 200px;
+                margin: 0 16px;
+            }
+            
+            .hero-section {
+                padding: 60px 0;
+            }
+            
+            .form-container {
+                margin: 0 16px 80px;
+                padding: 32px 24px;
+            }
+            
+            .container {
+                padding: 0 16px;
+            }
+            
+            .image-preview-container {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .image-url-entry {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .btn-group {
+                display: flex;
+                gap: 8px;
+                margin-top: 8px;
+            }
+
+            .floating-submit {
+                bottom: 24px;
+                right: 24px;
+                width: 56px;
+                height: 56px;
+            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Enhanced hover effects */
+        .form-control:hover {
+            border-color: var(--border-hover);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Additional animations */
+        .hero-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: float 6s linear infinite;
+        }
+        
+        .particle:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 6s; }
+        .particle:nth-child(2) { left: 20%; animation-delay: 1s; animation-duration: 8s; }
+        .particle:nth-child(3) { left: 30%; animation-delay: 2s; animation-duration: 7s; }
+        .particle:nth-child(4) { left: 40%; animation-delay: 3s; animation-duration: 9s; }
+        .particle:nth-child(5) { left: 50%; animation-delay: 0.5s; animation-duration: 6.5s; }
+        .particle:nth-child(6) { left: 60%; animation-delay: 1.5s; animation-duration: 8.5s; }
+        .particle:nth-child(7) { left: 70%; animation-delay: 2.5s; animation-duration: 7.5s; }
+        .particle:nth-child(8) { left: 80%; animation-delay: 3.5s; animation-duration: 9.5s; }
+        .particle:nth-child(9) { left: 90%; animation-delay: 4s; animation-duration: 6s; }
+        
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) scale(1); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-content">
+            <a href="index.html" class="nav-brand">Digital Oncely</a>
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" class="search-input" placeholder="Search products...">
+            </div>
+            <div class="nav-links">
+                <a href="products.html" class="nav-link">Products</a>
+                <a href="addproduct.html" class="nav-link">Add Product</a>
+                <a href="login.html" class="nav-link" id="login-link">Login</a>
+                <a href="#" class="nav-link" id="logout-link" style="display:none;">Logout</a>
+                <a href="blog.html" class="nav-link">Blog</a>
+                <a href="addblog.html" class="nav-link">Add Blog</a>
+                <a href="cart.html" class="nav-link">Cart</a>
+                <a href="buynow.html" class="nav-link">Buy Now</a>
+            </div>
+            <div class="mobile-controls">
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+        <a href="products.html" class="nav-link">Products</a>
+        <a href="addproduct.html" class="nav-link">Add Product</a>
+        <a href="login.html" class="nav-link" id="mobile-login-link">Login</a>
+        <a href="#" class="nav-link" id="mobile-logout-link" style="display:none;">Logout</a>
+        <a href="blog.html" class="nav-link">Blog</a>
+        <a href="addblog.html" class="nav-link">Add Blog</a>
+        <a href="cart.html" class="nav-link">Cart</a>
+        <a href="buynow.html" class="nav-link">Buy Now</a>
+    </div>
+
+    <section class="hero-section">
+        <div class="hero-particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+        <div class="hero-content">
+            <h1 class="hero-title">Share Your Digital Product</h1>
+            <p class="hero-subtitle">
+                Join thousands of creators showcasing innovative digital solutions. Submit your product and reach a global audience of early adopters and tech enthusiasts.
+            </p>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="alert alert-success" id="success-alert">
+            <i class="fas fa-check-circle"></i>
+            Product submitted successfully! You'll be redirected to the homepage shortly.
+        </div>
+
+        <div class="alert alert-danger" id="error-alert">
+            <i class="fas fa-exclamation-circle"></i>
+            An error occurred while submitting the product. Please try again.
+        </div>
+
+        <div class="alert alert-warning" id="warning-alert">
+            <i class="fas fa-exclamation-triangle"></i>
+            Please add at least one valid image URL.
+        </div>
+
+        <div class="form-container">
+            <form id="product-form">
+                <div class="form-section">
+                    <h2><i class="fas fa-info-circle"></i> Basic Information</h2>
+                    <div class="form-group">
+                        <label for="product-name">Product Name*</label>
+                        <input type="text" id="product-name" name="productName" class="form-control" required placeholder="Enter your product name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="price">Price*</label>
+                        <input type="text" id="price" name="price" class="form-control" placeholder="e.g. $49/month, Free, $99 one-time" required>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h2><i class="fas fa-images"></i> Product Images</h2>
+                    
+                    <div class="fixed-image-list">
+                        <div class="fixed-image-title">Example Image</div>
+                        <div class="fixed-image-item" id="example-image-item">
+                            <div class="fixed-image-name">Instagram Comments Extractor</div>
+                            <button type="button" class="btn btn-secondary btn-sm use-image-btn" data-url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnyhoDQZSFOa3-EExT_c8Fa1TlXg7P0V8Rb5JlF84fy7oy4v8SF5FHMV3HrNZi5UDCoXk&usqp=CAU">
+                                <i class="fas fa-plus"></i> Use This Image
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <p style="color: var(--text-muted); margin-bottom: 1rem;">Add URLs to product images (at least one is required)*</p>
+                    
+                    <div class="form-group">
+                        <div class="image-urls-container" id="image-urls-container">
+                            <div class="image-url-entry">
+                                <input type="url" class="form-control image-url-input" placeholder="Enter image URL (e.g., https://example.com/image.jpg)" required>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-secondary btn-sm preview-image-btn">
+                                        <i class="fas fa-eye"></i> Preview
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button type="button" class="btn btn-secondary btn-sm" id="add-image-url-btn">
+                            <i class="fas fa-plus"></i> Add Another Image URL
+                        </button>
+                        
+                        <div class="image-preview-container" id="image-preview-container"></div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h2><i class="fas fa-file-alt"></i> Product Description</h2>
+                    <div class="form-group">
+                        <label for="brief">Brief Description*</label>
+                        <textarea id="brief" name="brief" class="form-control" placeholder="A short summary of your product (100-150 words)" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="deep-explanation">Detailed Explanation*</label>
+                        <textarea id="deep-explanation" name="deepExplanation" class="form-control" placeholder="Comprehensive explanation of your product, its purpose, and value proposition" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="best-features">Best Features*</label>
+                        <textarea id="best-features" name="bestFeatures" class="form-control" placeholder="List the top features that make your product stand out" required></textarea>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h2><i class="fas fa-bolt"></i> TL;DR</h2>
+                    <div class="form-group">
+                        <label for="best-for">Best For*</label>
+                        <textarea id="best-for" name="bestFor" class="form-control" placeholder="e.g. Small businesses, Freelancers, Enterprise teams" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="alternatives">Alternatives</label>
+                        <textarea id="alternatives" name="alternatives" class="form-control" placeholder="List competing products or alternatives"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="integrations">Integrations</label>
+                        <textarea id="integrations" name="integrations" class="form-control" placeholder="List systems or products this integrates with"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tldr-features">Key Features*</label>
+                        <textarea id="tldr-features" name="tldrFeatures" class="form-control" placeholder="List the most important features in brief" required></textarea>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h2><i class="fas fa-credit-card"></i> Plans</h2>
+                    <div id="plans-container"></div>
+                    <button type="button" class="btn btn-secondary btn-sm" id="add-plan-btn">
+                        <i class="fas fa-plus"></i> Add Plan
+                    </button>
+                    <p style="font-size:0.875rem;color:var(--text-muted);margin-top:0.5rem;">Add each plan with its name, price, and features. This will be shown as cards on the product page.</p>
+                </div>
+                
+                <div class="form-section">
+                    <h2><i class="fas fa-user-tie"></i> From the Founder</h2>
+                    <div class="form-group">
+                        <label for="founder-name">Founder Name*</label>
+                        <input type="text" id="founder-name" class="form-control" placeholder="e.g. Victor Varnado" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="founder-title">Founder Title*</label>
+                        <input type="text" id="founder-title" class="form-control" placeholder="e.g. Founder, CEO" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="founder-image">Founder Image URL*</label>
+                        <input type="url" id="founder-image" class="form-control" placeholder="e.g. https://example.com/photo.jpg" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="founder-link">Founder Profile/Social Link</label>
+                        <input type="url" id="founder-link" class="form-control" placeholder="e.g. https://linkedin.com/in/founder">
+                    </div>
+                    <div class="form-group">
+                        <label for="founder-message">Founder Message*</label>
+                        <textarea id="founder-message" class="form-control" placeholder="A message from the founder (supports formatting)" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Posts/FAQs</label>
+                        <div id="founder-posts-container"></div>
+                        <button type="button" class="btn btn-secondary btn-sm" id="add-founder-post-btn">
+                            <i class="fas fa-plus"></i> Add Post/FAQ
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <label>Helpful Links</label>
+                        <div id="founder-links-container"></div>
+                        <button type="button" class="btn btn-secondary btn-sm" id="add-founder-link-btn">
+                            <i class="fas fa-plus"></i> Add Helpful Link
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h2><i class="fas fa-clipboard-list"></i> Additional Information</h2>
+                    <div class="form-group">
+                        <label for="overview">Overview*</label>
+                        <textarea id="overview" name="overview" class="form-control" placeholder="General overview of the product and its market position" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="plans-features">Plans & Features*</label>
+                        <textarea id="plans-features" name="plansFeatures" class="form-control" placeholder="Breakdown of different plans, tiers, and their respective features" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="deal-terms">Deal Terms & Conditions</label>
+                        <textarea id="deal-terms" name="dealTerms" class="form-control" placeholder="Any special terms, conditions, or limitations"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="from-founders">From the Founders</label>
+                        <textarea id="from-founders" name="fromFounders" class="form-control" placeholder="A message from the founders or creators of the product"></textarea>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h2><i class="fas fa-question-circle"></i> Questions & Answers</h2>
+                    <div id="qa-container"></div>
+                    <button type="button" class="btn btn-secondary btn-sm" id="add-qa-btn">
+                        <i class="fas fa-plus"></i> Add Question & Answer
+                    </button>
+                    <p style="font-size:0.875rem;color:var(--text-muted);margin-top:0.5rem;">Add specific questions and their detailed answers that customers might ask.</p>
+                </div>
+
+                <div class="form-section">
+                    <h2><i class="fas fa-star"></i> Customer Reviews</h2>
+                    <div id="reviews-container"></div>
+                    <button type="button" class="btn btn-secondary btn-sm" id="add-review-btn">
+                        <i class="fas fa-plus"></i> Add Review
+                    </button>
+                    <p style="font-size:0.875rem;color:var(--text-muted);margin-top:0.5rem;">Add customer reviews with their titles and detailed feedback.</p>
+                </div>
+                
+                <div style="text-align: center; margin-top: 48px;">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <span class="spinner" id="submit-spinner"></span>
+                        <i class="fas fa-rocket"></i>
+                        Submit Product
+                    </button>
+                </div>
+                
+                <div class="progress-container" id="progress-container">
+                    <p class="progress-text" id="progress-text">Submitting... 0%</p>
+                    <div class="progress">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Floating Submit Button -->
+    <button type="submit" form="product-form" class="btn btn-primary floating-submit" id="floating-submit">
+        <i class="fas fa-rocket"></i>
+    </button>
+    
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Use direct API for both localhost and deployment
+        const API_BASE_URL = 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api';
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('product-form');
+            const imageUrlsContainer = document.getElementById('image-urls-container');
+            const addImageUrlBtn = document.getElementById('add-image-url-btn');
+            const imagePreviewContainer = document.getElementById('image-preview-container');
+            const progressContainer = document.getElementById('progress-container');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            const successAlert = document.getElementById('success-alert');
+            const errorAlert = document.getElementById('error-alert');
+            const warningAlert = document.getElementById('warning-alert');
+            const submitSpinner = document.getElementById('submit-spinner');
+            const floatingSubmit = document.getElementById('floating-submit');
+            
+            // Show/hide floating submit button based on scroll
+            window.addEventListener('scroll', function() {
+                const formRect = form.getBoundingClientRect();
+                const submitButton = form.querySelector('button[type="submit"]');
+                const submitRect = submitButton.getBoundingClientRect();
+                
+                if (submitRect.top > window.innerHeight) {
+                    floatingSubmit.classList.add('show');
+                } else {
+                    floatingSubmit.classList.remove('show');
+                }
+            });
+            
+            // Mobile menu functionality
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuBtn.addEventListener('click', function() {
+                const isExpanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
+                mobileMenuBtn.setAttribute('aria-expanded', !isExpanded);
+                mobileMenu.setAttribute('aria-hidden', isExpanded);
+            });
+            
+            // Use image button functionality
+            document.querySelectorAll('.use-image-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const imageUrl = this.getAttribute('data-url');
+                    const firstInput = document.querySelector('.image-url-input');
+                    firstInput.value = imageUrl;
+                    previewImageFromUrl(imageUrl);
+                    
+                    // Add visual feedback
+                    this.innerHTML = '<i class="fas fa-check"></i> Added!';
+                    this.classList.add('btn-primary');
+                    this.classList.remove('btn-secondary');
+                    
+                    setTimeout(() => {
+                        this.innerHTML = '<i class="fas fa-plus"></i> Use This Image';
+                        this.classList.remove('btn-primary');
+                        this.classList.add('btn-secondary');
+                    }, 2000);
+                });
+            });
+            
+            addImageUrlBtn.addEventListener('click', function() {
+                addImageUrlField();
+            });
+           
+            setupImageUrlField(imageUrlsContainer.querySelector('.image-url-entry'));
+            
+            function addImageUrlField() {
+                const imageUrlEntry = document.createElement('div');
+                imageUrlEntry.className = 'image-url-entry';
+                imageUrlEntry.innerHTML = `
+                    <input type="url" class="form-control image-url-input" placeholder="Enter image URL (e.g., https://example.com/image.jpg)">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary btn-sm preview-image-btn">
+                            <i class="fas fa-eye"></i> Preview
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm remove-url-btn">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
+                    </div>
+                `;
+                
+                imageUrlsContainer.appendChild(imageUrlEntry);
+                setupImageUrlField(imageUrlEntry);
+                
+                // Animate the new field
+                imageUrlEntry.style.opacity = '0';
+                imageUrlEntry.style.transform = 'translateY(-20px)';
+                setTimeout(() => {
+                    imageUrlEntry.style.transition = 'all 0.3s ease';
+                    imageUrlEntry.style.opacity = '1';
+                    imageUrlEntry.style.transform = 'translateY(0)';
+                }, 100);
+            }
+            
+            function setupImageUrlField(fieldElement) {
+                const previewBtn = fieldElement.querySelector('.preview-image-btn');
+                const removeBtn = fieldElement.querySelector('.remove-url-btn');
+                const urlInput = fieldElement.querySelector('.image-url-input');
+                
+                previewBtn.addEventListener('click', function() {
+                    const url = urlInput.value.trim();
+                    if (url) {
+                        previewImageFromUrl(url);
+                        
+                        // Visual feedback
+                        const originalText = this.innerHTML;
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+                        setTimeout(() => {
+                            this.innerHTML = originalText;
+                        }, 1000);
+                    } else {
+                        showAlert('Please enter a valid image URL first', 'warning');
+                    }
+                });
+                
+                urlInput.addEventListener('paste', function() {
+                    setTimeout(() => {
+                        const url = urlInput.value.trim();
+                        if (url) {
+                            previewImageFromUrl(url);
+                        }
+                    }, 100);
+                });
+                
+                if (removeBtn) {
+                    removeBtn.addEventListener('click', function() {
+                        fieldElement.style.transition = 'all 0.3s ease';
+                        fieldElement.style.opacity = '0';
+                        fieldElement.style.transform = 'translateX(-100%)';
+                        setTimeout(() => {
+                            fieldElement.remove();
+                        }, 300);
+                    });
+                }
+            }
+            
+            function previewImageFromUrl(url) {
+                let validUrl = url;
+                
+                try {
+                    new URL(validUrl);
+                } catch (e) {
+                    if (!validUrl.startsWith('http://') && !validUrl.startsWith('https://')) {
+                        validUrl = 'https://' + validUrl;
+                        try {
+                            new URL(validUrl);
+                        } catch (e) {
+                            showAlert('Please enter a valid URL', 'warning');
+                            return;
+                        }
+                    } else {
+                        showAlert('Please enter a valid URL', 'warning');
+                        return;
+                    }
+                }
+                
+                const existingPreviews = imagePreviewContainer.querySelectorAll('.image-preview');
+                for (let i = 0; i < existingPreviews.length; i++) {
+                    if (existingPreviews[i].getAttribute('data-url') === validUrl) {
+                        showAlert('This image is already in the preview', 'warning');
+                        return;
+                    }
+                }
+                
+                const previewWrapper = document.createElement('div');
+                previewWrapper.className = 'image-preview-wrapper';
+                previewWrapper.style.opacity = '0';
+                previewWrapper.style.transform = 'scale(0.8)';
+                
+                const img = document.createElement('img');
+                img.className = 'image-preview';
+                img.alt = 'Product image preview';
+                img.setAttribute('data-url', validUrl);
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-image';
+                removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                removeBtn.addEventListener('click', function() {
+                    previewWrapper.style.transition = 'all 0.3s ease';
+                    previewWrapper.style.opacity = '0';
+                    previewWrapper.style.transform = 'scale(0.8)';
+                    setTimeout(() => {
+                        previewWrapper.remove();
+                    }, 300);
+                });
+                
+                const urlText = document.createElement('div');
+                urlText.className = 'image-url-text';
+                urlText.textContent = validUrl;
+                
+                previewWrapper.appendChild(img);
+                previewWrapper.appendChild(removeBtn);
+                previewWrapper.appendChild(urlText);
+                imagePreviewContainer.appendChild(previewWrapper);
+                
+                // Animate the preview
+                setTimeout(() => {
+                    previewWrapper.style.transition = 'all 0.3s ease';
+                    previewWrapper.style.opacity = '1';
+                    previewWrapper.style.transform = 'scale(1)';
+                }, 100);
+                
+                img.onerror = function() {
+                    img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjMUUyOTNCIi8+CjxwYXRoIGQ9Ik0xNzUgMTI1SDE4NS42TDE5NSAxMzVIMjI1VjE2NUgxNzVWMTI1WiIgZmlsbD0iIzk0QTNCOCIvPgo8cGF0aCBkPSJNMjI1IDEzNUgyMzVWMTY1SDIyNVYxMzVaIiBmaWxsPSIjOTRBM0I4Ii8+CjxwYXRoIGQ9Ik0xNzUgMTY1SDE5NUwyMDUgMTc1SDIyNVYxODVIMTc1VjE2NVoiIGZpbGw9IiM5NEEzQjgiLz4KPHRleHQgeD0iMjAwIiB5PSIyMjAiIGZpbGw9IiM5NEEzQjgiIGZvbnQtZmFtaWx5PSJJbnRlciIgZm9udC1zaXplPSIxNCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SW1hZ2UgZmFpbGVkIHRvIGxvYWQ8L3RleHQ+Cjwvc3ZnPg==';
+                    urlText.style.color = 'var(--danger)';
+                    urlText.textContent = validUrl + ' (Error loading image - URL will still be submitted)';
+                };
+                
+                img.src = validUrl;
+            }
+            
+            function showAlert(message, type) {
+                const alertElement = document.getElementById(`${type}-alert`);
+                if (alertElement) {
+                    alertElement.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'exclamation-circle'}"></i> ${message}`;
+                    alertElement.style.display = 'block';
+                    alertElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                    setTimeout(() => {
+                        alertElement.style.display = 'none';
+                    }, 5000);
+                }
+            }
+            
+            // Plans functionality
+            const plansContainer = document.getElementById('plans-container');
+            const addPlanBtn = document.getElementById('add-plan-btn');
+            let planCount = 0;
+            
+            function createPlanCard(planIdx) {
+                const planDiv = document.createElement('div');
+                planDiv.className = 'plan-entry';
+                planDiv.innerHTML = `
+                    <div style="display:flex;gap:1rem;align-items:center;margin-bottom:1rem;">
+                        <input type="text" class="form-control plan-name" placeholder="Plan Name (e.g. Lifetime Basic)" required style="flex:2;">
+                        <input type="text" class="form-control plan-price" placeholder="Price (e.g. $47)" required style="flex:1;">
+                        <button type="button" class="btn btn-danger btn-sm remove-plan-btn">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
+                    </div>
+                    <div class="plan-features-list">
+                        <label style="font-size:0.875rem;font-weight:600;color:var(--text-primary);margin-bottom:0.75rem;display:block;">Features</label>
+                        <div class="plan-features-container"></div>
+                        <button type="button" class="btn btn-secondary btn-sm add-feature-btn">
+                            <i class="fas fa-plus"></i> Add Feature
+                        </button>
+                    </div>
+                `;
+                
+                const featuresContainer = planDiv.querySelector('.plan-features-container');
+                
+                function addFeatureField(val = '') {
+                    const featureDiv = document.createElement('div');
+                    featureDiv.style = 'display:flex;gap:0.5rem;margin-bottom:0.75rem;align-items:center;';
+                    featureDiv.innerHTML = `
+                        <input type="text" class="form-control plan-feature" placeholder="Feature description" value="${val}" style="flex:1;">
+                        <button type="button" class="btn btn-danger btn-sm remove-feature-btn">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    featureDiv.querySelector('.remove-feature-btn').onclick = () => {
+                        featureDiv.style.transition = 'all 0.3s ease';
+                        featureDiv.style.opacity = '0';
+                        featureDiv.style.transform = 'translateX(-100%)';
+                        setTimeout(() => featureDiv.remove(), 300);
+                    };
+                    featuresContainer.appendChild(featureDiv);
+                    
+                    // Animate new feature
+                    featureDiv.style.opacity = '0';
+                    featureDiv.style.transform = 'translateY(-10px)';
+                    setTimeout(() => {
+                        featureDiv.style.transition = 'all 0.3s ease';
+                        featureDiv.style.opacity = '1';
+                        featureDiv.style.transform = 'translateY(0)';
+                    }, 100);
+                }
+                
+                planDiv.querySelector('.add-feature-btn').onclick = () => addFeatureField();
+                addFeatureField(); // Add one feature field by default
+                
+                planDiv.querySelector('.remove-plan-btn').onclick = () => {
+                    planDiv.style.transition = 'all 0.3s ease';
+                    planDiv.style.opacity = '0';
+                    planDiv.style.transform = 'translateX(-100%)';
+                    setTimeout(() => planDiv.remove(), 300);
+                };
+                
+                return planDiv;
+            }
+            
+            addPlanBtn.onclick = function() {
+                const newPlan = createPlanCard(planCount++);
+                plansContainer.appendChild(newPlan);
+                
+                // Animate new plan
+                newPlan.style.opacity = '0';
+                newPlan.style.transform = 'translateY(-20px)';
+                setTimeout(() => {
+                    newPlan.style.transition = 'all 0.3s ease';
+                    newPlan.style.opacity = '1';
+                    newPlan.style.transform = 'translateY(0)';
+                }, 100);
+            };
+            
+            // Founder posts and links functionality
+            const founderPostsContainer = document.getElementById('founder-posts-container');
+            const addFounderPostBtn = document.getElementById('add-founder-post-btn');
+            const founderLinksContainer = document.getElementById('founder-links-container');
+            const addFounderLinkBtn = document.getElementById('add-founder-link-btn');
+            
+            function addFounderPostField(val = '') {
+                const div = document.createElement('div');
+                div.style = 'display:flex;gap:0.5rem;margin-bottom:0.75rem;align-items:center;';
+                div.innerHTML = `
+                    <input type="text" class="form-control founder-post" placeholder="Post/FAQ title" value="${val}" style="flex:1;">
+                    <button type="button" class="btn btn-danger btn-sm remove-founder-post-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                div.querySelector('.remove-founder-post-btn').onclick = () => {
+                    div.style.transition = 'all 0.3s ease';
+                    div.style.opacity = '0';
+                    div.style.transform = 'translateX(-100%)';
+                    setTimeout(() => div.remove(), 300);
+                };
+                founderPostsContainer.appendChild(div);
+                
+                // Animate new field
+                div.style.opacity = '0';
+                div.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    div.style.transition = 'all 0.3s ease';
+                    div.style.opacity = '1';
+                    div.style.transform = 'translateY(0)';
+                }, 100);
+            }
+            
+            function addFounderLinkField(val = '') {
+                const div = document.createElement('div');
+                div.style = 'display:flex;gap:0.5rem;margin-bottom:0.75rem;align-items:center;';
+                div.innerHTML = `
+                    <input type="text" class="form-control founder-link" placeholder="Helpful link (e.g. https://help.com)" value="${val}" style="flex:1;">
+                    <button type="button" class="btn btn-danger btn-sm remove-founder-link-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                div.querySelector('.remove-founder-link-btn').onclick = () => {
+                    div.style.transition = 'all 0.3s ease';
+                    div.style.opacity = '0';
+                    div.style.transform = 'translateX(-100%)';
+                    setTimeout(() => div.remove(), 300);
+                };
+                founderLinksContainer.appendChild(div);
+                
+                // Animate new field
+                div.style.opacity = '0';
+                div.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    div.style.transition = 'all 0.3s ease';
+                    div.style.opacity = '1';
+                    div.style.transform = 'translateY(0)';
+                }, 100);
+            }
+            
+            addFounderPostBtn.onclick = () => addFounderPostField();
+            addFounderLinkBtn.onclick = () => addFounderLinkField();
+            
+            // Q&A functionality
+            const qaContainer = document.getElementById('qa-container');
+            const addQABtn = document.getElementById('add-qa-btn');
+
+            function addQAField() {
+                const qaDiv = document.createElement('div');
+                qaDiv.className = 'qa-entry';
+                qaDiv.innerHTML = `
+                    <div class="form-group">
+                        <input type="text" class="form-control qa-question" placeholder="Question" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control qa-answer" placeholder="Detailed answer" required rows="3"></textarea>
+                    </div>
+                    <button type="button" class="btn btn-danger btn-sm remove-qa-btn">
+                        <i class="fas fa-trash"></i> Remove Q&A
+                    </button>
+                `;
+
+                qaDiv.querySelector('.remove-qa-btn').onclick = () => {
+                    qaDiv.style.transition = 'all 0.3s ease';
+                    qaDiv.style.opacity = '0';
+                    qaDiv.style.transform = 'translateX(-100%)';
+                    setTimeout(() => qaDiv.remove(), 300);
+                };
+                qaContainer.appendChild(qaDiv);
+                
+                // Animate new Q&A
+                qaDiv.style.opacity = '0';
+                qaDiv.style.transform = 'translateY(-20px)';
+                setTimeout(() => {
+                    qaDiv.style.transition = 'all 0.3s ease';
+                    qaDiv.style.opacity = '1';
+                    qaDiv.style.transform = 'translateY(0)';
+                }, 100);
+            }
+
+            addQABtn.onclick = addQAField;
+
+            // Reviews functionality
+            const reviewsContainer = document.getElementById('reviews-container');
+            const addReviewBtn = document.getElementById('add-review-btn');
+
+            function addReviewField() {
+                const reviewDiv = document.createElement('div');
+                reviewDiv.className = 'review-entry';
+                reviewDiv.innerHTML = `
+                    <div class="form-group">
+                        <input type="text" class="form-control review-title" placeholder="Review Title" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control reviewer-name" placeholder="Reviewer Name" required>
+                    </div>
+                    <div class="form-group">
+                        <select class="form-control review-rating" required>
+                            <option value="">Select Rating</option>
+                            <option value="5">5 Stars ⭐⭐⭐⭐⭐</option>
+                            <option value="4">4 Stars ⭐⭐⭐⭐</option>
+                            <option value="3">3 Stars ⭐⭐⭐</option>
+                            <option value="2">2 Stars ⭐⭐</option>
+                            <option value="1">1 Star ⭐</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control review-text" placeholder="Detailed review" required rows="4"></textarea>
+                    </div>
+                    <button type="button" class="btn btn-danger btn-sm remove-review-btn">
+                        <i class="fas fa-trash"></i> Remove Review
+                    </button>
+                `;
+
+                reviewDiv.querySelector('.remove-review-btn').onclick = () => {
+                    reviewDiv.style.transition = 'all 0.3s ease';
+                    reviewDiv.style.opacity = '0';
+                    reviewDiv.style.transform = 'translateX(-100%)';
+                    setTimeout(() => reviewDiv.remove(), 300);
+                };
+                reviewsContainer.appendChild(reviewDiv);
+                
+                // Animate new review
+                reviewDiv.style.opacity = '0';
+                reviewDiv.style.transform = 'translateY(-20px)';
+                setTimeout(() => {
+                    reviewDiv.style.transition = 'all 0.3s ease';
+                    reviewDiv.style.opacity = '1';
+                    reviewDiv.style.transform = 'translateY(0)';
+                }, 100);
+            }
+
+            addReviewBtn.onclick = addReviewField;
+            
+            // Form submission
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const token = localStorage.getItem('jwtToken');
+                
+                let userEmail = null;
+                if (token) {
+                    try {
+                        const payload = JSON.parse(atob(token.split('.')[1]));
+                        userEmail = payload.email || payload.sub;
+                    } catch (e) {
+                        console.error('Error parsing token:', e);
+                    }
+                }
+                
+                // Hide all alerts
+                successAlert.style.display = 'none';
+                errorAlert.style.display = 'none';
+                warningAlert.style.display = 'none';
+                
+                const previewedImages = imagePreviewContainer.querySelectorAll('.image-preview');
+                if (previewedImages.length === 0) {
+                    showAlert('Please add at least one valid image URL.', 'warning');
+                    return;
+                }
+                
+                submitSpinner.style.display = 'inline-block';
+                progressContainer.style.display = 'block';
+                
+                // Animate progress bar
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += Math.random() * 15;
+                    if (progress > 90) progress = 90;
+                    progressBar.style.width = progress + '%';
+                    progressText.textContent = `Submitting... ${Math.round(progress)}%`;
+                }, 200);
+                
+                try {
+                    const formData = new FormData(form);
+                    
+                    // Collect plans data
+                    const plans = [];
+                    plansContainer.querySelectorAll('.plan-entry').forEach(planDiv => {
+                        const name = planDiv.querySelector('.plan-name').value.trim();
+                        const price = planDiv.querySelector('.plan-price').value.trim();
+                        const features = Array.from(planDiv.querySelectorAll('.plan-feature')).map(f => f.value.trim()).filter(Boolean);
+                        if (name && price && features.length) {
+                            plans.push({ name, price, features });
+                        }
+                    });
+                    
+                    // Collect Q&A data
+                    const qaData = [];
+                    qaContainer.querySelectorAll('.qa-entry').forEach(qaDiv => {
+                        const question = qaDiv.querySelector('.qa-question').value.trim();
+                        const answer = qaDiv.querySelector('.qa-answer').value.trim();
+                        if (question && answer) {
+                            qaData.push({ question, answer });
+                        }
+                    });
+
+                    // Collect reviews data
+                    const reviewsData = [];
+                    reviewsContainer.querySelectorAll('.review-entry').forEach(reviewDiv => {
+                        const title = reviewDiv.querySelector('.review-title').value.trim();
+                        const name = reviewDiv.querySelector('.reviewer-name').value.trim();
+                        const rating = reviewDiv.querySelector('.review-rating').value;
+                        const text = reviewDiv.querySelector('.review-text').value.trim();
+                        if (title && name && rating && text) {
+                            reviewsData.push({ title, name, rating: parseInt(rating), text });
+                        }
+                    });
+                    
+                    // Prepare product data
+                    const productData = {
+                        productName: formData.get('productName'),
+                        price: formData.get('price'),
+                        brief: formData.get('brief'),
+                        deepExplanation: formData.get('deepExplanation'),
+                        bestFeatures: formData.get('bestFeatures'),
+                        tldr: {
+                            bestFor: formData.get('bestFor'),
+                            alternatives: formData.get('alternatives'),
+                            integrations: formData.get('integrations'),
+                            features: formData.get('tldrFeatures')
+                        },
+                        overview: formData.get('overview'),
+                        plansFeatures: formData.get('plansFeatures'),
+                        plans: plans,
+                        dealTerms: formData.get('dealTerms'),
+                        fromFounders: formData.get('fromFounders'),
+                        imageUrls: [],
+                        founder: {
+                            name: document.getElementById('founder-name').value.trim(),
+                            title: document.getElementById('founder-title').value.trim(),
+                            image: document.getElementById('founder-image').value.trim(),
+                            link: document.getElementById('founder-link').value.trim(),
+                            message: document.getElementById('founder-message').value.trim(),
+                            posts: Array.from(document.querySelectorAll('.founder-post')).map(x => x.value.trim()).filter(Boolean),
+                            links: Array.from(document.querySelectorAll('.founder-link')).map(x => x.value.trim()).filter(Boolean)
+                        },
+                        qa: qaData,
+                        reviews: reviewsData,
+                        createdAt: Date.now(),
+                        productId: 'prod_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                        isPublic: false // Always set to false for admin approval
+                    };
+                    
+                    // Collect image URLs
+                    for (let i = 0; i < previewedImages.length; i++) {
+                        const imageUrl = previewedImages[i].getAttribute('data-url');
+                        productData.imageUrls.push(imageUrl);
+                    }
+                    
+                    const apiRequestData = {
+                        task: 'data',
+                        operation: 'add',
+                        projectType: 'Product',
+                        website: 'digital-oncely',
+                        data: productData
+                    };
+                    
+                    const fetchOptions = {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                        },
+                        body: JSON.stringify(apiRequestData)
+                    };
+                    
+                    const response = await fetch(API_BASE_URL, fetchOptions);
+                    let data;
+                    try {
+                        data = await response.clone().json();
+                    } catch (e) {
+                        console.error('API response is not JSON:', e);
+                    }
+                    
+                    if (!response.ok) {
+                        const errorData = data || {};
+                        console.error('Error submitting product:', errorData);
+                        throw new Error(errorData.error || errorData.details?.error || 'Failed to create product');
+                    }
+
+                    // Complete progress
+                    clearInterval(progressInterval);
+                    progressBar.style.width = '100%';
+                    progressText.textContent = 'Submission complete! 100%';
+
+                    showAlert('Product created successfully! Redirecting to homepage...', 'success');
+
+                    setTimeout(() => {
+                        window.location.href = './index.html';
+                    }, 2000);
+                    
+                } catch (error) {
+                    clearInterval(progressInterval);
+                    console.error('Error submitting product:', error);
+                    showAlert(error.message || 'An error occurred while submitting the product. Please try again.', 'danger');
+                    
+                    if (error.message.includes('login')) {
+                        setTimeout(() => {
+                            window.location.href = '/login.html';
+                        }, 2000);
+                    }
+                } finally {
+                    submitSpinner.style.display = 'none';
+                    setTimeout(() => {
+                        progressContainer.style.display = 'none';
+                        progressBar.style.width = '0%';
+                    }, 2000);
+                }
+            });
+            
+            // Auto-click example image
+            const exampleButton = document.querySelector('.use-image-btn');
+            if (exampleButton) {
+                setTimeout(() => {
+                    exampleButton.click();
+                }, 1000);
+            }
+            
+            // Authentication handling
+            function updateAuthLinks() {
+                const token = localStorage.getItem('jwtToken');
+                const loginLink = document.getElementById('login-link');
+                const logoutLink = document.getElementById('logout-link');
+                const mobileLoginLink = document.getElementById('mobile-login-link');
+                const mobileLogoutLink = document.getElementById('mobile-logout-link');
+                
+                if (token) {
+                    if (loginLink) loginLink.style.display = 'none';
+                    if (logoutLink) logoutLink.style.display = '';
+                    if (mobileLoginLink) mobileLoginLink.style.display = 'none';
+                    if (mobileLogoutLink) mobileLogoutLink.style.display = '';
+                } else {
+                    if (loginLink) loginLink.style.display = '';
+                    if (logoutLink) logoutLink.style.display = 'none';
+                    if (mobileLoginLink) mobileLoginLink.style.display = '';
+                    if (mobileLogoutLink) mobileLogoutLink.style.display = 'none';
+                }
+            }
+            
+            updateAuthLinks();
+            
+            // Logout functionality
+            function doLogout(e) {
+                e.preventDefault();
+                localStorage.removeItem('jwtToken');
+                showAlert('Logged out successfully!', 'success');
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+            }
+            
+            const logoutLink = document.getElementById('logout-link');
+            const mobileLogoutLink = document.getElementById('mobile-logout-link');
+            if (logoutLink) logoutLink.addEventListener('click', doLogout);
+            if (mobileLogoutLink) mobileLogoutLink.addEventListener('click', doLogout);
+            
+            // Form validation enhancements
+            const requiredFields = form.querySelectorAll('input[required], textarea[required]');
+            requiredFields.forEach(field => {
+                field.addEventListener('blur', function() {
+                    if (!this.value.trim()) {
+                        this.style.borderColor = '#ef4444';
+                        this.style.boxShadow = '0 0 0 3px rgba(239, 68, 68, 0.1)';
+                    } else {
+                        this.style.borderColor = 'var(--accent)';
+                        this.style.boxShadow = '0 0 0 3px rgba(6, 214, 160, 0.1)';
                     }
                 });
                 
