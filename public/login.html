@@ -1,4 +1,4 @@
-<!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,6 +7,313 @@
     <link rel="stylesheet" href="css/theme.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4338ca;
+            --primary-light: #8b5cf6;
+            --accent: #06d6a0;
+            --accent-dark: #059669;
+            --bg-primary: #0f0f23;
+            --bg-secondary: #1a1a2e;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --bg-glass: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            --border: rgba(255, 255, 255, 0.1);
+            --border-hover: rgba(255, 255, 255, 0.2);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.3);
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-accent: linear-gradient(135deg, #06d6a0 0%, #118ab2 100%);
+            --gradient-hero: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            --gradient-card: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            --blur: blur(20px);
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(6, 214, 160, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        /* Enhanced Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(15, 15, 35, 0.85);
+            backdrop-filter: var(--blur);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .navbar.scrolled {
+            background: rgba(15, 15, 35, 0.95);
+            padding: 12px 0;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+        
+        .nav-brand {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-brand:hover {
+            transform: scale(1.05);
+            filter: brightness(1.2);
+        }
+        
+        .search-bar {
+            position: relative;
+            max-width: 400px;
+            flex: 1;
+            margin: 0 32px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 14px 20px 14px 48px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            backdrop-filter: var(--blur);
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        
+        .search-bar i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-link {
+            padding: 10px 16px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-primary);
+            transition: left 0.3s ease;
+            z-index: -1;
+            opacity: 0.1;
+        }
+        
+        .nav-link:hover {
+            color: var(--text-primary);
+            background: var(--bg-glass);
+        }
+        
+        .nav-link:hover::before {
+            left: 0;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu-btn:hover {
+            background: var(--bg-glass);
+        }
+        
+        .mobile-search-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin-right: 8px;
+        }
+        
+        .mobile-search-btn:hover {
+            background: var(--bg-glass);
+        }
+        
+        .mobile-search-container {
+            display: none;
+            position: fixed;
+            top: 80px;
+            left: 0;
+            right: 0;
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: var(--blur);
+            border-top: 1px solid var(--border);
+            padding: 20px;
+            z-index: 999;
+        }
+        
+        .mobile-search-container.active {
+            display: block;
+        }
+        
+        .mobile-search-input {
+            width: 100%;
+            padding: 14px 20px 14px 48px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            backdrop-filter: var(--blur);
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 80px;
+            left: 0;
+            right: 0;
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: var(--blur);
+            border-top: 1px solid var(--border);
+            padding: 20px;
+            z-index: 999;
+        }
+        
+        .mobile-menu .nav-link {
+            display: block;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .mobile-search-btn {
+                display: block;
+            }
+            
+            .search-bar {
+                display: none;
+            }
+            
+            .hero-section {
+                padding: 80px 0;
+            }
+            
+            .featured-section,
+            .products-section {
+                padding: 80px 0;
+            }
+            
+            .featured-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            
+            .product-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            
+            .product-actions {
+                flex-direction: column;
+            }
+        }
+
         .login-container {
             min-height: 100vh;
             display: flex;
@@ -99,18 +406,45 @@
             font-weight: 500;
         }
 
-        .login-footer a:hover {
-            text-decoration: underline;
+        .error-message {
+            display: none;
+            background: var(--danger);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            text-align: center;
         }
 
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
+        .success-message {
+            display: none;
+            background: var(--success);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .back-to-home {
-            position: fixed;
+            position: absolute;
             top: 20px;
             left: 20px;
             color: var(--text-color);
@@ -118,698 +452,64 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 16px;
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
-
-        .back-to-home:hover {
-            background: var(--hover-color);
-        }
-
-        .error-message {
-            background: var(--danger-color);
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            display: none;
-        }
-
-        .success-message {
-            background: var(--success-color);
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            display: none;
-        }
-
-        @media (max-width: 480px) {
-            .login-container {
-                padding: 8px;
-            }
-            .login-card {
-                padding: 18px 6px;
-                max-width: 98vw;
-                border-radius: 10px;
-            }
-            .login-header {
-                margin-bottom: 18px;
-            }
-            .login-title {
-                font-size: 1.2rem;
-            }
-            .form-group {
-                margin-bottom: 14px;
-            }
-            .form-label {
-                font-size: 0.95rem;
-            }
-            .form-control {
-                padding: 10px 8px;
-                font-size: 0.98rem;
-                border-radius: 6px;
-            }
-            .btn-login {
-                padding: 10px;
-                font-size: 1rem;
-                border-radius: 6px;
-            }
-            .login-footer {
-                margin-top: 14px;
-                font-size: 0.98rem;
-            }
-            .theme-toggle {
-                top: 10px;
-                right: 10px;
-                font-size: 1rem;
-                padding: 8px;
-            }
-            .back-to-home {
-                top: 10px;
-                left: 10px;
-                padding: 8px 10px;
-                font-size: 0.95rem;
-                border-radius: 6px;
-            }
-        }
-        html, body {
-            max-width: 100vw;
-            overflow-x: hidden;
-        }
-    </style>
-</head>
-<body>
-    <div class="login-container">
-        <a href="index.html" class="back-to-home">
-            <i class="fas fa-arrow-left"></i>
-            Back to Home
-        </a>
-
-        
-
-        <div class="login-card">
-            <div class="login-header">
-                <h1 class="login-title">Welcome Back</h1>
-                <p class="login-subtitle">Sign in to continue to Digital Oncely</p>
-            </div>
-
-            <div class="error-message" id="error-message"></div>
-            <div class="success-message" id="success-message"></div>
-
-            <form id="login-form">
-                <div class="form-group">
-                    <label class="form-label" for="email">Email Address</label>
-                    <input type="email" class="form-control" id="email" required placeholder="Enter your email">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="password">Password</label>
-                    <input type="password" class="form-control" id="password" required placeholder="Enter your password">
-                </div>
-
-                <button type="submit" class="btn-login">
-                    <span class="spinner" id="login-spinner" style="display: none;"></span>
-                    <span id="login-text">Sign In</span>
-                </button>
-            </form>
-
-            <div class="login-footer">
-                <p>Don't have an account? <a href="signup.html">Sign up</a></p>
-            </div>
-        </div>
-    </div>
-
-    <script src="js/theme.js"></script>
-    <script>
-        const IS_PRODUCTION = window.location.hostname !== 'localhost';
-                        const API_BASE_URL = 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api';
-        
-        function updateThemeIcon(isDark) {
-            const themeToggle = document.getElementById('theme-toggle');
-            const themeIcon = themeToggle ? themeToggle.querySelector('i') : null;
-            if (themeIcon) {
-                themeIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-            }
-        }
-        
-        const themeToggle = document.getElementById('theme-toggle');
-        const themeIcon = themeToggle ? themeToggle.querySelector('i') : null;
-        
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            document.body.classList.add(savedTheme);
-            if (savedTheme === 'dark-theme' && themeIcon) {
-                themeIcon.classList.remove('fa-moon');
-                themeIcon.classList.add('fa-sun');
-            }
-        } else {
-            
-            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.body.classList.add('dark-theme');
-                updateThemeIcon(true);
-            }
-        }
-        
-        if (themeToggle && themeIcon) {
-            themeToggle.addEventListener('click', () => {
-                document.body.classList.toggle('dark-theme');
-                let theme = 'light-theme';
-                if (document.body.classList.contains('dark-theme')) {
-                    theme = 'dark-theme';
-                    themeIcon.classList.remove('fa-moon');
-                    themeIcon.classList.add('fa-sun');
-                } else {
-                    themeIcon.classList.remove('fa-sun');
-                    themeIcon.classList.add('fa-moon');
-                }
-                localStorage.setItem('theme', theme);
-            });
-        }
-        
-        const loginForm = document.getElementById('login-form');
-        const errorMessage = document.getElementById('error-message');
-        const successMessage = document.getElementById('success-message');
-        const loginSpinner = document.getElementById('login-spinner');
-        const loginText = document.getElementById('login-text');
-
-        async function apiRequest(body, token) {
-            const url = IS_PRODUCTION
-                ? 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api'
-                : '/api/proxy';
-            
-            return fetch(url, {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-                },
-                body: JSON.stringify(body)
-            });
-        }
-        
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            errorMessage.style.display = 'none';
-            successMessage.style.display = 'none';
-            
-            loginSpinner.style.display = 'inline-block';
-            loginText.textContent = 'Signing in...';
-
-            try {
-                const email = document.getElementById('email').value.trim();
-                const password = document.getElementById('password').value.trim();
-
-                if (!email || !password) {
-                    throw new Error('Please enter both email and password');
-                }
-
-                if (!email.includes('@') || !email.includes('.')) {
-                    throw new Error('Please enter a valid email address');
-                }
-
-                console.log('Sending login request...');
-                let response;
-                if (IS_PRODUCTION) {
-                    response = await fetch('https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        },
-                                                    body: JSON.stringify({
-                                task: 'auth',
-                                action: 'login',
-                                email: email,
-                                password: password,
-                                website: 'digital-oncely'
-                            })
-                    });
-                }
-                const data = await response.json();
-                if (response.ok) {
-                    localStorage.setItem('jwtToken', data.token);
-                    successMessage.textContent = 'Login successful! Redirecting...';
-                    successMessage.style.display = 'block';
-                    setTimeout(() => {
-                        window.location.href = 'products.html';
-                    }, 1000);
-                } else {
-                    showError(data.error || 'Invalid credentials');
-                }
-            } catch (error) {
-                console.error('Login error:', error);
-                showError('Failed to connect to the server.');
-            } finally {
-                loginSpinner.style.display = 'none';
-                loginText.textContent = 'Sign In';
-            }
-        });
-
-        function showError(message) {
-            errorMessage.textContent = message;
-            errorMessage.style.display = 'block';
-        }
-
-        const token = localStorage.getItem('token');
-        if (token) {
-           
-        }
-
-        function updateAuthLinks() {
-            const token = localStorage.getItem('jwtToken');
-            const loginLink = document.getElementById('login-link');
-            const logoutLink = document.getElementById('logout-link');
-            const mobileLoginLink = document.getElementById('mobile-login-link');
-            const mobileLogoutLink = document.getElementById('mobile-logout-link');
-            if (token) {
-                if (loginLink) loginLink.style.display = 'none';
-                if (logoutLink) logoutLink.style.display = '';
-                if (mobileLoginLink) mobileLoginLink.style.display = 'none';
-                if (mobileLogoutLink) mobileLogoutLink.style.display = '';
-            } else {
-                if (loginLink) loginLink.style.display = '';
-                if (logoutLink) logoutLink.style.display = 'none';
-                if (mobileLoginLink) mobileLoginLink.style.display = '';
-                if (mobileLogoutLink) mobileLogoutLink.style.display = 'none';
-            }
-        }
-        document.addEventListener('DOMContentLoaded', function() {
-            updateAuthLinks();
-            const logoutLink = document.getElementById('logout-link');
-            const mobileLogoutLink = document.getElementById('mobile-logout-link');
-            function doLogout(e) {
-                e.preventDefault();
-                localStorage.removeItem('jwtToken');
-                location.reload();
-            }
-            if (logoutLink) logoutLink.addEventListener('click', doLogout);
-            if (mobileLogoutLink) mobileLogoutLink.addEventListener('click', doLogout);
-        });
-    </script>
-</body>
-</html>  -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Digital Oncely</title>
-    <link rel="stylesheet" href="css/theme.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-        
-        :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            --glass-bg: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --backdrop-blur: blur(20px);
-            --shadow-primary: 0 8px 32px 0 rgba(102, 126, 234, 0.3);
-            --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.8);
-            --input-bg: rgba(255, 255, 255, 0.1);
-            --input-border: rgba(255, 255, 255, 0.3);
-            --input-focus: rgba(102, 126, 234, 0.8);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .animated-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            overflow: hidden;
-        }
-
-        .floating-shape {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .shape-1 {
-            width: 100px;
-            height: 100px;
-            top: 20%;
-            left: 10%;
-            animation-delay: 0s;
-        }
-
-        .shape-2 {
-            width: 80px;
-            height: 80px;
-            top: 60%;
-            right: 15%;
-            animation-delay: 2s;
-        }
-
-        .shape-3 {
-            width: 120px;
-            height: 120px;
-            bottom: 20%;
-            left: 60%;
-            animation-delay: 4s;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
-        }
-
-        .login-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .back-to-home {
-            position: fixed;
-            top: 30px;
-            left: 30px;
-            color: var(--text-primary);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 20px;
-            border-radius: 50px;
-            background: var(--glass-bg);
-            backdrop-filter: var(--backdrop-blur);
-            border: 1px solid var(--glass-border);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-weight: 500;
-            z-index: 10;
-        }
-
-        .back-to-home:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-glass);
-            background: rgba(255, 255, 255, 0.15);
-        }
-
-        .login-card {
-            background: var(--glass-bg);
-            backdrop-filter: var(--backdrop-blur);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            box-shadow: var(--shadow-glass);
-            width: 100%;
-            max-width: 450px;
-            padding: 50px 40px;
-            position: relative;
-            overflow: hidden;
-            animation: slideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .login-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .login-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .login-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .login-subtitle {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            font-weight: 400;
-        }
-
-        .form-group {
-            margin-bottom: 28px;
-            position: relative;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 12px;
-            color: var(--text-primary);
-            font-weight: 600;
-            font-size: 0.95rem;
-            letter-spacing: 0.5px;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 18px 20px;
-            border: 1px solid var(--input-border);
-            border-radius: 16px;
-            background: var(--input-bg);
-            backdrop-filter: blur(10px);
-            color: var(--text-primary);
-            font-size: 1rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            outline: none;
-        }
-
-        .form-control::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        .form-control:focus {
-            border-color: var(--input-focus);
-            background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .btn-login {
-            width: 100%;
-            padding: 18px;
-            background: var(--primary-gradient);
-            color: white;
-            border: none;
-            border-radius: 16px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-login::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .btn-login:hover::before {
-            left: 100%;
-        }
-
-        .btn-login:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-primary);
-        }
-
-        .btn-login:active {
-            transform: translateY(-1px);
-        }
-
-        .login-footer {
-            text-align: center;
-            margin-top: 32px;
-            color: var(--text-secondary);
-            font-size: 1rem;
-        }
-
-        .login-footer a {
-            color: var(--text-primary);
-            text-decoration: none;
-            font-weight: 600;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
             transition: all 0.3s ease;
         }
 
-        .login-footer a:hover {
-            text-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
-        }
-
-        .error-message, .success-message {
-            padding: 16px 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            font-weight: 500;
-            display: none;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .error-message {
-            background: rgba(248, 113, 113, 0.2);
-            color: #fecaca;
-            border-left: 4px solid #f87171;
-        }
-
-        .success-message {
-            background: rgba(74, 222, 128, 0.2);
-            color: #bbf7d0;
-            border-left: 4px solid #4ade80;
-        }
-
-        .spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 0.8s linear infinite;
-            margin-right: 8px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        @media (max-width: 480px) {
-            .login-container {
-                padding: 20px 16px;
-            }
-            
-            .back-to-home {
-                top: 20px;
-                left: 20px;
-                padding: 10px 16px;
-                font-size: 0.9rem;
-            }
-            
-            .login-card {
-                padding: 40px 24px;
-                border-radius: 20px;
-            }
-            
-            .login-title {
-                font-size: 2rem;
-            }
-            
-            .login-subtitle {
-                font-size: 1rem;
-            }
-            
-            .form-control {
-                padding: 16px 18px;
-                font-size: 0.95rem;
-            }
-            
-            .btn-login {
-                padding: 16px;
-                font-size: 1rem;
-            }
-        }
-
-        .theme-toggle {
-            position: fixed;
-            top: 30px;
-            right: 30px;
-            background: var(--glass-bg);
-            backdrop-filter: var(--backdrop-blur);
-            border: 1px solid var(--glass-border);
-            color: var(--text-primary);
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 10;
-        }
-
-        .theme-toggle:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-glass);
-            background: rgba(255, 255, 255, 0.15);
+        .back-to-home:hover {
+            color: var(--primary-color);
+            transform: translateX(-4px);
         }
     </style>
 </head>
 <body>
-    <div class="animated-bg">
-        <div class="floating-shape shape-1"></div>
-        <div class="floating-shape shape-2"></div>
-        <div class="floating-shape shape-3"></div>
+    <!-- Enhanced Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-content">
+            <a href="index.html" class="nav-brand">Digital Oncely</a>
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" class="search-input" placeholder="Search amazing products...">
+            </div>
+            <div class="nav-links">
+                <a href="products.html" class="nav-link">Products</a>
+                <a href="addproduct.html" class="nav-link">Add Product</a>
+                <a href="login.html" class="nav-link" id="login-link">Login</a>
+                <a href="#" class="nav-link" id="logout-link" style="display:none;">Logout</a>
+                <a href="blog.html" class="nav-link">Blog</a>
+                <a href="addblog.html" class="nav-link">Add Blog</a>
+                <a href="cart.html" class="nav-link">Cart</a>
+                <a href="buynow.html" class="nav-link">Buy Now</a>
+            </div>
+            <div class="mobile-controls">
+                <button class="mobile-search-btn" id="mobile-search-btn" aria-label="Search">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Search Container -->
+    <div class="mobile-search-container" id="mobile-search-container">
+        <div style="position: relative;">
+            <i class="fas fa-search" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-secondary);"></i>
+            <input type="text" class="mobile-search-input" placeholder="Search amazing products...">
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+        <a href="products.html" class="nav-link">Products</a>
+        <a href="addproduct.html" class="nav-link">Add Product</a>
+        <a href="login.html" class="nav-link" id="mobile-login-link">Login</a>
+        <a href="#" class="nav-link" id="mobile-logout-link" style="display:none;">Logout</a>
+        <a href="blog.html" class="nav-link">Blog</a>
+        <a href="addblog.html" class="nav-link">Add Blog</a>
+        <a href="cart.html" class="nav-link">Cart</a>
+        <a href="buynow.html" class="nav-link">Buy Now</a>
     </div>
 
     <div class="login-container">
@@ -817,10 +517,6 @@
             <i class="fas fa-arrow-left"></i>
             Back to Home
         </a>
-
-        <button class="theme-toggle" id="theme-toggle">
-            <i class="fas fa-moon"></i>
-        </button>
 
         <div class="login-card">
             <div class="login-header">
@@ -856,6 +552,62 @@
 
     <script src="js/theme.js"></script>
     <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu functionality
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            const isOpen = mobileMenu.style.display === 'block';
+            mobileMenu.style.display = isOpen ? 'none' : 'block';
+            mobileMenuBtn.querySelector('i').className = isOpen ? 'fas fa-bars' : 'fas fa-times';
+            mobileMenuBtn.setAttribute('aria-expanded', !isOpen);
+            
+            // Close mobile search when opening menu
+            if (!isOpen) {
+                document.getElementById('mobile-search-container').classList.remove('active');
+            }
+        });
+
+        // Mobile search functionality
+        const mobileSearchBtn = document.getElementById('mobile-search-btn');
+        const mobileSearchContainer = document.getElementById('mobile-search-container');
+        
+        mobileSearchBtn.addEventListener('click', () => {
+            const isActive = mobileSearchContainer.classList.contains('active');
+            if (isActive) {
+                mobileSearchContainer.classList.remove('active');
+            } else {
+                mobileSearchContainer.classList.add('active');
+                // Close mobile menu when opening search
+                mobileMenu.style.display = 'none';
+                mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
+                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // Close mobile menu and search when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+                mobileMenu.style.display = 'none';
+                mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
+                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+            }
+            
+            if (!mobileSearchBtn.contains(e.target) && !mobileSearchContainer.contains(e.target)) {
+                mobileSearchContainer.classList.remove('active');
+            }
+        });
+
         const IS_PRODUCTION = window.location.hostname !== 'localhost';
         const API_BASE_URL = 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api';
         

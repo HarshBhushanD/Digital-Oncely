@@ -192,6 +192,9 @@
                     <a href="buynow.html" class="nav-link">Buy Now</a>
                 </div>
                 <div class="mobile-controls">
+                    <button class="mobile-search-btn" id="mobile-search-btn" aria-label="Search">
+                        <i class="fas fa-search"></i>
+                    </button>
                     <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false">
                         <i class="fas fa-bars"></i>
                     </button>
@@ -199,6 +202,15 @@
             </div>
         </div>
     </nav>
+
+    <!-- Mobile Search Container -->
+    <div class="mobile-search-container" id="mobile-search-container">
+        <div style="position: relative;">
+            <i class="fas fa-search" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-secondary);"></i>
+            <input type="text" class="mobile-search-input" placeholder="Search amazing products...">
+        </div>
+    </div>
+
     <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
         <a href="products.html" class="nav-link">Products</a>
         <a href="addproduct.html" class="nav-link">Add Product</a>
@@ -867,6 +879,58 @@
                 background: var(--bg-glass);
             }
             
+            .mobile-search-btn {
+                display: none;
+                background: none;
+                border: none;
+                color: var(--text-primary);
+                font-size: 1.2rem;
+                cursor: pointer;
+                padding: 8px;
+                border-radius: 8px;
+                transition: all 0.3s ease;
+                margin-right: 8px;
+            }
+            
+            .mobile-search-btn:hover {
+                background: var(--bg-glass);
+            }
+            
+            .mobile-search-container {
+                display: none;
+                position: fixed;
+                top: 80px;
+                left: 0;
+                right: 0;
+                background: rgba(15, 15, 35, 0.95);
+                backdrop-filter: var(--blur);
+                border-top: 1px solid var(--border);
+                padding: 20px;
+                z-index: 999;
+            }
+            
+            .mobile-search-container.active {
+                display: block;
+            }
+            
+            .mobile-search-input {
+                width: 100%;
+                padding: 14px 20px 14px 48px;
+                background: var(--bg-glass);
+                border: 1px solid var(--border);
+                border-radius: 16px;
+                color: var(--text-primary);
+                font-size: 0.95rem;
+                backdrop-filter: var(--blur);
+                transition: all 0.3s ease;
+            }
+            
+            .mobile-search-input:focus {
+                outline: none;
+                border-color: var(--primary);
+                box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            }
+            
             .mobile-menu {
                 display: none;
                 position: fixed;
@@ -1335,9 +1399,12 @@
                     display: block;
                 }
                 
+                .mobile-search-btn {
+                    display: block;
+                }
+                
                 .search-bar {
-                    max-width: 200px;
-                    margin: 0 16px;
+                    display: none;
                 }
                 
                 .products-hero {
@@ -1394,1094 +1461,6 @@
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-content">
-                <a href="index.html" class="nav-brand">Digital Oncely</a>
-                <div class="search-bar">
-                    <i class="fas fa-search" style="color: var(--secondary-text)"></i>
-                    <input type="text" class="search-input" placeholder="Search products...">
-                </div>
-                <div class="nav-links">
-                    <a href="products.html" class="nav-link">Products</a>
-                    <a href="addproduct.html" class="nav-link">Add Product</a>
-                    <a href="login.html" class="nav-link" id="login-link">Login</a>
-                    <a href="#" class="nav-link" id="logout-link" style="display:none;">Logout</a>
-                    <a href="blog.html" class="nav-link">Blog</a>
-                    <a href="addblog.html" class="nav-link">Add Blog</a>
-                    <a href="cart.html" class="nav-link">Cart</a>
-                    <a href="buynow.html" class="nav-link">Buy Now</a>
-                </div>
-                <div class="mobile-controls">
-                    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
-    <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
-        <a href="products.html" class="nav-link">Products</a>
-        <a href="addproduct.html" class="nav-link">Add Product</a>
-        <a href="login.html" class="nav-link" id="mobile-login-link">Login</a>
-        <a href="#" class="nav-link" id="mobile-logout-link" style="display:none;">Logout</a>
-        <a href="blog.html" class="nav-link">Blog</a>
-        <a href="addblog.html" class="nav-link">Add Blog</a>
-        <a href="cart.html" class="nav-link">Cart</a>
-        <a href="buynow.html" class="nav-link">Buy Now</a>
-    </div>
-
-    <div class="products-hero">
-        <div class="container">
-            <h1 class="products-title"><i class="fas fa-store"></i> Our Products</h1>
-            <p class="products-desc">Discover amazing digital products crafted with care and precision.</p>
-        </div>
-    </div>
-
-    <div class="container">
-        <div id="user-products-message"></div>
-        <div class="error-message" id="error-message" style="display: none;">
-            An error occurred while loading products. Please try again later.
-        </div>
-        <div class="loading" id="loading" style="text-align: center; padding: 40px; color: var(--secondary-text);">
-            <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 16px;"></i>
-            <div>Loading products...</div>
-        </div>
-        
-        <div class="products-bg-anim">
-            <div class="dot dot1"></div>
-            <div class="dot dot2"></div>
-            <div class="dot dot3"></div>
-        </div>
-        
-        <div class="products-grid" id="products-grid"></div>
-        
-        <aside class="newsletter-sidebar">
-            <div style="font-size:2rem;font-weight:700;margin-bottom:12px;">🚀 Stay Ahead with the Hottest Lifetime Deals</div>
-            <div style="font-size:1.18rem;margin-bottom:22px;">Our team is already hunting for the next big offer. Want to stay in the loop? Be sure to subscribe!</div>
-            <form class="newsletter-form" style="margin-bottom:0;">
-                <input type="email" placeholder="Enter your email address" required>
-                <button type="submit">🔔 Loop Me In</button>
-            </form>
-        </aside>
-    </div>
-    
-    <script src="js/theme.js"></script>
-    <script>
-        const API_BASE_URL = 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api';
-
-
-        async function loadProducts() {
-    const token = localStorage.getItem('jwtToken');
-    const loading = document.getElementById('loading');
-    const errorMessage = document.getElementById('error-message');
-
-    loading.style.display = 'block';
-    errorMessage.style.display = 'none';
-
-    try {
-        const response = await fetch(API_BASE_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-            },
-            body: JSON.stringify({
-                task: 'fetch',
-                projectType: 'Product',
-                website: 'digital-oncely',
-                listAll: true,
-                includeAllUsers: true,
-                globalAccess: true,
-                noUserFilter: true,
-                global: true,
-                publicOnly: false,
-                fetchAll: true,
-                showAll: true,
-                includeAll: true,
-                adminProducts: true,
-                fetchAdminProducts: true,
-                getAllProducts: true,
-                showAllProducts: true,
-                fetchAllProducts: true
-            })
-        });
-
-        loading.style.display = 'none';
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('API Error Response:', errorText);
-            throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-        }
-
-        const data = await response.json();
-        let products = data.products || data.items || [];
-
-        if (products.length === 0) {
-            console.warn('No user products found. Trying global-only fallback...');
-
-            const fallbackResponse = await fetch(API_BASE_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-                },
-                body: JSON.stringify({
-                    task: 'fetch',
-                    projectType: 'Product',
-                    website: 'digital-oncely',
-                    global: true,
-                    publicOnly: true,
-                    fetchAllProducts: true,
-                    fetchAdminProducts: true
-                })
-            });
-
-            if (fallbackResponse.ok) {
-                const fallbackData = await fallbackResponse.json();
-                products = fallbackData.products || fallbackData.items || [];
-            } else {
-                const errorText = await fallbackResponse.text();
-                console.error('Fallback fetch failed:', errorText);
-                throw new Error(`Fallback fetch failed: ${fallbackResponse.status}`);
-            }
-        }
-
-        if (products.length > 0) {
-            renderProducts(products);
-        } else {
-            showNoProductsMessage();
-        }
-    } catch (error) {
-        loading.style.display = 'none';
-        console.error('Error loading products:', error);
-        showErrorMessage();
-    }
-}
-
-        
-        function showNoProductsMessage() {
-            const productGrid = document.getElementById('products-grid');
-            productGrid.innerHTML = `
-                <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: var(--card-bg); border-radius: 20px; margin: 20px 0;">
-                    <i class="fas fa-box-open" style="font-size: 4rem; color: var(--primary); margin-bottom: 24px; opacity: 0.7;"></i>
-                    <h2 style="margin-bottom: 16px; color: var(--text); font-size: 1.8rem;">No Products Found</h2>
-                    <p style="color: var(--secondary-text); margin-bottom: 32px; font-size: 1.1rem; max-width: 500px; margin-left: auto; margin-right: auto;">
-                        Be the first to add a product to our marketplace! Join our community of digital creators.
-                    </p>
-                    <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
-                        <a href="./login.html" class="btn-primary" style="display: inline-block; padding: 16px 32px; text-decoration: none; border-radius: 10px;">
-                            <i class="fas fa-sign-in-alt"></i> Login to Add Product
-                        </a>
-                        <a href="./signup.html" class="btn-secondary" style="display: inline-block; padding: 16px 32px; text-decoration: none; border-radius: 10px;">
-                            <i class="fas fa-user-plus"></i> Create Account
-                        </a>
-                    </div>
-                </div>
-            `;
-        }
-        
-        function showErrorMessage() {
-            const productGrid = document.getElementById('products-grid');
-            productGrid.innerHTML = `
-                <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: var(--card-bg); border-radius: 20px; margin: 20px 0;">
-                    <i class="fas fa-exclamation-triangle" style="font-size: 4rem; color: var(--warning); margin-bottom: 24px; opacity: 0.7;"></i>
-                    <h2 style="margin-bottom: 16px; color: var(--text); font-size: 1.8rem;">Connection Error</h2>
-                    <p style="color: var(--secondary-text); margin-bottom: 32px; font-size: 1.1rem; max-width: 500px; margin-left: auto; margin-right: auto;">
-                        Unable to load products at the moment. Please check your connection and try again.
-                    </p>
-                    <button onclick="loadProducts()" class="btn-primary" style="display: inline-block; padding: 16px 32px; border: none; border-radius: 10px; cursor: pointer;">
-                        <i class="fas fa-redo"></i> Retry Loading
-                    </button>
-                </div>
-            `;
-        }
-        
-        function navigateToProduct(productId) {
-            window.location.href = `product.html?id=${productId}`;
-        }
-
-        function updateAuthLinks() {
-            const token = localStorage.getItem('jwtToken');
-            const loginLink = document.getElementById('login-link');
-            const logoutLink = document.getElementById('logout-link');
-            const mobileLoginLink = document.getElementById('mobile-login-link');
-            const mobileLogoutLink = document.getElementById('mobile-logout-link');
-            if (token) {
-                if (loginLink) loginLink.style.display = 'none';
-                if (logoutLink) logoutLink.style.display = '';
-                if (mobileLoginLink) mobileLoginLink.style.display = 'none';
-                if (mobileLogoutLink) mobileLogoutLink.style.display = '';
-            } else {
-                if (loginLink) loginLink.style.display = '';
-                if (logoutLink) logoutLink.style.display = 'none';
-                if (mobileLoginLink) mobileLoginLink.style.display = '';
-                if (mobileLogoutLink) mobileLogoutLink.style.display = 'none';
-            }
-        }
-
-        function handleAddToCart(product, event) {
-            event.stopPropagation();
-            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            const existing = cart.find(item => item.productName === product.productName);
-            if (existing) {
-                existing.qty = (existing.qty || 1) + 1;
-            } else {
-                cart.push({ ...product, qty: 1 });
-            }
-            localStorage.setItem('cart', JSON.stringify(cart));
-            
-            // Visual feedback
-            const button = event.target;
-            const originalText = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-check"></i> Added!';
-            button.style.background = 'var(--success)';
-            
-            setTimeout(() => {
-                button.innerHTML = originalText;
-                button.style.background = '';
-            }, 1500);
-        }
-
-        function handleBuyNow(product, event) {
-            event.stopPropagation();
-            
-            // Ensure we have all required product data
-            const buyData = {
-                productName: product.productName || 'Unknown Product',
-                price: product.price || '0.00',
-                description: product.brief || product.description || 'No description available',
-                imageUrls: product.imageUrls || [],
-                image: (product.imageUrls && product.imageUrls[0]) || '/images/placeholder.svg',
-                id: product.id || product.productId || Date.now(),
-                // Include all original product data as backup
-                ...product
-            };
-
-            // Store in multiple places for reliability
-            localStorage.setItem('buynow', JSON.stringify(buyData));
-            sessionStorage.setItem('buynow', JSON.stringify(buyData));
-            
-            // Visual feedback before redirect
-            const button = event.target;
-            const originalText = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Redirecting...';
-            button.disabled = true;
-            
-            setTimeout(() => {
-                window.location.href = 'buynow.html';
-            }, 500);
-        }
-
-        function renderProducts(products) {
-            window._productsList = products;
-            const productGrid = document.getElementById('products-grid');
-            
-            productGrid.innerHTML = products.map((product, idx) => `
-                <div class="product-card" onclick="navigateToProduct('${product.id || product.productId || product.productName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}')">
-                    <img src="${(product.imageUrls && product.imageUrls.length > 0) ? product.imageUrls[0] : '/images/placeholder.svg'}" 
-                         alt="${product.productName}" 
-                         class="product-image"
-                         onerror="this.src='/images/placeholder.svg'">
-                    <div class="product-info">
-                        <h3 class="product-title">${product.productName}</h3>
-                        <p class="product-description">${product.brief || 'No description available'}</p>
-                        <p class="product-price">${product.price || 'Price not set'}</p>
-                        <div class="product-actions">
-                            <button class="btn-secondary" onclick="handleAddToCart(window._productsList[${idx}], event)">
-                                <i class="fas fa-cart-plus"></i> Add to Cart
-                            </button>
-                            <button class="btn-primary" onclick="handleBuyNow(window._productsList[${idx}], event)">
-                                <i class="fas fa-bolt"></i> Buy Now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Newsletter form handling
-        document.addEventListener('DOMContentLoaded', function() {
-            updateAuthLinks();
-            loadProducts();
-            
-            // Logout functionality
-            const logoutLink = document.getElementById('logout-link');
-            const mobileLogoutLink = document.getElementById('mobile-logout-link');
-            
-            function doLogout(e) {
-                e.preventDefault();
-                localStorage.removeItem('jwtToken');
-                location.reload();
-            }
-            
-            if (logoutLink) logoutLink.addEventListener('click', doLogout);
-            if (mobileLogoutLink) mobileLogoutLink.addEventListener('click', doLogout);
-            
-            // Newsletter form
-            const newsletterForm = document.querySelector('.newsletter-form');
-            if (newsletterForm) {
-                newsletterForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const email = this.querySelector('input[type="email"]').value;
-                    const button = this.querySelector('button');
-                    const originalText = button.innerHTML;
-                    
-                    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subscribing...';
-                    button.disabled = true;
-                    
-                    // Simulate subscription
-                    setTimeout(() => {
-                        button.innerHTML = '<i class="fas fa-check"></i> Subscribed!';
-                        setTimeout(() => {
-                            button.innerHTML = originalText;
-                            button.disabled = false;
-                            this.reset();
-                        }, 2000);
-                    }, 1000);
-                });
-            }
-        });
-    </script>
-</body>
-</html> 
-<!-- 
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Products - Digital Oncely</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        :root {
-            --primary: #6366f1;
-            --primary-dark: #4338ca;
-            --primary-light: #8b5cf6;
-            --accent: #06d6a0;
-            --accent-dark: #059669;
-            --bg-primary: #0f0f23;
-            --bg-secondary: #1a1a2e;
-            --bg-card: rgba(255, 255, 255, 0.05);
-            --bg-glass: rgba(255, 255, 255, 0.08);
-            --text-primary: #ffffff;
-            --text-secondary: #a1a1aa;
-            --text-muted: #71717a;
-            --border: rgba(255, 255, 255, 0.1);
-            --border-hover: rgba(255, 255, 255, 0.2);
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
-            --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.5);
-            --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.3);
-            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --gradient-accent: linear-gradient(135deg, #06d6a0 0%, #118ab2 100%);
-            --gradient-hero: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            --gradient-card: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
-            --blur: blur(20px);
-        }
-        
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-        
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(6, 214, 160, 0.1) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: -1;
-        }
-        
-        /* Enhanced Navbar */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            background: rgba(15, 15, 35, 0.85);
-            backdrop-filter: var(--blur);
-            border-bottom: 1px solid var(--border);
-            padding: 16px 0;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .navbar.scrolled {
-            background: rgba(15, 15, 35, 0.95);
-            padding: 12px 0;
-            box-shadow: var(--shadow-md);
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-        
-        .nav-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .nav-brand {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            text-decoration: none;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            transition: all 0.3s ease;
-        }
-        
-        .nav-brand:hover {
-            transform: scale(1.05);
-            filter: brightness(1.2);
-        }
-        
-        .search-bar {
-            position: relative;
-            max-width: 400px;
-            flex: 1;
-            margin: 0 32px;
-        }
-        
-        .search-input {
-            width: 100%;
-            padding: 14px 20px 14px 48px;
-            background: var(--bg-glass);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            color: var(--text-primary);
-            font-size: 0.95rem;
-            backdrop-filter: var(--blur);
-            transition: all 0.3s ease;
-        }
-        
-        .search-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-        }
-        
-        .search-bar i {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-        }
-        
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .nav-link {
-            padding: 10px 16px;
-            color: var(--text-secondary);
-            text-decoration: none;
-            border-radius: 12px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .nav-link::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: var(--gradient-primary);
-            transition: left 0.3s ease;
-            z-index: -1;
-            opacity: 0.1;
-        }
-        
-        .nav-link:hover {
-            color: var(--text-primary);
-            background: var(--bg-glass);
-        }
-        
-        .nav-link:hover::before {
-            left: 0;
-        }
-        
-        .mobile-controls {
-            display: none;
-        }
-        
-        .mobile-menu-btn {
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-        
-        .mobile-menu-btn:hover {
-            background: var(--bg-glass);
-        }
-        
-        .mobile-menu {
-            display: none;
-            position: fixed;
-            top: 80px;
-            left: 0;
-            right: 0;
-            background: rgba(15, 15, 35, 0.95);
-            backdrop-filter: var(--blur);
-            border-top: 1px solid var(--border);
-            padding: 20px;
-            z-index: 999;
-        }
-        
-        .mobile-menu .nav-link {
-            display: block;
-            padding: 16px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        /* Products Hero Section */
-        .products-hero {
-            margin-top: 80px;
-            padding: 80px 0;
-            position: relative;
-            overflow: hidden;
-            background: var(--gradient-hero);
-            background-size: 200% 200%;
-            animation: gradientShift 8s ease-in-out infinite;
-            text-align: center;
-        }
-        
-        @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-        
-        .products-hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(15, 15, 35, 0.7);
-            backdrop-filter: var(--blur);
-        }
-        
-        .products-hero .container {
-            position: relative;
-            z-index: 2;
-        }
-        
-        .products-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: clamp(2rem, 4vw, 3rem);
-            font-weight: 800;
-            margin-bottom: 24px;
-            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            line-height: 1.1;
-            animation: titleGlow 3s ease-in-out infinite alternate;
-        }
-        
-        @keyframes titleGlow {
-            0% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
-            100% { text-shadow: 0 0 40px rgba(255, 255, 255, 0.8), 0 0 60px rgba(99, 102, 241, 0.6); }
-        }
-        
-        .products-desc {
-            font-size: 1.25rem;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 40px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            animation: fadeInUp 1s ease-out 0.3s both;
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        /* Products Section */
-        .products-section {
-            padding: 120px 0;
-            position: relative;
-        }
-        
-        .products-bg-anim {
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            z-index: 0;
-            pointer-events: none;
-            overflow: hidden;
-        }
-        
-        .products-bg-anim .dot {
-            position: absolute;
-            border-radius: 50%;
-            opacity: 0.1;
-            background: var(--primary);
-            animation: float2 7s ease-in-out infinite alternate;
-        }
-        
-        .products-bg-anim .dot1 {
-            width: 60px;
-            height: 60px;
-            left: 10vw;
-            top: 10px;
-            animation-delay: 0s;
-        }
-        
-        .products-bg-anim .dot2 {
-            width: 40px;
-            height: 40px;
-            right: 12vw;
-            top: 80px;
-            animation-delay: 1.5s;
-        }
-        
-        .products-bg-anim .dot3 {
-            width: 30px;
-            height: 30px;
-            left: 40vw;
-            bottom: 10px;
-            animation-delay: 2.5s;
-        }
-        
-        @keyframes float2 {
-            0% { transform: translateY(0) scale(1); }
-            100% { transform: translateY(-20px) scale(1.12); }
-        }
-        
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 32px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .product-card {
-            background: var(--gradient-card);
-            backdrop-filter: var(--blur);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            position: relative;
-            animation: fadeInUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-            opacity: 0;
-        }
-        
-        .product-card:nth-child(1) { animation-delay: 0.1s; }
-        .product-card:nth-child(2) { animation-delay: 0.2s; }
-        .product-card:nth-child(3) { animation-delay: 0.3s; }
-        .product-card:nth-child(4) { animation-delay: 0.4s; }
-        .product-card:nth-child(5) { animation-delay: 0.5s; }
-        .product-card:nth-child(6) { animation-delay: 0.6s; }
-        
-        .product-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--gradient-primary);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            z-index: 0;
-        }
-        
-        .product-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            border-color: var(--primary);
-            box-shadow: var(--shadow-lg);
-        }
-        
-        .product-card:hover::before {
-            opacity: 0.05;
-        }
-        
-        .product-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            background: var(--bg-secondary);
-            position: relative;
-            z-index: 1;
-            transition: transform 0.3s ease;
-        }
-        
-        .product-card:hover .product-image {
-            transform: scale(1.05);
-        }
-        
-        .product-info {
-            padding: 24px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .product-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-            letter-spacing: 0.2px;
-        }
-        
-        .product-description {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            margin-bottom: 16px;
-            line-height: 1.5;
-            min-height: 48px;
-        }
-        
-        .product-price {
-            color: var(--accent);
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-        
-        .product-actions {
-            display: flex;
-            gap: 12px;
-        }
-        
-        .btn-primary {
-            background: var(--gradient-primary);
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            flex: 1;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.6s ease;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
-        }
-        
-        .btn-primary:hover::before {
-            left: 100%;
-        }
-        
-        .btn-secondary {
-            background: var(--gradient-accent);
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            flex: 1;
-        }
-        
-        .btn-secondary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(6, 214, 160, 0.4);
-        }
-        
-        /* Loading and Error States */
-        .loading {
-            text-align: center;
-            padding: 80px 24px;
-            color: var(--text-secondary);
-            background: var(--gradient-card);
-            backdrop-filter: var(--blur);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            margin: 40px 0;
-        }
-        
-        .loading i {
-            font-size: 3rem;
-            margin-bottom: 24px;
-            color: var(--primary);
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        .error-message {
-            text-align: center;
-            padding: 60px 24px;
-            background: var(--gradient-card);
-            backdrop-filter: var(--blur);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            margin: 40px 0;
-            color: var(--text-secondary);
-        }
-        
-        /* Newsletter Sidebar */
-        .newsletter-sidebar {
-            background: var(--gradient-accent);
-            border-radius: 24px;
-            padding: 40px 32px;
-            margin: 80px 0;
-            color: white;
-            text-align: center;
-            box-shadow: var(--shadow-lg);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .newsletter-sidebar::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255, 255, 255, 0.1);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .newsletter-sidebar:hover::before {
-            opacity: 1;
-        }
-        
-        .newsletter-form {
-            position: relative;
-            z-index: 1;
-        }
-        
-        .newsletter-form input {
-            width: 100%;
-            padding: 16px 20px;
-            font-size: 1.1rem;
-            border-radius: 12px;
-            border: none;
-            margin-bottom: 16px;
-            background: rgba(255, 255, 255, 0.9);
-            color: var(--bg-primary);
-            transition: all 0.3s ease;
-        }
-        
-        .newsletter-form input:focus {
-            outline: none;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
-        }
-        
-        .newsletter-form button {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.2);
-            color: white;
-            font-weight: 700;
-            font-size: 1.2rem;
-            padding: 16px 0;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .newsletter-form button:hover {
-            background: rgba(0, 0, 0, 0.4);
-            border-color: white;
-            transform: translateY(-2px);
-        }
-        
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 80px 24px;
-            background: var(--gradient-card);
-            backdrop-filter: var(--blur);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            margin: 40px 0;
-            grid-column: 1 / -1;
-        }
-        
-        .empty-state i {
-            font-size: 4rem;
-            color: var(--primary);
-            margin-bottom: 24px;
-            opacity: 0.7;
-        }
-        
-        .empty-state h2 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 16px;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .empty-state p {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            margin-bottom: 32px;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .empty-actions {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-            
-            .mobile-controls {
-                display: block;
-            }
-            
-            .search-bar {
-                max-width: 200px;
-                margin: 0 16px;
-            }
-            
-            .products-hero {
-                padding: 60px 0;
-            }
-            
-            .products-section {
-                padding: 80px 0;
-            }
-            
-            .products-grid {
-                grid-template-columns: 1fr;
-                gap: 24px;
-            }
-            
-            .product-actions {
-                flex-direction: column;
-            }
-            
-            .newsletter-sidebar {
-                margin: 60px 0;
-                padding: 32px 24px;
-            }
-            
-            .empty-actions {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .empty-actions .btn-primary,
-            .empty-actions .btn-secondary {
-                width: 100%;
-                max-width: 300px;
-            }
-        }
-        
-        /* Scrollbar Styling */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: var(--bg-secondary);
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 4px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-dark);
-        }
-    </style>
-</head>
-<body>
     <nav class="navbar" id="navbar">
         <div class="container">
             <div class="nav-content">
@@ -2501,6 +1480,9 @@
                     <a href="buynow.html" class="nav-link">Buy Now</a>
                 </div>
                 <div class="mobile-controls">
+                    <button class="mobile-search-btn" id="mobile-search-btn" aria-label="Search">
+                        <i class="fas fa-search"></i>
+                    </button>
                     <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false">
                         <i class="fas fa-bars"></i>
                     </button>
@@ -2576,6 +1558,42 @@
             const isOpen = mobileMenu.style.display === 'block';
             mobileMenu.style.display = isOpen ? 'none' : 'block';
             mobileMenuBtn.querySelector('i').className = isOpen ? 'fas fa-bars' : 'fas fa-times';
+            mobileMenuBtn.setAttribute('aria-expanded', !isOpen);
+            
+            // Close mobile search when opening menu
+            if (!isOpen) {
+                document.getElementById('mobile-search-container').classList.remove('active');
+            }
+        });
+
+        // Mobile search functionality
+        const mobileSearchBtn = document.getElementById('mobile-search-btn');
+        const mobileSearchContainer = document.getElementById('mobile-search-container');
+        
+        mobileSearchBtn.addEventListener('click', () => {
+            const isActive = mobileSearchContainer.classList.contains('active');
+            if (isActive) {
+                mobileSearchContainer.classList.remove('active');
+            } else {
+                mobileSearchContainer.classList.add('active');
+                // Close mobile menu when opening search
+                mobileMenu.style.display = 'none';
+                mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
+                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // Close mobile menu and search when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+                mobileMenu.style.display = 'none';
+                mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
+                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+            }
+            
+            if (!mobileSearchBtn.contains(e.target) && !mobileSearchContainer.contains(e.target)) {
+                mobileSearchContainer.classList.remove('active');
+            }
         });
 
         const API_BASE_URL = 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api';

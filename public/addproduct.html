@@ -2120,10 +2120,20 @@
             const mobileMenuBtn = document.getElementById('mobile-menu-btn');
             const mobileMenu = document.getElementById('mobile-menu');
             
-            mobileMenuBtn.addEventListener('click', function() {
-                const isExpanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
-                mobileMenuBtn.setAttribute('aria-expanded', !isExpanded);
-                mobileMenu.setAttribute('aria-hidden', isExpanded);
+            mobileMenuBtn.addEventListener('click', () => {
+                const isOpen = mobileMenu.style.display === 'block';
+                mobileMenu.style.display = isOpen ? 'none' : 'block';
+                mobileMenuBtn.querySelector('i').className = isOpen ? 'fas fa-bars' : 'fas fa-times';
+                mobileMenuBtn.setAttribute('aria-expanded', !isOpen);
+            });
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+                    mobileMenu.style.display = 'none';
+                    mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
+                    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                }
             });
             
             // Use image button functionality
