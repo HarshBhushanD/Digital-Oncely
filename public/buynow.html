@@ -994,6 +994,18 @@
         
         /* Mobile Menu */
         .mobile-menu {
+                display: none;
+                position: fixed;
+                top: 80px;
+                left: 50%;
+                right: 0;
+                background: rgba(15, 15, 35, 0.95);
+                backdrop-filter: var(--blur);
+                border-top: 1px solid var(--border);
+                padding: 20px;
+                z-index: 999;
+            }
+        /* .mobile-menu {
             display: none;
             position: fixed;
             top: 80px;
@@ -1004,7 +1016,7 @@
             border-top: 1px solid var(--border);
             padding: 20px;
             z-index: 999;
-        }
+        } */
         
         .mobile-menu .nav-link {
             display: block;

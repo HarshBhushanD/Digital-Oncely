@@ -646,17 +646,18 @@
             }
             
             .mobile-search-container {
-                display: none;
-                position: fixed;
-                top: 80px;
-                left: 0;
-                right: 0;
-                background: rgba(15, 15, 35, 0.95);
-                backdrop-filter: var(--blur);
-                border-top: 1px solid var(--border);
-                padding: 20px;
-                z-index: 999;
-            }
+            display: none;
+            position: fixed;
+            top: 100px;
+            margin-top: 2px;
+            left:10%;
+            right:10%;
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: var(--blur);
+            border-top: 1px solid var(--border);
+            padding: 20px;
+            z-index: 999;
+        } 
             
             .mobile-search-container.active {
                 display: block;
@@ -684,7 +685,7 @@
                 display: none;
                 position: fixed;
                 top: 80px;
-                left: 0;
+                left: 50%;
                 right: 0;
                 background: rgba(15, 15, 35, 0.95);
                 backdrop-filter: var(--blur);
@@ -692,6 +693,7 @@
                 padding: 20px;
                 z-index: 999;
             }
+            
             
             .mobile-menu .nav-link {
                 display: block;
@@ -1239,6 +1241,14 @@
             </div>
         </div>
     </nav>
+    
+    <!-- Mobile Search Container -->
+    <div class="mobile-search-container" id="mobile-search-container">
+        <div style="position: relative;">
+            <i class="fas fa-search" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-secondary);"></i>
+            <input type="text" class="mobile-search-input" placeholder="Search amazing products...">
+        </div>
+    </div>
 
     <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
         <a href="products.html" class="nav-link">Products</a>
