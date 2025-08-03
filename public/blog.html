@@ -2153,7 +2153,7 @@
         .mobile-menu-btn:active {
             transform: translateY(0);
         }
-        
+/*         
         .mobile-menu {
             display: none;
             position: fixed;
@@ -2165,7 +2165,22 @@
             border-top: 1px solid var(--border);
             padding: 20px;
             z-index: 999;
-        }
+        } */
+        
+.mobile-menu {
+    display: none;
+    position: fixed;
+    top: 80px;
+    left: 10%;
+    right: 10%;
+    background: rgba(15, 15, 35, 0.95);
+    backdrop-filter: var(--blur);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    z-index: 999;
+    box-shadow: var(--shadow-lg);
+}
         
         
         .mobile-menu .nav-link {
