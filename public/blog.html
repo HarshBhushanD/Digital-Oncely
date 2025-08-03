@@ -1774,54 +1774,129 @@
             pointer-events: none;
             z-index: -1;
         }
+        .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(15, 15, 35, 0.85);
+    backdrop-filter: var(--blur);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.navbar.scrolled {
+    background: rgba(15, 15, 35, 0.95);
+    padding: 12px 0;
+    box-shadow: var(--shadow-md);
+}
+
+.nav-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+}
+
+.nav-brand {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-decoration: none;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.nav-brand:hover {
+    transform: scale(1.05);
+    filter: brightness(1.2);
+}
         .container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 0 24px;
         }
         
-        .mobile-search-btn {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            margin-right: 8px;
-        }
+.search-bar {
+    position: relative;
+    max-width: 400px;
+    flex: 1;
+    margin: 0 32px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 14px 20px 14px 48px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    backdrop-filter: var(--blur);
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.search-bar i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+}
         
-        .mobile-search-btn:hover {
-            background: var(--bg-glass);
-        }
-        .mobile-search-container {
-            display: none;
-            position: fixed;
-            top: 80px;
-            left: 0;
-            right: 0;
-            background: rgba(15, 15, 35, 0.95);
-            backdrop-filter: var(--blur);
-            border-top: 1px solid var(--border);
-            padding: 20px;
-            z-index: 999;
-        }
+.mobile-search-btn,
+.mobile-menu-btn {
+    padding: 8px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    font-size: 16px;
+}
+
+.mobile-search-btn:hover,
+.mobile-menu-btn:hover {
+    background: var(--bg-glass);
+    color: var(--text-primary);
+}
         
-        .mobile-search-container {
-            display: none;
-            position: fixed;
-            top: 100px;
-            margin-top: 2px;
-            left:10%;
-            right:10%;
-            background: rgba(15, 15, 35, 0.95);
-            backdrop-filter: var(--blur);
-            border-top: 1px solid var(--border);
-            padding: 20px;
-            z-index: 999;
-        } 
+.mobile-search-container {
+    display: none;
+    position: fixed;
+    top: 80px;
+    left: 16px;
+    right: 16px;
+    background: rgba(15, 15, 35, 0.95);
+    backdrop-filter: var(--blur);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    z-index: 999;
+    box-shadow: var(--shadow-lg);
+}
         
         .mobile-search-container.active {
             display: block;
@@ -1990,28 +2065,38 @@
         .mobile-menu-btn:hover {
             background: var(--bg-glass);
         }
-        
         .mobile-menu {
-            display: none;
-            position: fixed;
-            top: 80px;
-            left: 50%;
-            right: 0;
-            background: rgba(15, 15, 35, 0.95);
-            backdrop-filter: var(--blur);
-            border-top: 1px solid var(--border);
-            padding: 20px;
-            z-index: 999;
-        }
-        
-        
-        .mobile-menu .nav-link {
-            display: block;
-            padding: 16px 0;
-            border-bottom: 1px solid var(--border);
-        }
+    display: none;
+    position: fixed;
+    top: 80px;
+    left: 16px;
+    right: 16px;
+    background: rgba(15, 15, 35, 0.95);
+    backdrop-filter: var(--blur);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    z-index: 999;
+    box-shadow: var(--shadow-lg);
+}
 
-        /* Blog Hero Section - Fixed spacing */
+.mobile-menu.active {
+    display: block;
+}
+        
+.mobile-menu .nav-link {
+    display: block;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+    margin: 0;
+    border-radius: 0;
+}
+
+.mobile-menu .nav-link:last-child {
+    border-bottom: none;
+}
+
+
         .blog-hero {
             padding: 120px 0;
             position: relative;
@@ -2498,6 +2583,14 @@
 
         /* Responsive Design */
         @media (max-width: 1024px) {
+            .container {
+        padding: 0 20px;
+    }
+    
+    .search-bar {
+        margin: 0 24px;
+        max-width: 300px;
+    }
             .nav-links {
                 gap: 4px;
             }
@@ -2507,13 +2600,44 @@
                 font-size: 0.9rem;
             }
             
-            .search-bar {
-                max-width: 300px;
-                margin: 0 20px;
-            }
         }
 
         @media (max-width: 768px) {
+            .nav-content {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 0 20px !important;
+        flex-wrap: nowrap !important;
+        min-height: 56px !important;
+        width: 100% !important;
+    }
+    
+    /* Hide desktop elements */
+    .nav-links,
+    .search-bar {
+        display: none !important;
+    }
+    
+    /* Show mobile controls */
+    .mobile-controls {
+        display: flex !important;
+        flex-direction: row !important;
+    }
+    
+    /* Adjust brand to be more flexible */
+    .nav-brand {
+        font-size: 1.3rem;
+        flex-shrink: 0;
+        flex-grow: 0;
+    }
+    
+    /* Other mobile styles */
+    .hero-section {
+        padding: 80px 0;
+        margin-top: 70px;
+    }
+    
             :root {
                 --navbar-height: 70px;
             }
@@ -2586,6 +2710,34 @@
         }
         
         @media (max-width: 480px) {
+            .nav-content {
+        padding: 0 16px !important;
+    }
+    
+    .nav-brand {
+        font-size: 1.2rem;
+    }
+    
+    .mobile-search-container,
+    .mobile-menu {
+        left: 16px;
+        right: 16px;
+    }
+    
+    /* Ensure mobile controls stay inline even on very small screens */
+    .mobile-controls {
+        gap: 4px !important;
+        display: flex !important;
+        flex-direction: row !important;
+    }
+    
+    .mobile-search-btn,
+    .mobile-menu-btn {
+        width: 36px;
+        height: 36px;
+        padding: 6px;
+        font-size: 14px;
+    }
             :root {
                 --navbar-height: 65px;
             }
@@ -2652,33 +2804,35 @@
 </head>
 <body>
     <nav class="navbar" id="navbar">
-        <div class="nav-content">
-            <a href="index.html" class="nav-brand">Digital Oncely</a>
-            <div class="search-bar">
-                <i class="fas fa-search"></i>
-                <input type="text" class="search-input" placeholder="Search amazing products...">
-            </div>
-            <div class="nav-links">
-                <a href="products.html" class="nav-link">Products</a>
-                <a href="addproduct.html" class="nav-link">Add Product</a>
-                <a href="login.html" class="nav-link" id="login-link">Login</a>
-                <a href="#" class="nav-link" id="logout-link" style="display:none;">Logout</a>
-                <a href="blog.html" class="nav-link">Blog</a>
-                <a href="addblog.html" class="nav-link">Add Blog</a>
-                <a href="cart.html" class="nav-link">Cart</a>
-                <a href="buynow.html" class="nav-link">Buy Now</a>
-            </div>
-            <div class="mobile-controls">
-                <button class="mobile-search-btn" id="mobile-search-btn" aria-label="Search">
+        <div class="container">
+            <div class="nav-content">
+                <a href="index.html" class="nav-brand">Digital Oncely</a>
+                <div class="search-bar">
                     <i class="fas fa-search"></i>
-                </button>
-                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false">
-                    <i class="fas fa-bars"></i>
-                </button>
+                    <input type="text" class="search-input" placeholder="Search products...">
+                </div>
+                <div class="nav-links">
+                    <a href="products.html" class="nav-link">Products</a>
+                    <a href="addproduct.html" class="nav-link">Add Product</a>
+                    <a href="login.html" class="nav-link" id="login-link">Login</a>
+                    <a href="#" class="nav-link" id="logout-link" style="display:none;">Logout</a>
+                    <a href="blog.html" class="nav-link">Blog</a>
+                    <a href="addblog.html" class="nav-link">Add Blog</a>
+                    <a href="cart.html" class="nav-link">Cart</a>
+                    <a href="buynow.html" class="nav-link">Buy Now</a>
+                </div>
+                <div class="mobile-controls">
+                    <button class="mobile-search-btn" id="mobile-search-btn" aria-label="Search">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </nav>
-
+    
     <!-- Mobile Search Container -->
     <div class="mobile-search-container" id="mobile-search-container">
         <div style="position: relative;">
@@ -2687,7 +2841,6 @@
         </div>
     </div>
 
-    <!-- Mobile Menu -->
     <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
         <a href="products.html" class="nav-link">Products</a>
         <a href="addproduct.html" class="nav-link">Add Product</a>
@@ -2698,7 +2851,6 @@
         <a href="cart.html" class="nav-link">Cart</a>
         <a href="buynow.html" class="nav-link">Buy Now</a>
     </div>
-
 
     <div class="main-content">
         <div class="blog-hero">
