@@ -2532,6 +2532,7 @@
             line-height: 1.6;
             overflow-x: hidden;
             min-height: 100vh;
+            max-width: 100vw;
         }
         
         body::before {
@@ -2547,7 +2548,16 @@
                 radial-gradient(circle at 50% 50%, rgba(6, 214, 160, 0.1) 0%, transparent 50%);
             pointer-events: none;
             z-index: -1;
+            min-width: 100vw;
+            overflow-x: hidden;
         }
+        .mobile-controls {
+    display: none;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
         
         /* Enhanced Navbar */
         .navbar {
@@ -2674,97 +2684,99 @@
             left: 0;
         }
         
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
+.mobile-search-btn,
+.mobile-menu-btn {
+    display: none;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    font-size: 16px;
+    padding: 8px;
+}
         
-        .mobile-menu-btn:hover {
-            background: var(--bg-glass);
-        }
-        .mobile-search-btn {
-                display: none;
-                background: none;
-                border: none;
-                color: var(--text-primary);
-                font-size: 1.2rem;
-                cursor: pointer;
-                padding: 8px;
-                border-radius: 8px;
-                transition: all 0.3s ease;
-                margin-right: 8px;
-            }
         
-            .mobile-search-btn:hover {
-                background: var(--bg-glass);
-            }
-            .mobile-search-container {
-            display: none;
-            position: fixed;
-            top: 100px;
-            margin-top: 2px;
-            left:10%;
-            right:10%;
-            background: rgba(15, 15, 35, 0.95);
-            backdrop-filter: var(--blur);
-            border-top: 1px solid var(--border);
-            padding: 20px;
-            z-index: 999;
-        }
+        
+.mobile-search-btn:hover,
+.mobile-menu-btn:hover {
+    background: var(--bg-glass);
+    color: var(--text-primary);
+}
+.mobile-search-container {
+    display: none;
+    position: fixed;
+    top: 80px;
+    left: 16px;
+    right: 16px;
+    background: rgba(15, 15, 35, 0.95);
+    backdrop-filter: var(--blur);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    z-index: 999;
+    box-shadow: var(--shadow-lg);
+}
         
         .mobile-search-container.active {
                 display: block;
             }
             
-            .mobile-search-input {
-                width: 100%;
-                padding: 14px 20px 14px 48px;
-                background: var(--bg-glass);
-                border: 1px solid var(--border);
-                border-radius: 16px;
-                color: var(--text-primary);
-                font-size: 0.95rem;
-                backdrop-filter: var(--blur);
-                transition: all 0.3s ease;
-            }
             
-            .mobile-search-input:focus {
-                outline: none;
-                border-color: var(--primary);
-                box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-            }
+.mobile-search-input {
+    width: 100%;
+    padding: 14px 20px 14px 48px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    backdrop-filter: var(--blur);
+    transition: all 0.3s ease;
+}
+
+.mobile-search-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
         /* Mobile Menu */
         .mobile-menu {
-                display: none;
-                position: fixed;
-                top: 80px;
-                left: 50%;
-                right: 0;
-                background: rgba(15, 15, 35, 0.95);
-                backdrop-filter: var(--blur);
-                border-top: 1px solid var(--border);
-                padding: 20px;
-                z-index: 999;
-            }
-            
+    display: none;
+    position: fixed;
+    top: 80px;
+    left: 16px;
+    right: 16px;
+    background: rgba(15, 15, 35, 0.95);
+    backdrop-filter: var(--blur);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    z-index: 999;
+    box-shadow: var(--shadow-lg);
+}
       
         .mobile-menu.active {
             display: block;
         }
          
         .mobile-menu .nav-link {
-            display: block;
-            padding: 16px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        
+    display: block;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+    margin: 0;
+    border-radius: 0;
+    
+}
+
+
         /* Header Section */
         .header {
             margin-top: 80px;
@@ -3583,6 +3595,79 @@
         }
         
         @media (max-width: 768px) {
+            .nav-content {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 0 20px !important;
+        flex-wrap: nowrap !important;
+        min-height: 56px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    .nav-links,
+    .search-bar {
+        display: none !important;
+    }
+    
+    /* Show mobile controls */
+    .mobile-controls {
+        display: flex !important;
+        flex-direction: row !important;
+    }
+    
+    .mobile-search-btn,
+    .mobile-menu-btn {
+        display: inline-flex !important;
+    }
+    
+    /* Adjust brand to be more flexible */
+    .nav-brand {
+        font-size: 1.3rem;
+        flex-shrink: 0;
+        flex-grow: 0;
+    }
+    
+    /* Container fixes for mobile */
+    .container {
+        padding: 0 16px;
+        max-width: 100%;
+    }
+    
+    /* Prevent horizontal scroll */
+    .product-layout {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .main-content, .sidebar {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        padding: 24px;
+    }
+    
+    /* Gallery thumbs horizontal scroll fix */
+    .gallery-thumbs {
+        overflow-x: auto;
+        max-width: 100%;
+        padding: 8px 0;
+        scrollbar-width: thin;
+    }
+    
+    .gallery-thumbs::-webkit-scrollbar {
+        height: 4px;
+    }
+    
+    .gallery-thumbs::-webkit-scrollbar-track {
+        background: var(--bg-secondary);
+    }
+    
+    .gallery-thumbs::-webkit-scrollbar-thumb {
+        background: var(--primary);
+        border-radius: 2px;
+    }
             .nav-links {
                 display: none;
             }
@@ -3633,6 +3718,36 @@
         }
         
         @media (max-width: 480px) {
+            .nav-content {
+        padding: 0 16px !important;
+    }
+    
+    .nav-brand {
+        font-size: 1.2rem;
+    }
+    
+    /* Ensure mobile controls stay inline even on very small screens */
+    .mobile-controls {
+        gap: 4px !important;
+        display: flex !important;
+        flex-direction: row !important;
+    }
+    
+    .mobile-search-btn,
+    .mobile-menu-btn {
+        width: 36px;
+        height: 36px;
+        padding: 6px;
+        font-size: 14px;
+    }
+    
+    .container {
+        padding: 0 12px;
+    }
+    
+    .main-content, .sidebar {
+        padding: 20px;
+    }
             .header h1 {
                 font-size: 1.8rem;
             }
@@ -3869,6 +3984,45 @@
         // Mobile menu functionality
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuBtn.addEventListener('click', () => {
+            const isOpen = mobileMenu.style.display === 'block';
+            mobileMenu.style.display = isOpen ? 'none' : 'block';
+            mobileMenuBtn.querySelector('i').className = isOpen ? 'fas fa-bars' : 'fas fa-times';
+            mobileMenuBtn.setAttribute('aria-expanded', !isOpen);
+            
+            // Close mobile search when opening menu
+            if (!isOpen) {
+                document.getElementById('mobile-search-container').classList.remove('active');
+            }
+        });
+        const mobileSearchBtn = document.getElementById('mobile-search-btn');
+        const mobileSearchContainer = document.getElementById('mobile-search-container');
+        
+        mobileSearchBtn.addEventListener('click', () => {
+            const isActive = mobileSearchContainer.classList.contains('active');
+            if (isActive) {
+                mobileSearchContainer.classList.remove('active');
+            } else {
+                mobileSearchContainer.classList.add('active');
+                // Close mobile menu when opening search
+                mobileMenu.style.display = 'none';
+                mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
+                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+            }
+        });
+        document.addEventListener('click', (e) => {
+            if (!mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+                mobileMenu.style.display = 'none';
+                mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
+                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+            }
+            
+            if (!mobileSearchBtn.contains(e.target) && !mobileSearchContainer.contains(e.target)) {
+                mobileSearchContainer.classList.remove('active');
+            }
+        });
+
+
 
         function updateAuthLinks() {
             const token = localStorage.getItem('jwtToken');
