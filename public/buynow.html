@@ -534,6 +534,69 @@
             background: var(--bg-glass);
         }
         
+.mobile-search-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.mobile-search-btn:hover {
+    background: var(--bg-glass);
+}
+
+/* Mobile Controls Container */
+.mobile-controls {
+    display: none;
+    align-items: center;
+    gap: 8px;
+}
+
+.mobile-search-container {
+    display: none;
+    position: fixed;
+    top: 80px;
+    left: 10%;
+    right: 10%;
+    background: rgba(15, 15, 35, 0.95);
+    backdrop-filter: var(--blur);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    z-index: 999;
+    box-shadow: var(--shadow-lg);
+}
+
+.mobile-search-container.active {
+    display: block;
+}
+
+.mobile-search-input {
+    width: 100%;
+    padding: 14px 20px 14px 48px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    backdrop-filter: var(--blur);
+    transition: all 0.3s ease;
+}
+
+.mobile-search-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+        
+        
         /* Container */
         .container {
             max-width: 1400px;
@@ -994,16 +1057,18 @@
         
         /* Mobile Menu */
         .mobile-menu {
-                display: none;
-                position: fixed;
-                top: 80px;
-                left: 50%;
-                right: 0;
-                background: rgba(15, 15, 35, 0.95);
-                backdrop-filter: var(--blur);
-                border-top: 1px solid var(--border);
-                padding: 20px;
-                z-index: 999;
+                 display: none;
+    position: fixed;
+    top: 80px;
+    left: 10%;
+    right: 10%;
+    background: rgba(15, 15, 35, 0.95);
+    backdrop-filter: var(--blur);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    z-index: 999;
+    box-shadow: var(--shadow-lg);
             }
         /* .mobile-menu {
             display: none;
@@ -1017,6 +1082,14 @@
             padding: 20px;
             z-index: 999;
         } */
+         
+.mobile-menu.active {
+    display: block;
+}
+
+.mobile-menu .nav-link:last-child {
+    border-bottom: none;
+}
         
         .mobile-menu .nav-link {
             display: block;
@@ -1030,14 +1103,20 @@
                 display: none;
             }
             
-            .mobile-menu-btn {
-                display: block;
-            }
+    .search-bar {
+        display: none;
+    }
+    
+    .mobile-controls {
+        display: flex;
+    }
+    
+    .mobile-menu-btn,
+    .mobile-search-btn {
+        display: block;
+    }
             
-            .search-bar {
-                max-width: 200px;
-                margin: 0 16px;
-            }
+            
             
             .checkout-hero {
                 padding: 80px 0 60px;
@@ -1069,6 +1148,19 @@
         }
         
         @media (max-width: 480px) {
+             .nav-content {
+        padding: 0 16px;
+    }
+    
+    .nav-brand {
+        font-size: 1.2rem;
+    }
+    
+    .mobile-search-container,
+    .mobile-menu {
+        left: 5%;
+        right: 5%;
+    }
             .checkout-hero {
                 padding: 60px 0 40px;
             }
@@ -1108,33 +1200,43 @@
         }
     </style>
 </head>
-<body>
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-content">
-                <a href="index.html" class="nav-brand">Digital Oncely</a>
-                <div class="search-bar">
-                    <i class="fas fa-search" style="color: var(--secondary-text)"></i>
-                    <input type="text" class="search-input" placeholder="Search products...">
-                </div>
-                <div class="nav-links">
-                    <a href="products.html" class="nav-link">Products</a>
-                    <a href="addproduct.html" class="nav-link">Add Product</a>
-                    <a href="login.html" class="nav-link" id="login-link">Login</a>
-                    <a href="#" class="nav-link" id="logout-link" style="display:none;">Logout</a>
-                    <a href="blog.html" class="nav-link">Blog</a>
-                    <a href="addblog.html" class="nav-link">Add Blog</a>
-                    <a href="cart.html" class="nav-link">Cart</a>
-                    <a href="buynow.html" class="nav-link">Buy Now</a>
-                </div>
-                <div class="mobile-controls">
-                    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                </div>
+<body><nav class="navbar" id="navbar">
+        <div class="nav-content">
+            <a href="index.html" class="nav-brand">Digital Oncely</a>
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" class="search-input" placeholder="Search amazing products...">
+            </div>
+            <div class="nav-links">
+                <a href="products.html" class="nav-link">Products</a>
+                <a href="addproduct.html" class="nav-link">Add Product</a>
+                <a href="login.html" class="nav-link" id="login-link">Login</a>
+                <a href="#" class="nav-link" id="logout-link" style="display:none;">Logout</a>
+                <a href="blog.html" class="nav-link">Blog</a>
+                <a href="addblog.html" class="nav-link">Add Blog</a>
+                <a href="cart.html" class="nav-link">Cart</a>
+                <a href="buynow.html" class="nav-link">Buy Now</a>
+            </div>
+            <div class="mobile-controls">
+                <button class="mobile-search-btn" id="mobile-search-btn" aria-label="Search">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
         </div>
     </nav>
+
+    <!-- Mobile Search Container -->
+    <div class="mobile-search-container" id="mobile-search-container">
+        <div style="position: relative;">
+            <i class="fas fa-search" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-secondary);"></i>
+            <input type="text" class="mobile-search-input" placeholder="Search amazing products...">
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
     <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
         <a href="products.html" class="nav-link">Products</a>
         <a href="addproduct.html" class="nav-link">Add Product</a>
