@@ -1138,8 +1138,6 @@
                 return;
             }
             
-            // For multiple items, we could create a checkout page
-            // For now, let's redirect to the first item's buy page
             const firstItem = cart[0];
             localStorage.setItem('buynow', JSON.stringify(firstItem));
             window.location.href = 'buynow.html';
