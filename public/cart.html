@@ -1036,204 +1036,1195 @@
             <div id="cart-content">
                 <!-- Cart content will be rendered here -->
             </div>
+            
+            <!-- Debug section -->
+            <div style="margin-top: 20px; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 12px;">
+                <h3 style="color: var(--text-primary); margin-bottom: 10px;">Debug Info</h3>
+                <button onclick="loadCartFromAPI()" style="background: var(--primary); color: white; padding: 8px 16px; border: none; border-radius: 8px; margin-right: 10px;">Reload Cart</button>
+                <button onclick="console.log('Current cart:', cart)" style="background: var(--accent); color: white; padding: 8px 16px; border: none; border-radius: 8px;">Log Cart</button>
+                <button onclick="console.log('User email:', getCurrentUserEmail())" style="background: var(--primary-dark); color: white; padding: 8px 16px; border: none; border-radius: 8px;">Log User</button>
+                <button onclick="testAddToCart()" style="background: var(--warning); color: white; padding: 8px 16px; border: none; border-radius: 8px;">Test Add Item</button>
+            </div>
         </div>
     </div>
 
     <script src="js/theme.js"></script>
     <script>
-        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        const API_BASE_URL = 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api';
+let cart = [];
 
-        function renderCart() {
-            const cartContent = document.getElementById('cart-content');
+// Get current user email from JWT token
+function getCurrentUserEmail() {
+    const token = localStorage.getItem('jwtToken');
+    if (token) {
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return payload.email || payload.sub;
+        } catch (e) {
+            console.error('Error parsing token:', e);
+            return null;
+        }
+    }
+    return null;
+}
+
+// Load cart items from API for current user
+async function loadCartFromAPI() {
+    const userEmail = getCurrentUserEmail();
+    const token = localStorage.getItem('jwtToken');
+    
+    if (!userEmail || !token) {
+        console.log('No user logged in, cart will be empty');
+        cart = [];
+        renderCart();
+        return;
+    }
+
+    try {
+        console.log('Loading cart for user:', userEmail);
+        const response = await fetch(API_BASE_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                task: 'fetch',
+                projectType: 'Cart',
+                website: 'digital-oncely',
+                userEmail: userEmail,
+                listAll: true,
+                includeAllUsers: false,
+                globalAccess: false,
+                noUserFilter: false,
+                global: false,
+                publicOnly: false,
+                fetchAll: true,
+                showAll: true,
+                includeAll: false,
+                adminProducts: false,
+                fetchAdminProducts: false,
+                getAllProducts: false,
+                showAllProducts: false,
+                fetchAllProducts: false
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Cart API response:', data);
+        
+        // Try different possible response structures
+        let cartItems = [];
+        if (data.cart && Array.isArray(data.cart)) {
+            cartItems = data.cart;
+        } else if (data.items && Array.isArray(data.items)) {
+            cartItems = data.items;
+        } else if (data.products && Array.isArray(data.products)) {
+            cartItems = data.products;
+        } else if (Array.isArray(data)) {
+            cartItems = data;
+        } else if (data.data && Array.isArray(data.data)) {
+            cartItems = data.data;
+        }
+        
+        // Filter by current user if not already filtered
+        cartItems = cartItems.filter(item => item.userEmail === userEmail);
+        
+        console.log('Parsed cart items:', cartItems);
+        cart = cartItems;
+        renderCart();
+    } catch (error) {
+        console.error('Error loading cart:', error);
+        cart = [];
+        renderCart();
+    }
+}
+
+// Add item to cart via API
+async function addToCartAPI(product) {
+    console.log('=== addToCartAPI called ===');
+    const userEmail = getCurrentUserEmail();
+    const token = localStorage.getItem('jwtToken');
+    
+    if (!userEmail || !token) {
+        console.error('No user email or token found');
+        alert('Please login to add items to cart');
+        return false;
+    }
+
+    try {
+        console.log('Adding product to cart:', product);
+        console.log('User email:', userEmail);
+        
+        // Get the product ID (handle both id and productId fields)
+        const productId = product.id || product.productId;
+        if (!productId) {
+            console.error('Product has no ID:', product);
+            return false;
+        }
+        
+        // Check if item already exists in cart
+        const existingItem = cart.find(item => (item.id || item.productId) === productId);
+        
+        if (existingItem) {
+            console.log('Item already exists, updating quantity');
+            // Update quantity
+            return await updateCartItemAPI(productId, existingItem.qty + 1);
+        }
+
+        const cartItem = {
+            ...product,
+            productId: productId, // Ensure we have a consistent productId
+            userEmail: userEmail,
+            qty: 1,
+            addedAt: Date.now()
+        };
+
+        console.log('Cart item to be added:', cartItem);
+
+        const requestBody = {
+            task: 'data',
+            operation: 'add',
+            projectType: 'Cart',
+            website: 'digital-oncely',
+            data: cartItem
+        };
+
+        console.log('API request body:', requestBody);
+
+        const response = await fetch(API_BASE_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        console.log('API response status:', response.status);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('API error response:', errorText);
+            throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+        }
+
+        const data = await response.json();
+        console.log('API response data:', data);
+        
+        // Check for success in multiple possible formats
+        if (data.success === true || data.success === 'true' || data.status === 'success' || data.message === 'success' || 
+            data.success === 'Success' || data.status === 'Success' || data.message === 'Success' ||
+            (data.success !== false && data.success !== 'false' && data.status !== 'error' && data.message !== 'error')) {
+            console.log('Successfully added to cart via API');
+            cart.push(cartItem);
+            renderCart();
+            return true;
+        } else {
+            console.error('API returned success: false', data);
+            return false;
+        }
+    } catch (error) {
+        console.error('Error adding to cart:', error);
+        return false;
+    }
+}
+
+// Update cart item quantity via API - FIXED VERSION
+async function updateCartItemAPI(productId, newQty) {
+    console.log('=== updateCartItemAPI called ===');
+    console.log('Product ID:', productId);
+    console.log('New quantity:', newQty);
+    
+    const userEmail = getCurrentUserEmail();
+    const token = localStorage.getItem('jwtToken');
+    
+    if (!userEmail || !token) {
+        console.error('No user email or token found');
+        return false;
+    }
+
+    if (newQty <= 0) {
+        console.log('Quantity is 0 or less, removing item instead');
+        return await removeFromCartAPI(productId);
+    }
+
+    try {
+        const cartItem = cart.find(item => (item.id || item.productId) === productId);
+        if (!cartItem) {
+            console.error('Cart item not found:', productId);
+            return false;
+        }
+
+        console.log('Found cart item:', cartItem);
+
+        // Create updated item with new quantity
+        const updatedItem = { 
+            ...cartItem, 
+            qty: newQty,
+            updatedAt: Date.now()
+        };
+
+        console.log('Updated item to send:', updatedItem);
+
+        const requestBody = {
+            task: 'data',
+            operation: 'update',
+            projectType: 'Cart',
+            website: 'digital-oncely',
+            data: updatedItem,
+            userEmail: userEmail,
+            productId: productId,  // Include productId for identification
+            itemId: cartItem.itemId || cartItem.id || productId,  // Include itemId as well
+            id: cartItem.id || productId  // Include id field too
+        };
+
+        console.log('Update API request body:', requestBody);
+
+        const response = await fetch(API_BASE_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        console.log('Update API response status:', response.status);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Update API error response:', errorText);
+            throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+        }
+
+        const data = await response.json();
+        console.log('Update API response data:', data);
+        
+        // Check for success in multiple possible formats
+        if (data.success === true || data.success === 'true' || data.status === 'success' || data.message === 'success' || 
+            data.success === 'Success' || data.status === 'Success' || data.message === 'Success' ||
+            (data.success !== false && data.success !== 'false' && data.status !== 'error' && data.message !== 'error')) {
+            console.log('Successfully updated cart item via API');
             
-            if (cart.length === 0) {
-                cartContent.innerHTML = `
-                    <div class="empty-cart">
-                        <i class="fas fa-shopping-cart"></i>
-                        <h3>Your Cart is Empty</h3>
-                        <p>Looks like you haven't added any products to your cart yet. Start shopping to discover amazing digital products!</p>
-                        <a href="products.html" class="back-to-products">
-                            <i class="fas fa-arrow-left"></i> Start Shopping
-                        </a>
-                    </div>
-                `;
-                return;
+            // Update local cart
+            const index = cart.findIndex(item => (item.id || item.productId) === productId);
+            if (index !== -1) {
+                cart[index] = updatedItem;
+                renderCart();
+                return true;
             }
+        } else {
+            console.error('Update API returned failure:', data);
+            return false;
+        }
+        
+        return false;
+    } catch (error) {
+        console.error('Error updating cart item:', error);
+        return false;
+    }
+}
 
-            let total = 0;
-            let cartItemsHtml = '';
+// Remove item from cart via API - FIXED VERSION
+async function removeFromCartAPI(productId) {
+    console.log('=== removeFromCartAPI called ===');
+    console.log('Product ID to remove:', productId);
+    
+    const userEmail = getCurrentUserEmail();
+    const token = localStorage.getItem('jwtToken');
+    
+    if (!userEmail || !token) {
+        console.error('No user email or token found');
+        return false;
+    }
 
-            cart.forEach(item => {
-                let price = parseFloat((item.price + '').replace(/[^0-9.]/g, '')) || 0;
-                total += price * (item.qty || 1);
-                
-                cartItemsHtml += `
-                    <div class="cart-item">
-                        <img class="cart-item-img" src="${item.imageUrls?.[0] || 'images/placeholder.jpg'}" alt="${item.productName}" onerror="this.src='images/placeholder.jpg'">
-                        <div class="cart-item-info">
-                            <div class="cart-item-title">${item.productName}</div>
-                            <div class="cart-item-price">${price.toFixed(2)}</div>
-                        </div>
-                        <div class="cart-qty-controls">
-                            <button class="cart-qty-btn" onclick="updateQty('${item.productName}', -1)">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                            <span class="cart-qty-display">${item.qty || 1}</span>
-                            <button class="cart-qty-btn" onclick="updateQty('${item.productName}', 1)">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                            <button class="remove-cart-btn" onclick="removeFromCart('${item.productName}')">
-                                <i class="fas fa-trash"></i> Remove
-                            </button>
-                        </div>
-                    </div>
-                `;
-            });
+    try {
+        const cartItem = cart.find(item => (item.id || item.productId) === productId);
+        if (!cartItem) {
+            console.error('Cart item not found for removal:', productId);
+            return false;
+        }
 
-            cartContent.innerHTML = `
-                <div class="cart-grid">
-                    <div class="cart-items-section">
-                        <h3 class="section-title"><i class="fas fa-box"></i> Items (${cart.length})</h3>
-                        <ul class="cart-list">
-                            ${cartItemsHtml}
-                        </ul>
-                    </div>
-                    
-                    <div class="cart-summary">
-                        <h3 class="summary-title"><i class="fas fa-calculator"></i> Order Summary</h3>
-                        <div class="cart-total">Total: ${total.toFixed(2)}</div>
-                        <button class="checkout-btn" onclick="proceedToCheckout()">
-                            <i class="fas fa-credit-card"></i> Proceed to Checkout
-                        </button>
-                        <div style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
-                            <small style="color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                <i class="fas fa-shield-alt" style="color: var(--accent);"></i>
-                                Secure checkout powered by 256-bit SSL
-                            </small>
-                        </div>
-                    </div>
+        console.log('Found cart item to remove:', cartItem);
+
+        const requestBody = {
+            task: 'data',
+            operation: 'delete',
+            projectType: 'Cart',
+            website: 'digital-oncely',
+            productId: productId,
+            itemId: cartItem.itemId || cartItem.id || productId,  // API expects itemId
+            id: cartItem.id || productId,  // Also include id field
+            userEmail: userEmail,
+            data: cartItem  // Include the full item data for better identification
+        };
+
+        console.log('Delete API request body:', requestBody);
+
+        const response = await fetch(API_BASE_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        console.log('Delete API response status:', response.status);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Delete API error response:', errorText);
+            throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+        }
+
+        const data = await response.json();
+        console.log('Delete API response data:', data);
+        
+        // Check for success in multiple possible formats
+        if (data.success === true || data.success === 'true' || data.status === 'success' || data.message === 'success' || 
+            data.success === 'Success' || data.status === 'Success' || data.message === 'Success' ||
+            (data.success !== false && data.success !== 'false' && data.status !== 'error' && data.message !== 'error')) {
+            console.log('Successfully removed cart item via API');
+            
+            // Remove from local cart
+            cart = cart.filter(item => (item.id || item.productId) !== productId);
+            renderCart();
+            return true;
+        } else {
+            console.error('Delete API returned failure:', data);
+            return false;
+        }
+    } catch (error) {
+        console.error('Error removing from cart:', error);
+        return false;
+    }
+}
+
+function renderCart() {
+    const cartContent = document.getElementById('cart-content');
+    
+    if (cart.length === 0) {
+        cartContent.innerHTML = `
+            <div class="empty-cart">
+                <i class="fas fa-shopping-cart"></i>
+                <h3>Your Cart is Empty</h3>
+                <p>Looks like you haven't added any products to your cart yet. Start shopping to discover amazing digital products!</p>
+                <a href="products.html" class="back-to-products">
+                    <i class="fas fa-arrow-left"></i> Start Shopping
+                </a>
+            </div>
+        `;
+        return;
+    }
+
+    let total = 0;
+    let cartItemsHtml = '';
+
+    cart.forEach(item => {
+        let price = parseFloat((item.price + '').replace(/[^0-9.]/g, '')) || 0;
+        total += price * (item.qty || 1);
+        
+        const itemId = item.id || item.productId;
+        
+        cartItemsHtml += `
+            <div class="cart-item">
+                <img class="cart-item-img" src="${item.imageUrls?.[0] || 'images/placeholder.jpg'}" alt="${item.productName}" onerror="this.src='images/placeholder.jpg'">
+                <div class="cart-item-info">
+                    <div class="cart-item-title">${item.productName}</div>
+                    <div class="cart-item-price">$${price.toFixed(2)}</div>
                 </div>
-            `;
-        }
+                <div class="cart-qty-controls">
+                    <button class="cart-qty-btn" onclick="updateQty('${itemId}', -1)" ${(item.qty || 1) <= 1 ? 'disabled' : ''}>
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <span class="cart-qty-display">${item.qty || 1}</span>
+                    <button class="cart-qty-btn" onclick="updateQty('${itemId}', 1)">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <button class="remove-cart-btn" onclick="removeFromCart('${itemId}')">
+                        <i class="fas fa-trash"></i> Remove
+                    </button>
+                </div>
+            </div>
+        `;
+    });
 
-        window.updateQty = function(productName, delta) {
-            cart = cart.map(item => 
-                item.productName === productName 
-                    ? { ...item, qty: Math.max(1, (item.qty || 1) + delta) } 
-                    : item
-            );
-            localStorage.setItem('cart', JSON.stringify(cart));
-            renderCart();
-        };
-
-        window.removeFromCart = function(productName) {
-            cart = cart.filter(item => item.productName !== productName);
-            localStorage.setItem('cart', JSON.stringify(cart));
-            renderCart();
-        };
-
-        window.proceedToCheckout = function() {
-            if (cart.length === 0) {
-                alert('Your cart is empty. Please add some products before checkout.');
-                return;
-            }
+    cartContent.innerHTML = `
+        <div class="cart-grid">
+            <div class="cart-items-section">
+                <h3 class="section-title"><i class="fas fa-box"></i> Items (${cart.length})</h3>
+                <ul class="cart-list">
+                    ${cartItemsHtml}
+                </ul>
+                <div style="margin-top: 20px; padding: 16px; background: var(--bg-glass); border-radius: 12px; border: 1px solid var(--border);">
+                    <h4 style="margin-bottom: 12px; color: var(--text-secondary);">Debug Tools</h4>
+                    <button onclick="testAddToCart()" style="background: var(--gradient-accent); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; margin-right: 8px;">
+                        Test Add Item
+                    </button>
+                    <button onclick="loadCartFromAPI()" style="background: var(--gradient-primary); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer;">
+                        Reload Cart
+                    </button>
+                </div>
+            </div>
             
-            const firstItem = cart[0];
-            localStorage.setItem('buynow', JSON.stringify(firstItem));
-            window.location.href = 'buynow.html';
-        };
+            <div class="cart-summary">
+                <h3 class="summary-title"><i class="fas fa-calculator"></i> Order Summary</h3>
+                <div class="cart-total">Total: $${total.toFixed(2)}</div>
+                <button class="checkout-btn" onclick="proceedToCheckout()">
+                    <i class="fas fa-credit-card"></i> Proceed to Checkout
+                </button>
+                <div style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+                    <small style="color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <i class="fas fa-shield-alt" style="color: var(--accent);"></i>
+                        Secure checkout powered by 256-bit SSL
+                    </small>
+                </div>
+            </div>
+        </div>
+    `;
+}
 
-        function updateAuthLinks() {
-            const token = localStorage.getItem('jwtToken');
-            const loginLink = document.getElementById('login-link');
-            const logoutLink = document.getElementById('logout-link');
-            const mobileLoginLink = document.getElementById('mobile-login-link');
-            const mobileLogoutLink = document.getElementById('mobile-logout-link');
-            
-            if (token) {
-                if (loginLink) loginLink.style.display = 'none';
-                if (logoutLink) logoutLink.style.display = '';
-                if (mobileLoginLink) mobileLoginLink.style.display = 'none';
-                if (mobileLogoutLink) mobileLogoutLink.style.display = '';
-            } else {
-                if (loginLink) loginLink.style.display = '';
-                if (logoutLink) logoutLink.style.display = 'none';
-                if (mobileLoginLink) mobileLoginLink.style.display = '';
-                if (mobileLogoutLink) mobileLogoutLink.style.display = 'none';
-            }
-        }
-
-        // Navbar scroll effect
-        window.addEventListener('scroll', function() {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        });
-
-        // Enhanced Mobile menu toggle with smooth animations
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
+// FIXED: Update quantity function with better error handling
+window.updateQty = async function(productId, delta) {
+    console.log('=== updateQty called ===');
+    console.log('Product ID:', productId);
+    console.log('Delta:', delta);
+    
+    const item = cart.find(item => (item.id || item.productId) === productId);
+    if (!item) {
+        console.error('Item not found in cart:', productId);
+        return;
+    }
+    
+    const currentQty = item.qty || 1;
+    const newQty = Math.max(1, currentQty + delta);
+    
+    console.log('Current quantity:', currentQty);
+    console.log('New quantity:', newQty);
+    
+    if (newQty === currentQty) {
+        console.log('Quantity unchanged, skipping update');
+        return;
+    }
+    
+    // Show loading state
+    const button = event?.target?.closest('.cart-qty-btn');
+    if (button) {
+        button.disabled = true;
+        const originalContent = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
         
-        mobileMenuBtn.addEventListener('click', () => {
-            const isOpen = mobileMenu.style.display === 'block';
-            mobileMenu.style.display = isOpen ? 'none' : 'block';
-            mobileMenuBtn.querySelector('i').className = isOpen ? 'fas fa-bars' : 'fas fa-times';
-            mobileMenuBtn.setAttribute('aria-expanded', !isOpen);
-            
-            // Close mobile search when opening menu
-            if (!isOpen) {
-                document.getElementById('mobile-search-container').classList.remove('active');
-            }
-        });
-        // Close mobile menu when clicking outside
-        const mobileSearchBtn = document.getElementById('mobile-search-btn');
-        const mobileSearchContainer = document.getElementById('mobile-search-container');
+        const success = await updateCartItemAPI(productId, newQty);
         
-        mobileSearchBtn.addEventListener('click', () => {
-            const isActive = mobileSearchContainer.classList.contains('active');
-            if (isActive) {
-                mobileSearchContainer.classList.remove('active');
-            } else {
-                mobileSearchContainer.classList.add('active');
-                // Close mobile menu when opening search
-                mobileMenu.style.display = 'none';
-                mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
-                mobileMenuBtn.setAttribute('aria-expanded', 'false');
-            }
-        });
+        button.disabled = false;
+        button.innerHTML = originalContent;
+        
+        if (!success) {
+            alert('Failed to update quantity. Please try again.');
+        }
+    } else {
+        const success = await updateCartItemAPI(productId, newQty);
+        if (!success) {
+            alert('Failed to update quantity. Please try again.');
+        }
+    }
+};
 
-        // Close mobile menu and search when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
-                mobileMenu.style.display = 'none';
-                mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
-                mobileMenuBtn.setAttribute('aria-expanded', 'false');
-            }
-            
-            if (!mobileSearchBtn.contains(e.target) && !mobileSearchContainer.contains(e.target)) {
+// FIXED: Remove from cart function with better error handling
+window.removeFromCart = async function(productId) {
+    console.log('=== removeFromCart called ===');
+    console.log('Product ID:', productId);
+    
+    if (!confirm('Are you sure you want to remove this item from your cart?')) {
+        return;
+    }
+    
+    // Show loading state
+    const button = event?.target?.closest('.remove-cart-btn');
+    if (button) {
+        button.disabled = true;
+        const originalContent = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Removing...';
+        
+        const success = await removeFromCartAPI(productId);
+        
+        if (!success) {
+            button.disabled = false;
+            button.innerHTML = originalContent;
+            alert('Failed to remove item. Please try again.');
+        }
+        // If successful, the item will be removed from DOM by renderCart()
+    } else {
+        const success = await removeFromCartAPI(productId);
+        if (!success) {
+            alert('Failed to remove item. Please try again.');
+        }
+    }
+};
+
+window.proceedToCheckout = function() {
+    if (cart.length === 0) {
+        alert('Your cart is empty. Please add some products before checkout.');
+        return;
+    }
+    
+    // For multiple items, we could create a checkout page
+    // For now, let's redirect to the first item's buy page
+    const firstItem = cart[0];
+    localStorage.setItem('buynow', JSON.stringify(firstItem));
+    window.location.href = 'buynow.html';
+};
+
+// Global function to add items to cart (called from other pages)
+window.addToCart = async function(product) {
+    return await addToCartAPI(product);
+};
+
+function updateAuthLinks() {
+    const token = localStorage.getItem('jwtToken');
+    const loginLink = document.getElementById('login-link');
+    const logoutLink = document.getElementById('logout-link');
+    const mobileLoginLink = document.getElementById('mobile-login-link');
+    const mobileLogoutLink = document.getElementById('mobile-logout-link');
+    
+    if (token) {
+        if (loginLink) loginLink.style.display = 'none';
+        if (logoutLink) logoutLink.style.display = '';
+        if (mobileLoginLink) mobileLoginLink.style.display = 'none';
+        if (mobileLogoutLink) mobileLogoutLink.style.display = '';
+    } else {
+        if (loginLink) loginLink.style.display = '';
+        if (logoutLink) logoutLink.style.display = 'none';
+        if (mobileLoginLink) mobileLoginLink.style.display = '';
+        if (mobileLogoutLink) mobileLogoutLink.style.display = 'none';
+    }
+}
+
+// Navbar scroll effect
+window.addEventListener('scroll', function() {
+    const navbar = document.querySelector('.navbar');
+    if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
+    }
+});
+
+// Enhanced Mobile menu toggle with smooth animations
+const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+const mobileMenu = document.getElementById('mobile-menu');
+
+if (mobileMenuBtn && mobileMenu) {
+    mobileMenuBtn.addEventListener('click', () => {
+        const isOpen = mobileMenu.style.display === 'block';
+        mobileMenu.style.display = isOpen ? 'none' : 'block';
+        mobileMenuBtn.querySelector('i').className = isOpen ? 'fas fa-bars' : 'fas fa-times';
+        mobileMenuBtn.setAttribute('aria-expanded', !isOpen);
+        
+        // Close mobile search when opening menu
+        if (!isOpen) {
+            const mobileSearchContainer = document.getElementById('mobile-search-container');
+            if (mobileSearchContainer) {
                 mobileSearchContainer.classList.remove('active');
             }
-        });
+        }
+    });
+}
 
-        document.addEventListener('DOMContentLoaded', function() {
-            updateAuthLinks();
-            renderCart();
-            
-            const logoutLink = document.getElementById('logout-link');
-            const mobileLogoutLink = document.getElementById('mobile-logout-link');
-            
-            function doLogout(e) {
-                e.preventDefault();
-                localStorage.removeItem('jwtToken');
-                location.reload();
+// Mobile search functionality
+const mobileSearchBtn = document.getElementById('mobile-search-btn');
+const mobileSearchContainer = document.getElementById('mobile-search-container');
+
+if (mobileSearchBtn && mobileSearchContainer) {
+    mobileSearchBtn.addEventListener('click', () => {
+        const isActive = mobileSearchContainer.classList.contains('active');
+        if (isActive) {
+            mobileSearchContainer.classList.remove('active');
+        } else {
+            mobileSearchContainer.classList.add('active');
+            // Close mobile menu when opening search
+            if (mobileMenu) {
+                mobileMenu.style.display = 'none';
+                if (mobileMenuBtn) {
+                    mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
+                    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                }
             }
+        }
+    });
+}
+
+// Close mobile menu and search when clicking outside
+document.addEventListener('click', (e) => {
+    if (mobileMenuBtn && mobileMenu && !mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+        mobileMenu.style.display = 'none';
+        mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
+        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    }
+    
+    if (mobileSearchBtn && mobileSearchContainer && !mobileSearchBtn.contains(e.target) && !mobileSearchContainer.contains(e.target)) {
+        mobileSearchContainer.classList.remove('active');
+    }
+});
+
+// Test function to manually add an item to cart
+async function testAddToCart() {
+    console.log('=== Testing add to cart ===');
+    const testProduct = {
+        id: 'test_product_' + Date.now(),
+        productId: 'test_product_' + Date.now(),
+        productName: 'Test Product',
+        price: 99.99,
+        description: 'This is a test product',
+        imageUrls: ['https://via.placeholder.com/150'],
+        category: 'test'
+    };
+    
+    console.log('Test product:', testProduct);
+    const result = await addToCartAPI(testProduct);
+    console.log('Test add to cart result:', result);
+    
+    if (result) {
+        alert('Test item added successfully!');
+        loadCartFromAPI(); // Reload cart to show the new item
+    } else {
+        alert('Failed to add test item');
+    }
+}
+
+// Make test function globally available
+window.testAddToCart = testAddToCart;
+
+document.addEventListener('DOMContentLoaded', function() {
+    updateAuthLinks();
+    loadCartFromAPI(); // Load cart from API instead of localStorage
+    
+    const logoutLink = document.getElementById('logout-link');
+    const mobileLogoutLink = document.getElementById('mobile-logout-link');
+    
+    function doLogout(e) {
+        e.preventDefault();
+        localStorage.removeItem('jwtToken');
+        location.reload();
+    }
+    
+    if (logoutLink) logoutLink.addEventListener('click', doLogout);
+    if (mobileLogoutLink) mobileLogoutLink.addEventListener('click', doLogout);
+});
+        // const API_BASE_URL = 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api';
+        // let cart = [];
+
+        // // Get current user email from JWT token
+        // function getCurrentUserEmail() {
+        //     const token = localStorage.getItem('jwtToken');
+        //     if (token) {
+        //         try {
+        //             const payload = JSON.parse(atob(token.split('.')[1]));
+        //             return payload.email || payload.sub;
+        //         } catch (e) {
+        //             console.error('Error parsing token:', e);
+        //             return null;
+        //         }
+        //     }
+        //     return null;
+        // }
+
+        // // Load cart items from API for current user
+        // async function loadCartFromAPI() {
+        //     const userEmail = getCurrentUserEmail();
+        //     const token = localStorage.getItem('jwtToken');
             
-            if (logoutLink) logoutLink.addEventListener('click', doLogout);
-            if (mobileLogoutLink) mobileLogoutLink.addEventListener('click', doLogout);
-        });
+        //     if (!userEmail || !token) {
+        //         console.log('No user logged in, cart will be empty');
+        //         cart = [];
+        //     renderCart();
+        //         return;
+        //     }
+
+        //     try {
+        //         console.log('Loading cart for user:', userEmail);
+        //         const response = await fetch(API_BASE_URL, {
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type': 'application/json',
+        //                 'Authorization': `Bearer ${token}`
+        //             },
+        //             body: JSON.stringify({
+        //                 task: 'fetch',
+        //                 projectType: 'Cart',
+        //                 website: 'digital-oncely',
+        //                 userEmail: userEmail,
+        //                 listAll: true,
+        //                 includeAllUsers: false,
+        //                 globalAccess: false,
+        //                 noUserFilter: false,
+        //                 global: false,
+        //                 publicOnly: false,
+        //                 fetchAll: true,
+        //                 showAll: true,
+        //                 includeAll: false,
+        //                 adminProducts: false,
+        //                 fetchAdminProducts: false,
+        //                 getAllProducts: false,
+        //                 showAllProducts: false,
+        //                 fetchAllProducts: false
+        //             })
+        //         });
+
+        //         if (!response.ok) {
+        //             throw new Error(`HTTP error! status: ${response.status}`);
+        //         }
+
+        //         const data = await response.json();
+        //         console.log('Cart API response:', data);
+                
+        //         // Try different possible response structures
+        //         let cartItems = [];
+        //         if (data.cart && Array.isArray(data.cart)) {
+        //             cartItems = data.cart;
+        //         } else if (data.items && Array.isArray(data.items)) {
+        //             cartItems = data.items;
+        //         } else if (data.products && Array.isArray(data.products)) {
+        //             cartItems = data.products;
+        //         } else if (Array.isArray(data)) {
+        //             cartItems = data;
+        //         } else if (data.data && Array.isArray(data.data)) {
+        //             cartItems = data.data;
+        //         }
+                
+        //         // Filter by current user if not already filtered
+        //         cartItems = cartItems.filter(item => item.userEmail === userEmail);
+                
+        //         console.log('Parsed cart items:', cartItems);
+        //         cart = cartItems;
+        //         renderCart();
+        //     } catch (error) {
+        //         console.error('Error loading cart:', error);
+        //         cart = [];
+        //         renderCart();
+        //     }
+        // }
+
+        // // Add item to cart via API
+        // async function addToCartAPI(product) {
+        //     console.log('=== addToCartAPI called ===');
+        //     const userEmail = getCurrentUserEmail();
+        //     const token = localStorage.getItem('jwtToken');
+            
+        //     if (!userEmail || !token) {
+        //         console.error('No user email or token found');
+        //         alert('Please login to add items to cart');
+        //         return false;
+        //     }
+
+        //     try {
+        //         console.log('Adding product to cart:', product);
+        //         console.log('User email:', userEmail);
+                
+        //         // Get the product ID (handle both id and productId fields)
+        //         const productId = product.id || product.productId;
+        //         if (!productId) {
+        //             console.error('Product has no ID:', product);
+        //             return false;
+        //         }
+                
+        //         // Check if item already exists in cart
+        //         const existingItem = cart.find(item => (item.id || item.productId) === productId);
+                
+        //         if (existingItem) {
+        //             console.log('Item already exists, updating quantity');
+        //             // Update quantity
+        //             return await updateCartItemAPI(productId, existingItem.qty + 1);
+        //         }
+
+        //         const cartItem = {
+        //             ...product,
+        //             productId: productId, // Ensure we have a consistent productId
+        //             userEmail: userEmail,
+        //             qty: 1,
+        //             addedAt: Date.now()
+        //         };
+
+        //         console.log('Cart item to be added:', cartItem);
+
+        //         const requestBody = {
+        //             task: 'data',
+        //             operation: 'add',
+        //             projectType: 'Cart',
+        //             website: 'digital-oncely',
+        //             data: cartItem
+        //         };
+
+        //         console.log('API request body:', requestBody);
+
+        //         const response = await fetch(API_BASE_URL, {
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type': 'application/json',
+        //                 'Authorization': `Bearer ${token}`
+        //             },
+        //             body: JSON.stringify(requestBody)
+        //         });
+
+        //         console.log('API response status:', response.status);
+
+        //         if (!response.ok) {
+        //             const errorText = await response.text();
+        //             console.error('API error response:', errorText);
+        //             throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+        //         }
+
+        //         const data = await response.json();
+        //         console.log('API response data:', data);
+                
+        //         // Check for success in multiple possible formats
+        //         if (data.success === true || data.success === 'true' || data.status === 'success' || data.message === 'success' || 
+        //             data.success === 'Success' || data.status === 'Success' || data.message === 'Success' ||
+        //             (data.success !== false && data.success !== 'false' && data.status !== 'error' && data.message !== 'error')) {
+        //             console.log('Successfully added to cart via API');
+        //             cart.push(cartItem);
+        //             renderCart();
+        //             return true;
+        //         } else {
+        //             console.error('API returned success: false', data);
+        //             return false;
+        //         }
+        //     } catch (error) {
+        //         console.error('Error adding to cart:', error);
+        //         return false;
+        //     }
+        // }
+
+        // // Update cart item quantity via API
+        // async function updateCartItemAPI(productId, newQty) {
+        //     const userEmail = getCurrentUserEmail();
+        //     const token = localStorage.getItem('jwtToken');
+            
+        //     if (!userEmail || !token) {
+        //         return false;
+        //     }
+
+        //     try {
+        //         const cartItem = cart.find(item => (item.id || item.productId) === productId);
+        //         if (!cartItem) return false;
+
+        //         const updatedItem = { ...cartItem, qty: newQty };
+
+        //         const response = await fetch(API_BASE_URL, {
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type': 'application/json',
+        //                 'Authorization': `Bearer ${token}`
+        //             },
+        //             body: JSON.stringify({
+        //                 task: 'data',
+        //                 operation: 'update',
+        //                 projectType: 'Cart',
+        //                 website: 'digital-oncely',
+        //                 data: updatedItem,
+        //                 userEmail: userEmail
+        //             })
+        //         });
+
+        //         if (!response.ok) {
+        //             throw new Error(`HTTP error! status: ${response.status}`);
+        //         }
+
+        //         const data = await response.json();
+        //         if (data.success) {
+        //             const index = cart.findIndex(item => (item.id || item.productId) === productId);
+        //             if (index !== -1) {
+        //                 cart[index] = updatedItem;
+        //                 renderCart();
+        //             }
+        //             return true;
+        //         }
+        //         return false;
+        //     } catch (error) {
+        //         console.error('Error updating cart item:', error);
+        //         return false;
+        //     }
+        // }
+
+        // // Remove item from cart via API
+        // async function removeFromCartAPI(productId) {
+        //     const userEmail = getCurrentUserEmail();
+        //     const token = localStorage.getItem('jwtToken');
+            
+        //     if (!userEmail || !token) {
+        //         return false;
+        //     }
+
+        //     try {
+        //         const response = await fetch(API_BASE_URL, {
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type': 'application/json',
+        //                 'Authorization': `Bearer ${token}`
+        //             },
+        //             body: JSON.stringify({
+        //                 task: 'data',
+        //                 operation: 'delete',
+        //                 projectType: 'Cart',
+        //                 website: 'digital-oncely',
+        //                 productId: productId,
+        //                 userEmail: userEmail
+        //             })
+        //         });
+
+        //         if (!response.ok) {
+        //             throw new Error(`HTTP error! status: ${response.status}`);
+        //         }
+
+        //         const data = await response.json();
+        //         if (data.success) {
+        //             cart = cart.filter(item => (item.id || item.productId) !== productId);
+        //             renderCart();
+        //             return true;
+        //         }
+        //         return false;
+        //     } catch (error) {
+        //         console.error('Error removing from cart:', error);
+        //         return false;
+        //     }
+        // }
+
+        // function renderCart() {
+        //     const cartContent = document.getElementById('cart-content');
+            
+        //     if (cart.length === 0) {
+        //         cartContent.innerHTML = `
+        //             <div class="empty-cart">
+        //                 <i class="fas fa-shopping-cart"></i>
+        //                 <h3>Your Cart is Empty</h3>
+        //                 <p>Looks like you haven't added any products to your cart yet. Start shopping to discover amazing digital products!</p>
+        //                 <a href="products.html" class="back-to-products">
+        //                     <i class="fas fa-arrow-left"></i> Start Shopping
+        //                 </a>
+        //             </div>
+        //         `;
+        //         return;
+        //     }
+
+        //     let total = 0;
+        //     let cartItemsHtml = '';
+
+        //     cart.forEach(item => {
+        //         let price = parseFloat((item.price + '').replace(/[^0-9.]/g, '')) || 0;
+        //         total += price * (item.qty || 1);
+                
+        //         const itemId = item.id || item.productId;
+                
+        //         cartItemsHtml += `
+        //             <div class="cart-item">
+        //                 <img class="cart-item-img" src="${item.imageUrls?.[0] || 'images/placeholder.jpg'}" alt="${item.productName}" onerror="this.src='images/placeholder.jpg'">
+        //                 <div class="cart-item-info">
+        //                     <div class="cart-item-title">${item.productName}</div>
+        //                     <div class="cart-item-price">${price.toFixed(2)}</div>
+        //                 </div>
+        //                 <div class="cart-qty-controls">
+        //                     <button class="cart-qty-btn" onclick="updateQty('${itemId}', -1)">
+        //                         <i class="fas fa-minus"></i>
+        //                     </button>
+        //                     <span class="cart-qty-display">${item.qty || 1}</span>
+        //                     <button class="cart-qty-btn" onclick="updateQty('${itemId}', 1)">
+        //                         <i class="fas fa-plus"></i>
+        //                     </button>
+        //                     <button class="remove-cart-btn" onclick="removeFromCart('${itemId}')">
+        //                         <i class="fas fa-trash"></i> Remove
+        //                     </button>
+        //                 </div>
+        //             </div>
+        //         `;
+        //     });
+
+        //     cartContent.innerHTML = `
+        //         <div class="cart-grid">
+        //             <div class="cart-items-section">
+        //                 <h3 class="section-title"><i class="fas fa-box"></i> Items (${cart.length})</h3>
+        //                 <ul class="cart-list">
+        //                     ${cartItemsHtml}
+        //                 </ul>
+        //                 <div style="margin-top: 20px; padding: 16px; background: var(--bg-glass); border-radius: 12px; border: 1px solid var(--border);">
+        //                     <h4 style="margin-bottom: 12px; color: var(--text-secondary);">Debug Tools</h4>
+        //                     <button onclick="testAddToCart()" style="background: var(--gradient-accent); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; margin-right: 8px;">
+        //                         Test Add Item
+        //                     </button>
+        //                     <button onclick="loadCartFromAPI()" style="background: var(--gradient-primary); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer;">
+        //                         Reload Cart
+        //                     </button>
+        //                 </div>
+        //             </div>
+                    
+        //             <div class="cart-summary">
+        //                 <h3 class="summary-title"><i class="fas fa-calculator"></i> Order Summary</h3>
+        //                 <div class="cart-total">Total: ${total.toFixed(2)}</div>
+        //                 <button class="checkout-btn" onclick="proceedToCheckout()">
+        //                     <i class="fas fa-credit-card"></i> Proceed to Checkout
+        //                 </button>
+        //                 <div style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+        //                     <small style="color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 8px;">
+        //                         <i class="fas fa-shield-alt" style="color: var(--accent);"></i>
+        //                         Secure checkout powered by 256-bit SSL
+        //                     </small>
+        //                 </div>
+        //             </div>
+        //         </div>
+        //     `;
+        // }
+
+        // window.updateQty = async function(productId, delta) {
+        //     const item = cart.find(item => (item.id || item.productId) === productId);
+        //     if (!item) return;
+            
+        //     const newQty = Math.max(1, (item.qty || 1) + delta);
+        //     await updateCartItemAPI(productId, newQty);
+        // };
+
+        // window.removeFromCart = async function(productId) {
+        //     await removeFromCartAPI(productId);
+        // };
+
+        // window.proceedToCheckout = function() {
+        //     if (cart.length === 0) {
+        //         alert('Your cart is empty. Please add some products before checkout.');
+        //         return;
+        //     }
+            
+        //     // For multiple items, we could create a checkout page
+        //     // For now, let's redirect to the first item's buy page
+        //     const firstItem = cart[0];
+        //     localStorage.setItem('buynow', JSON.stringify(firstItem));
+        //     window.location.href = 'buynow.html';
+        // };
+
+        // // Global function to add items to cart (called from other pages)
+        // window.addToCart = async function(product) {
+        //     return await addToCartAPI(product);
+        // };
+
+        // function updateAuthLinks() {
+        //     const token = localStorage.getItem('jwtToken');
+        //     const loginLink = document.getElementById('login-link');
+        //     const logoutLink = document.getElementById('logout-link');
+        //     const mobileLoginLink = document.getElementById('mobile-login-link');
+        //     const mobileLogoutLink = document.getElementById('mobile-logout-link');
+            
+        //     if (token) {
+        //         if (loginLink) loginLink.style.display = 'none';
+        //         if (logoutLink) logoutLink.style.display = '';
+        //         if (mobileLoginLink) mobileLoginLink.style.display = 'none';
+        //         if (mobileLogoutLink) mobileLogoutLink.style.display = '';
+        //     } else {
+        //         if (loginLink) loginLink.style.display = '';
+        //         if (logoutLink) logoutLink.style.display = 'none';
+        //         if (mobileLoginLink) mobileLoginLink.style.display = '';
+        //         if (mobileLogoutLink) mobileLogoutLink.style.display = 'none';
+        //     }
+        // }
+
+        // // Navbar scroll effect
+        // window.addEventListener('scroll', function() {
+        //     const navbar = document.querySelector('.navbar');
+        //     if (window.scrollY > 50) {
+        //         navbar.classList.add('scrolled');
+        //     } else {
+        //         navbar.classList.remove('scrolled');
+        //     }
+        // });
+
+        // // Enhanced Mobile menu toggle with smooth animations
+        // const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        // const mobileMenu = document.getElementById('mobile-menu');
+        
+        // mobileMenuBtn.addEventListener('click', () => {
+        //     const isOpen = mobileMenu.style.display === 'block';
+        //     mobileMenu.style.display = isOpen ? 'none' : 'block';
+        //     mobileMenuBtn.querySelector('i').className = isOpen ? 'fas fa-bars' : 'fas fa-times';
+        //     mobileMenuBtn.setAttribute('aria-expanded', !isOpen);
+            
+        //     // Close mobile search when opening menu
+        //     if (!isOpen) {
+        //         document.getElementById('mobile-search-container').classList.remove('active');
+        //     }
+        // });
+        // // Close mobile menu when clicking outside
+        // const mobileSearchBtn = document.getElementById('mobile-search-btn');
+        // const mobileSearchContainer = document.getElementById('mobile-search-container');
+        
+        // mobileSearchBtn.addEventListener('click', () => {
+        //     const isActive = mobileSearchContainer.classList.contains('active');
+        //     if (isActive) {
+        //         mobileSearchContainer.classList.remove('active');
+        //     } else {
+        //         mobileSearchContainer.classList.add('active');
+        //         // Close mobile menu when opening search
+        //         mobileMenu.style.display = 'none';
+        //         mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
+        //         mobileMenuBtn.setAttribute('aria-expanded', 'false');
+        //     }
+        // });
+
+        // // Close mobile menu and search when clicking outside
+        // document.addEventListener('click', (e) => {
+        //     if (!mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+        //         mobileMenu.style.display = 'none';
+        //         mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
+        //         mobileMenuBtn.setAttribute('aria-expanded', 'false');
+        //     }
+            
+        //     if (!mobileSearchBtn.contains(e.target) && !mobileSearchContainer.contains(e.target)) {
+        //         mobileSearchContainer.classList.remove('active');
+        //     }
+        // });
+
+        // // Test function to manually add an item to cart
+        // async function testAddToCart() {
+        //     console.log('=== Testing add to cart ===');
+        //     const testProduct = {
+        //         id: 'test_product_' + Date.now(),
+        //         productId: 'test_product_' + Date.now(),
+        //         name: 'Test Product',
+        //         price: 99.99,
+        //         description: 'This is a test product',
+        //         imageUrl: 'https://via.placeholder.com/150',
+        //         category: 'test'
+        //     };
+            
+        //     console.log('Test product:', testProduct);
+        //     const result = await addToCartAPI(testProduct);
+        //     console.log('Test add to cart result:', result);
+            
+        //     if (result) {
+        //         alert('Test item added successfully!');
+        //         loadCartFromAPI(); // Reload cart to show the new item
+        //     } else {
+        //         alert('Failed to add test item');
+        //     }
+        // }
+
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     updateAuthLinks();
+        //     loadCartFromAPI(); // Load cart from API instead of localStorage
+            
+        //     const logoutLink = document.getElementById('logout-link');
+        //     const mobileLogoutLink = document.getElementById('mobile-logout-link');
+            
+        //     function doLogout(e) {
+        //         e.preventDefault();
+        //         localStorage.removeItem('jwtToken');
+        //         location.reload();
+        //     }
+            
+        //     if (logoutLink) logoutLink.addEventListener('click', doLogout);
+        //     if (mobileLogoutLink) mobileLogoutLink.addEventListener('click', doLogout);
+        // });
     </script>
 </body>
 </html>
