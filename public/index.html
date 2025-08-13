@@ -954,6 +954,19 @@ body::before {
         const mobileSearchBtn = document.getElementById('mobile-search-btn');
         const mobileSearchContainer = document.getElementById('mobile-search-container');
         
+        // mobileSearchBtn.addEventListener('click', () => {
+        //     const isActive = mobileSearchContainer.classList.contains('active');
+        //     if (isActive) {
+        //         mobileSearchContainer.classList.remove('active');
+        //     } else {
+        //         mobileSearchContainer.classList.add('active');
+        //         // Close mobile menu when opening search
+        //         mobileMenu.style.display = 'none';
+        //         mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
+        //         mobileMenuBtn.setAttribute('aria-expanded', 'false');
+        //     }
+        // });
+        if (mobileSearchBtn && mobileSearchContainer) {
         mobileSearchBtn.addEventListener('click', () => {
             const isActive = mobileSearchContainer.classList.contains('active');
             if (isActive) {
@@ -961,11 +974,16 @@ body::before {
             } else {
                 mobileSearchContainer.classList.add('active');
                 // Close mobile menu when opening search
-                mobileMenu.style.display = 'none';
-                mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
-                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                if (mobileMenu) {
+                    mobileMenu.style.display = 'none';
+                    if (mobileMenuBtn) {
+                        mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
+                        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                    }
+                }
             }
         });
+    }
 
         // Close mobile menu and search when clicking outside
         document.addEventListener('click', (e) => {
@@ -986,6 +1004,11 @@ body::before {
         async function loadProducts() {
             try {
                 const token = localStorage.getItem('jwtToken');
+                const loading = document.getElementById('loading');
+        const errorMessage = document.getElementById('error-message');
+                
+        if (loading) loading.style.display = 'block';
+        if (errorMessage) errorMessage.style.display = 'none';
                 
                 const requestBody = {
                     task: 'fetch',
@@ -1245,32 +1268,239 @@ body::before {
             }
         }
 
-        function handleAddToCart(product) {
-            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            const existing = cart.find(item => item.productName === product.productName);
-            if (existing) {
-                existing.qty = (existing.qty || 1) + 1;
-            } else {
-                cart.push({ ...product, qty: 1 });
-            }
-            localStorage.setItem('cart', JSON.stringify(cart));
-            
-            // Enhanced feedback
-            const btn = event.target.closest('.add-to-cart-btn');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-check"></i> Added!';
-            btn.style.background = 'var(--gradient-accent)';
-            
-            setTimeout(() => {
-                btn.innerHTML = originalText;
-                btn.style.background = '';
-            }, 2000);
+        // async function handleAddToCart(product) {
+        //     const token = localStorage.getItem('jwtToken');
+        //     if (!token) {
+        //         alert('Please login to add items to cart');
+        //         window.location.href = 'login.html';
+        //         return;
+        //     }
+
+        //     try {
+        //         // Call the global addToCart function from cart.html
+        //         if (window.addToCart) {
+        //             const success = await window.addToCart(product);
+        //             if (success) {
+        //                 // Enhanced feedback
+        //                 const btn = event.target.closest('.add-to-cart-btn');
+        //                 const originalText = btn.innerHTML;
+        //                 btn.innerHTML = '<i class="fas fa-check"></i> Added!';
+        //                 btn.style.background = 'var(--gradient-accent)';
+        //                 btn.style.transform = 'scale(1.05)';
+                        
+        //                 setTimeout(() => {
+        //                     btn.innerHTML = originalText;
+        //                     btn.style.background = '';
+        //                 }, 2000);
+        //             } else {
+        //                 alert('Failed to add to cart. Please try again.');
+        //             }
+        //         } else {
+        //             console.log('window.addToCart not available, using direct API call');
+        //             // Direct API call if cart.html is not loaded
+        //             const success = await addToCartDirect(product);
+        //             if (success) {
+        //                 // Enhanced feedback
+        //                 const btn = event.target.closest('.add-to-cart-btn');
+        //                 const originalText = btn.innerHTML;
+        //                 btn.innerHTML = '<i class="fas fa-check"></i> Added!';
+        //                 btn.style.background = 'var(--gradient-accent)';
+                        
+        //                 setTimeout(() => {
+        //                     btn.innerHTML = originalText;
+        //                     btn.style.background = '';
+        //                 }, 2000);
+        //             } else {
+        //                 alert('Failed to add to cart. Please try again.');
+        //             }
+        //         }
+        //     } catch (error) {
+        //         console.error('Error adding to cart:', error);
+        //         alert('Failed to add to cart. Please try again.');
+        //     }
+        // }
+        
+    async function handleAddToCart(product, buttonElement) {
+        const token = localStorage.getItem('jwtToken');
+        if (!token) {
+            alert('Please login to add items to cart');
+            window.location.href = 'login.html';
+            return;
         }
+
+        if (buttonElement) {
+            const originalText = buttonElement.innerHTML;
+            buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+            buttonElement.disabled = true;
+
+            try {
+                const success = await addToCartDirect(product);
+                if (success) {
+                    buttonElement.innerHTML = '<i class="fas fa-check"></i> Added!';
+                    setTimeout(() => {
+                        buttonElement.innerHTML = originalText;
+                        buttonElement.disabled = false;
+                    }, 2000);
+                    showNotification('Product added to cart successfully!', 'success');
+                } else {
+                    throw new Error('Failed to add to cart');
+                }
+            } catch (error) {
+                buttonElement.innerHTML = '<i class="fas fa-times"></i> Failed';
+                setTimeout(() => {
+                    buttonElement.innerHTML = originalText;
+                    buttonElement.disabled = false;
+                }, 2000);
+                showNotification('Failed to add product to cart. Please try again.', 'error');
+            }
+        } else {
+            try {
+                const success = await addToCartDirect(product);
+                if (success) {
+                    showNotification('Product added to cart successfully!', 'success');
+                } else {
+                    throw new Error('Failed to add to cart');
+                }
+            } catch (error) {
+                showNotification('Failed to add product to cart. Please try again.', 'error');
+            }
+        }
+    }
 
         function handleBuyNow(product) {
             localStorage.setItem('buynow', JSON.stringify(product));
             window.location.href = 'buynow.html';
         }
+
+        // Direct API call function for adding to cart
+        // async function addToCartDirect(product) {
+        //     const API_BASE_URL = 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api';
+        //     const token = localStorage.getItem('jwtToken');
+            
+        //     if (!token) {
+        //         console.error('No JWT token found');
+        //         return false;
+        //     }
+
+        //     try {
+        //         // Get user email from token
+        //         const payload = JSON.parse(atob(token.split('.')[1]));
+        //         const userEmail = payload.email || payload.sub;
+                
+        //         if (!userEmail) {
+        //             console.error('No user email found in token');
+        //             return false;
+        //         }
+
+        //         console.log('Adding product to cart via direct API:', product);
+        //         console.log('User email:', userEmail);
+                
+        //         // Get the product ID (handle both id and productId fields)
+        //         const productId = product.id || product.productId;
+        //         if (!productId) {
+        //             console.error('Product has no ID:', product);
+        //             return false;
+        //         }
+
+        //         const cartItem = {
+        //             ...product,
+        //             productId: productId, // Ensure we have a consistent productId
+        //             userEmail: userEmail,
+        //             qty: 1,
+        //             addedAt: Date.now()
+        //         };
+
+        //         console.log('Cart item to be added:', cartItem);
+
+        //         const requestBody = {
+        //             task: 'data',
+        //             operation: 'add',
+        //             projectType: 'Cart',
+        //             website: 'digital-oncely',
+        //             data: cartItem
+        //         };
+
+        //         console.log('API request body:', requestBody);
+
+        //         const response = await fetch(API_BASE_URL, {
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type': 'application/json',
+        //                 'Authorization': `Bearer ${token}`
+        //             },
+        //             body: JSON.stringify(requestBody)
+        //         });
+
+        //         console.log('API response status:', response.status);
+
+        //         if (!response.ok) {
+        //             const errorText = await response.text();
+        //             console.error('API error response:', errorText);
+        //             throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+        //         }
+
+        //         const data = await response.json();
+        //         console.log('Direct API response:', data);
+                
+        //         // Check for success in multiple possible formats
+        //         if (data.success === true || data.success === 'true' || data.status === 'success' || data.message === 'success' || 
+        //             data.success === 'Success' || data.status === 'Success' || data.message === 'Success' ||
+        //             (data.success !== false && data.success !== 'false' && data.status !== 'error' && data.message !== 'error')) {
+        //             console.log('Successfully added to cart via direct API');
+        //             return true;
+        //         } else {
+        //             console.error('API returned success: false', data);
+        //             return false;
+        //         }
+        //     } catch (error) {
+        //         console.error('Error adding to cart via direct API:', error);
+        //         return false;
+        //     }
+        // }
+        async function addToCartDirect(product) {
+        const token = localStorage.getItem('jwtToken');
+        if (!token) throw new Error('Authentication required');
+
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const userEmail = payload.email || payload.sub;
+        if (!userEmail) throw new Error('Invalid token - no user email');
+
+        const productId = product.id || product.productId || product._id || product.itemId;
+        if (!productId) throw new Error('Product ID is missing');
+
+        const safeString = (v) => v == null ? '' : (typeof v === 'string' ? v : JSON.stringify(v));
+        const safeArray = (v) => Array.isArray(v) ? v : v ? [v] : [];
+
+        const cartItem = {
+            productId: safeString(productId),
+            productName: safeString(product.productName || product.name || 'Unknown Product'),
+            price: safeString(product.price || '0.00'),
+            brief: safeString(product.brief || product.description || 'No description'),
+            imageUrls: safeArray(product.imageUrls || product.images || []),
+            userEmail: safeString(userEmail),
+            qty: 1,
+            addedAt: Date.now(),
+            website: 'digital-oncely'
+        };
+
+        const response = await fetch(API_BASE_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                task: 'data',
+                operation: 'add',
+                projectType: 'Cart',
+                website: 'digital-oncely',
+                data: cartItem
+            })
+        });
+
+        return response.ok;
+    }
+
 
         function attachProductCardEvents() {
             document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
@@ -1341,6 +1571,88 @@ body::before {
                 observer.observe(el);
             });
         }, 100);
+        
+    function renderProducts(products) {
+        window._productsList = products;
+        const productGrid = document.getElementById('products-grid');
+        if (!productGrid) return;
+
+        productGrid.innerHTML = products.map((product, idx) => `
+            <div class="product-card" onclick="navigateToProduct('${product.id || product.productId || product._id || product.itemId}')">
+                <img src="${(product.imageUrls && product.imageUrls.length > 0) ? product.imageUrls[0] : '/images/placeholder.svg'}"
+                     alt="${product.productName}"
+                     class="product-image">
+                <div class="product-info">
+                    <h3 class="product-title">${product.productName}</h3>
+                    <p class="product-description">${product.brief || 'No description available'}</p>
+                    <p class="product-price">${product.price || 'Price not set'}</p>
+                    <div class="product-actions">
+                        <button class="btn btn-secondary add-to-cart-btn" data-idx="${idx}">
+                            <i class="fas fa-cart-plus"></i> Add to Cart
+                        </button>
+                        <button class="btn btn-primary buy-now-btn" data-idx="${idx}">
+                            <i class="fas fa-bolt"></i> Buy Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        attachProductCardEvents();
+    }
+
+    function attachProductCardEvents() {
+        document.querySelectorAll('.add-to-cart-btn').forEach((btn) => {
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                const idx = this.getAttribute('data-idx');
+                if (window._productsList[idx]) {
+                    handleAddToCart(window._productsList[idx], this);
+                }
+            });
+        });
+
+        document.querySelectorAll('.buy-now-btn').forEach((btn) => {
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                const idx = this.getAttribute('data-idx');
+                if (window._productsList[idx]) {
+                    handleBuyNow(window._productsList[idx], e);
+                }
+            });
+        });
+    }
+
+    function showNotification(message, type = 'info') {
+        let notification = document.getElementById('notification');
+        if (!notification) {
+            notification = document.createElement('div');
+            notification.id = 'notification';
+            notification.style.cssText = `
+                position: fixed; top: 20px; right: 20px;
+                padding: 12px 20px; border-radius: 8px;
+                color: white; font-weight: 500;
+                z-index: 9999; opacity: 0;
+                transform: translateX(100%);
+                transition: all 0.3s ease; max-width: 300px;
+            `;
+            document.body.appendChild(notification);
+        }
+        const colors = { success: '#10b981', error: '#ef4444', info: '#3b82f6', warning: '#f59e0b' };
+        notification.style.backgroundColor = colors[type] || colors.info;
+        notification.textContent = message;
+        notification.style.opacity = '1';
+        notification.style.transform = 'translateX(0)';
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            notification.style.transform = 'translateX(100%)';
+        }, 3000);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        updateAuthLinks();
+        loadProducts();
+    });
     </script>
 
     <style>
