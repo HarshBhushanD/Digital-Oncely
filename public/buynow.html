@@ -1511,6 +1511,14 @@
                 if (mobileLogoutLink) mobileLogoutLink.style.display = 'none';
             }
         }
+         window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
 
         // Mobile menu functionality
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
@@ -1521,14 +1529,36 @@
             mobileMenu.style.display = isOpen ? 'none' : 'block';
             mobileMenuBtn.querySelector('i').className = isOpen ? 'fas fa-bars' : 'fas fa-times';
             mobileMenuBtn.setAttribute('aria-expanded', !isOpen);
+            if (!isOpen) {
+                document.getElementById('mobile-search-container').classList.remove('active');
+            }
+        });
+         const mobileSearchBtn = document.getElementById('mobile-search-btn');
+        const mobileSearchContainer = document.getElementById('mobile-search-container');
+        
+        mobileSearchBtn.addEventListener('click', () => {
+            const isActive = mobileSearchContainer.classList.contains('active');
+            if (isActive) {
+                mobileSearchContainer.classList.remove('active');
+            } else {
+                mobileSearchContainer.classList.add('active');
+                // Close mobile menu when opening search
+                mobileMenu.style.display = 'none';
+                mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
+                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+            }
         });
 
         // Close mobile menu when clicking outside
         document.addEventListener('click', (e) => {
-            if (!mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+             if (!mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
                 mobileMenu.style.display = 'none';
                 mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
                 mobileMenuBtn.setAttribute('aria-expanded', 'false');
+            }
+            
+            if (!mobileSearchBtn.contains(e.target) && !mobileSearchContainer.contains(e.target)) {
+                mobileSearchContainer.classList.remove('active');
             }
         });
 
