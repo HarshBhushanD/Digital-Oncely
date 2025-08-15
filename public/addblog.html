@@ -320,7 +320,9 @@
     <nav class="navbar">
         <div class="container">
             <div class="nav-content">
-                <a href="index.html" class="nav-brand">Digital Oncely</a>
+                <a href="index.html" class="nav-brand">
+                    <img src="images/logo.svg" alt="Digital Oncely" style="height: 50px; width: auto;">
+                </a>
                 <div class="search-bar">
                     <i class="fas fa-search" style="color: var(--secondary-text)"></i>
                     <input type="text" class="search-input" placeholder="Search products...">
@@ -596,7 +598,7 @@
 
 
 
-
+<!-- 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -792,11 +794,73 @@
             padding: 8px;
             border-radius: 8px;
             transition: all 0.3s ease;
+            flex-shrink: 0;
         }
         
         .mobile-menu-btn:hover {
             background: var(--bg-glass);
         }
+        
+.mobile-search-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.mobile-search-btn:hover {
+    background: var(--bg-glass);
+}
+.mobile-controls {
+    display: none;
+    align-items: center;
+    gap: 8px;
+}
+
+.mobile-search-container {
+    display: none;
+    position: fixed;
+    top: 80px;
+    left: 10%;
+    right: 10%;
+    background: rgba(15, 15, 35, 0.95);
+    backdrop-filter: var(--blur);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    z-index: 999;
+    box-shadow: var(--shadow-lg);
+}
+
+.mobile-search-container.active {
+    display: block;
+}
+
+.mobile-search-input {
+    width: 100%;
+    padding: 14px 20px 14px 48px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    backdrop-filter: var(--blur);
+    transition: all 0.3s ease;
+}
+
+.mobile-search-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+
 
         /* Container */
         .container {
@@ -810,8 +874,8 @@
             display: none;
             position: fixed;
             top: 80px;
-            left: 0;
-            right: 0;
+            left: 10%;
+            right: 10%;
             background: rgba(15, 15, 35, 0.95);
             backdrop-filter: var(--blur);
             border-top: 1px solid var(--border);
@@ -1215,16 +1279,23 @@
             .nav-links {
                 display: none;
             }
-            
-            .mobile-menu-btn {
-                display: block;
-            }
-            
-            .search-bar {
-                max-width: 200px;
-                margin: 0 16px;
-            }
-
+.mobile-menu-btn,
+    .mobile-search-btn {
+        display: block;
+    }
+    
+    .search-bar {
+        display: none;
+    }
+    
+    .mobile-controls {
+        display: flex;
+    }
+    
+    .nav-brand {
+        font-size: 1.3rem;
+    }
+    
             .add-blog-hero {
                 padding: 80px 0 60px;
             }
@@ -1259,6 +1330,19 @@
         }
 
         @media (max-width: 480px) {
+            .nav-content {
+        padding: 0 16px;
+    }
+    
+    .nav-brand {
+        font-size: 1.2rem;
+    }
+    
+    .mobile-search-container,
+    .mobile-menu {
+        left: 5%;
+        right: 5%;
+    }
             .add-blog-hero {
                 padding: 60px 0 40px;
             }
@@ -1301,41 +1385,54 @@
     </style>
 </head>
 <body>
-    <!-- Enhanced Navbar -->
+   
     <nav class="navbar" id="navbar">
         <div class="nav-content">
-            <a href="index.html" class="nav-brand">Digital Oncely</a>
+            <a href="index.html" class="nav-brand">
+                <img src="images/logo.svg" alt="Digital Oncely" style="height: 50px; width: auto;">
+            </a>
             <div class="search-bar">
                 <i class="fas fa-search"></i>
-                <input type="text" class="search-input" placeholder="Search products...">
+                <input type="text" class="search-input" placeholder="Search amazing products...">
             </div>
             <div class="nav-links">
                 <a href="products.html" class="nav-link">Products</a>
                 <a href="addproduct.html" class="nav-link">Add Product</a>
-                <a href="login.html" class="nav-link">Login</a>
+                <a href="login.html" class="nav-link" id="login-link">Login</a>
+                <a href="#" class="nav-link" id="logout-link" style="display:none;">Logout</a>
                 <a href="blog.html" class="nav-link">Blog</a>
                 <a href="addblog.html" class="nav-link">Add Blog</a>
                 <a href="cart.html" class="nav-link">Cart</a>
                 <a href="buynow.html" class="nav-link">Buy Now</a>
             </div>
-            <button class="mobile-menu-btn" id="mobile-menu-btn">
-                <i class="fas fa-bars"></i>
-            </button>
+            <div class="mobile-controls">
+                <button class="mobile-search-btn" id="mobile-search-btn" aria-label="Search">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
         </div>
     </nav>
 
-    <!-- Mobile Menu -->
-    <div class="mobile-menu" id="mobile-menu">
+    <div class="mobile-search-container" id="mobile-search-container">
+        <div style="position: relative;">
+            <i class="fas fa-search" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-secondary);"></i>
+            <input type="text" class="mobile-search-input" placeholder="Search amazing products...">
+        </div>
+    </div>
+
+    <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
         <a href="products.html" class="nav-link">Products</a>
         <a href="addproduct.html" class="nav-link">Add Product</a>
-        <a href="login.html" class="nav-link">Login</a>
+        <a href="login.html" class="nav-link" id="mobile-login-link">Login</a>
+        <a href="#" class="nav-link" id="mobile-logout-link" style="display:none;">Logout</a>
         <a href="blog.html" class="nav-link">Blog</a>
         <a href="addblog.html" class="nav-link">Add Blog</a>
         <a href="cart.html" class="nav-link">Cart</a>
         <a href="buynow.html" class="nav-link">Buy Now</a>
     </div>
-
-    <!-- Enhanced Hero Section -->
     <div class="add-blog-hero">
         <div class="container">
             <h1><i class="fas fa-pen-nib"></i> Create New Blog Post</h1>
@@ -1343,7 +1440,6 @@
         </div>
     </div>
 
-    <!-- Enhanced Form Container -->
     <div class="add-blog-container">
         <div class="add-blog-card">
             <div class="add-blog-title">Write Your Story</div>
@@ -1439,6 +1535,24 @@
             mobileMenu.style.display = isOpen ? 'none' : 'block';
             mobileMenuBtn.querySelector('i').className = isOpen ? 'fas fa-bars' : 'fas fa-times';
             mobileMenuBtn.setAttribute('aria-expanded', !isOpen);
+             if (!isOpen) {
+                document.getElementById('mobile-search-container').classList.remove('active');
+            }
+        });
+        const mobileSearchBtn = document.getElementById('mobile-search-btn');
+        const mobileSearchContainer = document.getElementById('mobile-search-container');
+        
+        mobileSearchBtn.addEventListener('click', () => {
+            const isActive = mobileSearchContainer.classList.contains('active');
+            if (isActive) {
+                mobileSearchContainer.classList.remove('active');
+            } else {
+                mobileSearchContainer.classList.add('active');
+                // Close mobile menu when opening search
+                mobileMenu.style.display = 'none';
+                mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
+                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+            }
         });
 
         // Close mobile menu when clicking outside
@@ -1447,6 +1561,9 @@
                 mobileMenu.style.display = 'none';
                 mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
                 mobileMenuBtn.setAttribute('aria-expanded', 'false');
+            }
+             if (!mobileSearchBtn.contains(e.target) && !mobileSearchContainer.contains(e.target)) {
+                mobileSearchContainer.classList.remove('active');
             }
         });
 
@@ -1585,4 +1702,1391 @@
 
         form.addEventListener('submit', function() {
             localStorage.removeItem('blog-draft');
+        }); -->
+
+
+
+        
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Blog - Digital Oncely</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4338ca;
+            --primary-light: #8b5cf6;
+            --accent: #06d6a0;
+            --accent-dark: #059669;
+            --bg-primary: #0f0f23;
+            --bg-secondary: #1a1a2e;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --bg-glass: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            --border: rgba(255, 255, 255, 0.1);
+            --border-hover: rgba(255, 255, 255, 0.2);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.3);
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-accent: linear-gradient(135deg, #06d6a0 0%, #118ab2 100%);
+            --gradient-hero: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            --gradient-card: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            --blur: blur(20px);
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(6, 214, 160, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        /* Enhanced Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(15, 15, 35, 0.85);
+            backdrop-filter: var(--blur);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .navbar.scrolled {
+            background: rgba(15, 15, 35, 0.95);
+            padding: 12px 0;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+        
+        .nav-brand {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-brand:hover {
+            transform: scale(1.05);
+            filter: brightness(1.2);
+        }
+        
+        .search-bar {
+            position: relative;
+            max-width: 400px;
+            flex: 1;
+            margin: 0 32px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 14px 20px 14px 48px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            backdrop-filter: var(--blur);
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        
+        .search-bar i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-link {
+            padding: 10px 16px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-primary);
+            transition: left 0.3s ease;
+            z-index: -1;
+            opacity: 0.1;
+        }
+        
+        .nav-link:hover {
+            color: var(--text-primary);
+            background: var(--bg-glass);
+        }
+        
+        .nav-link:hover::before {
+            left: 0;
+        }
+        
+        .mobile-controls {
+            display: none;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .mobile-menu-btn, .mobile-search-btn {
+            display: none;
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu-btn:hover, .mobile-search-btn:hover {
+            background: var(--bg-card);
+            border-color: var(--border-hover);
+            transform: scale(1.05);
+        }
+        
+        .mobile-search-container {
+            display: none;
+            position: fixed;
+            top: 84px;
+            left: 5%;
+            right: 5%;
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: var(--blur);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            z-index: 999;
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .mobile-search-container.active {
+            display: block;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .mobile-search-input {
+            width: 100%;
+            padding: 14px 20px 14px 48px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            backdrop-filter: var(--blur);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 84px;
+            left: 5%;
+            right: 5%;
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: var(--blur);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            z-index: 999;
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .mobile-menu.active {
+            display: block;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .mobile-menu .nav-link {
+            display: block;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+            width: 100%;
+        }
+
+        .mobile-menu .nav-link:last-child {
+            border-bottom: none;
+        }
+
+        /* Enhanced Hero Section */
+        .add-blog-hero {
+            margin-top: 84px;
+            padding: 120px 0 80px;
+            position: relative;
+            overflow: hidden;
+            background: var(--gradient-hero);
+            background-size: 200% 200%;
+            animation: gradientShift 8s ease-in-out infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .add-blog-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 15, 35, 0.7);
+            backdrop-filter: var(--blur);
+        }
+
+        .add-blog-hero .container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .add-blog-hero h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes titleGlow {
+            0% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
+            100% { text-shadow: 0 0 40px rgba(255, 255, 255, 0.8), 0 0 60px rgba(99, 102, 241, 0.6); }
+        }
+
+        .add-blog-hero p {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            margin: 0 auto;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Enhanced Form Section */
+        .add-blog-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 80px 24px;
+        }
+
+        .add-blog-card {
+            background: var(--gradient-card);
+            backdrop-filter: var(--blur);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 48px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 1s ease-out both;
+        }
+
+        .add-blog-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-accent);
+            z-index: 1;
+        }
+
+        .add-blog-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 16px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .add-blog-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 48px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .add-blog-form {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-label i {
+            color: var(--accent);
+            font-size: 1.1rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 20px 24px;
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            font-size: 1.05rem;
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: inherit;
+            backdrop-filter: var(--blur);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .form-textarea {
+            min-height: 240px;
+            resize: vertical;
+            line-height: 1.7;
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+            opacity: 0.8;
+        }
+
+        .character-count {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .character-count .count {
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .character-count .limit {
+            color: var(--text-muted);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 20px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .form-btn {
+            flex: 1;
+            padding: 18px 32px;
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            text-decoration: none;
+            border: none;
+            min-width: 160px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .form-btn-primary {
+            background: var(--gradient-accent);
+            color: white;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .form-btn-primary:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(6, 214, 160, 0.4);
+        }
+
+        .form-btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .form-btn-secondary {
+            background: var(--gradient-card);
+            color: var(--text-primary);
+            border: 2px solid var(--border);
+            backdrop-filter: var(--blur);
+        }
+
+        .form-btn-secondary:hover {
+            transform: translateY(-4px) scale(1.02);
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-md);
+        }
+
+        .form-btn-secondary:hover::before {
+            left: 100%;
+        }
+
+        /* Enhanced Tips Section */
+        .form-tips {
+            background: var(--gradient-card);
+            backdrop-filter: var(--blur);
+            border: 1px solid rgba(6, 214, 160, 0.2);
+            border-radius: 20px;
+            padding: 32px;
+            margin-top: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-tips::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient-accent);
+            opacity: 0.05;
+            z-index: -1;
+        }
+
+        .form-tips h4 {
+            color: var(--accent);
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .form-tips h4 i {
+            font-size: 1.3rem;
+        }
+
+        .form-tips ul {
+            margin: 0;
+            padding-left: 24px;
+            color: var(--text-primary);
+        }
+
+        .form-tips li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        /* Enhanced Preview Section */
+        .preview-section {
+            margin-top: 48px;
+            padding-top: 48px;
+            border-top: 1px solid var(--border);
+        }
+
+        .preview-toggle {
+            background: var(--gradient-card);
+            backdrop-filter: var(--blur);
+            border: 2px solid var(--border);
+            color: var(--text-primary);
+            padding: 16px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1rem;
+        }
+
+        .preview-toggle:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .preview-content {
+            display: none;
+            background: var(--gradient-card);
+            backdrop-filter: var(--blur);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            margin-top: 20px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .preview-content.show {
+            display: block;
+            animation: fadeInUp 0.4s ease-out;
+        }
+
+        .preview-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+
+        .preview-meta {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .preview-text {
+            color: var(--text-primary);
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .search-bar {
+                display: none;
+            }
+            
+            .mobile-controls {
+                display: flex;
+            }
+            
+            .mobile-menu-btn, .mobile-search-btn {
+                display: block;
+            }
+            
+            .nav-brand {
+                font-size: 1.3rem;
+            }
+            
+            .add-blog-hero {
+                padding: 80px 0 60px;
+            }
+
+            .add-blog-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .add-blog-hero p {
+                font-size: 1rem;
+            }
+
+            .add-blog-container {
+                padding: 40px 16px;
+            }
+
+            .add-blog-card {
+                padding: 32px 24px;
+            }
+
+            .add-blog-title {
+                font-size: 2rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .form-btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-content {
+                padding: 0 16px;
+            }
+            
+            .nav-brand {
+                font-size: 1.2rem;
+            }
+            
+            .mobile-search-container,
+            .mobile-menu {
+                left: 2%;
+                right: 2%;
+            }
+            
+            .add-blog-hero {
+                padding: 60px 0 40px;
+            }
+
+            .add-blog-hero h1 {
+                font-size: 2rem;
+            }
+
+            .add-blog-card {
+                padding: 24px 16px;
+            }
+
+            .form-input {
+                padding: 16px 20px;
+                font-size: 1rem;
+            }
+
+            .form-tips {
+                padding: 24px 20px;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <!-- Enhanced Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-content">
+            <a href="index.html" class="nav-brand">
+                <img src="images/logo.svg" alt="Digital Oncely" style="height: 50px; width: auto;">
+            </a>
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" class="search-input" placeholder="Search amazing products...">
+            </div>
+            <div class="nav-links">
+                <a href="products.html" class="nav-link">Products</a>
+                <a href="addproduct.html" class="nav-link">Add Product</a>
+                <a href="login.html" class="nav-link" id="login-link">Login</a>
+                <a href="#" class="nav-link" id="logout-link" style="display:none;">Logout</a>
+                <a href="blog.html" class="nav-link">Blog</a>
+                <a href="addblog.html" class="nav-link">Add Blog</a>
+                <a href="cart.html" class="nav-link">Cart</a>
+                <a href="buynow.html" class="nav-link">Buy Now</a>
+            </div>
+            <div class="mobile-controls">
+                <button class="mobile-search-btn" id="mobile-search-btn" aria-label="Search">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Search Container -->
+    <div class="mobile-search-container" id="mobile-search-container">
+        <div style="position: relative;">
+            <i class="fas fa-search" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-secondary);"></i>
+            <input type="text" class="mobile-search-input" placeholder="Search amazing products...">
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+        <a href="products.html" class="nav-link">Products</a>
+        <a href="addproduct.html" class="nav-link">Add Product</a>
+        <a href="login.html" class="nav-link" id="mobile-login-link">Login</a>
+        <a href="#" class="nav-link" id="mobile-logout-link" style="display:none;">Logout</a>
+        <a href="blog.html" class="nav-link">Blog</a>
+        <a href="addblog.html" class="nav-link">Add Blog</a>
+        <a href="cart.html" class="nav-link">Cart</a>
+        <a href="buynow.html" class="nav-link">Buy Now</a>
+    </div>
+
+    <!-- Enhanced Hero Section -->
+    <div class="add-blog-hero">
+        <div class="container">
+            <h1><i class="fas fa-pen-nib"></i> Create New Blog Post</h1>
+            <p>Share your insights, experiences, and knowledge with our community</p>
+        </div>
+    </div>
+
+    <!-- Enhanced Form Container -->
+     <div class="add-blog-container">
+        <div class="add-blog-card">
+            <div class="add-blog-title">Write Your Story</div>
+            <div class="add-blog-subtitle">Fill in the details below to create your blog post</div>
+            
+            <form class="add-blog-form" id="add-blog-form">
+                <div class="form-group">
+                    <label class="form-label" for="blog-title">
+                        <i class="fas fa-heading"></i> Blog Title *
+                    </label>
+                    <input type="text" id="blog-title" class="form-input" placeholder="Enter an engaging title for your blog post..." required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="blog-author">
+                        <i class="fas fa-user"></i> Author Name
+                    </label>
+                    <input type="text" id="blog-author" class="form-input" placeholder="Your name (optional)">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="blog-email">
+                        <i class="fas fa-envelope"></i> Author Email *
+                    </label>
+                    <input type="email" id="blog-email" class="form-input" placeholder="Enter your email address" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="blog-content">
+                        <i class="fas fa-edit"></i> Blog Content *
+                    </label>
+                    <textarea id="blog-content" class="form-input form-textarea" placeholder="Write your blog content here. Share your thoughts, experiences, or insights..." required></textarea>
+                    <div class="character-count">
+                        <span class="count">0</span> characters
+                        <span class="limit">(Recommended: 500-2000 characters)</span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="form-btn form-btn-primary">
+                        <i class="fas fa-paper-plane"></i>
+                        Publish Blog Post
+                    </button>
+                    <a href="blog.html" class="form-btn form-btn-secondary">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Blogs
+                    </a>
+                </div>
+            </form>
+
+    <!-- <div class="add-blog-container">
+        <div class="add-blog-card">
+            <div class="add-blog-title">Write Your Story</div>
+            <div class="add-blog-subtitle">Fill in the details below to create your blog post</div>
+            
+            <form class="add-blog-form" id="add-blog-form">
+                <div class="form-group">
+                    <label class="form-label" for="blog-content">
+                        <i class="fas fa-edit"></i> Blog Content *
+                    </label>
+                    <textarea id="blog-content" class="form-input form-textarea" placeholder="Write your blog content here. Share your thoughts, experiences, or insights..." required></textarea>
+                    <div class="character-count">
+                        <span class="count">0</span> characters
+                        <span class="limit">(Recommended: 500-2000 characters)</span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="form-btn form-btn-primary">
+                        <i class="fas fa-paper-plane"></i>
+                        Publish Blog Post
+                    </button>
+                    <a href="blog.html" class="form-btn form-btn-secondary">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Blogs
+                    </a>
+                </div>
+            </form> -->
+
+            <div class="form-tips">
+                <h4><i class="fas fa-lightbulb"></i> Writing Tips</h4>
+                <ul>
+                    <li>Start with a compelling title that grabs attention</li>
+                    <li>Write in a clear, conversational tone</li>
+                    <li>Include personal experiences and insights</li>
+                    <li>Break up text with paragraphs for better readability</li>
+                    <li>Share practical tips or actionable advice</li>
+                </ul>
+            </div>
+
+            <div class="preview-section">
+                <button type="button" class="preview-toggle" id="preview-toggle">
+                    <i class="fas fa-eye"></i>
+                    Preview Post
+                </button>
+                <div class="preview-content" id="preview-content">
+                    <div class="preview-title" id="preview-title">Your blog title will appear here</div>
+                    <div class="preview-meta" id="preview-meta">By <span id="preview-author">Anonymous</span> on <span id="preview-date"></span></div>
+                    <div class="preview-text" id="preview-text">Your blog content will appear here...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
         });
+
+        // Enhanced Mobile Menu and Search Toggle Functions
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileSearchBtn = document.getElementById('mobile-search-btn');
+        const mobileSearchContainer = document.getElementById('mobile-search-container');
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const isActive = mobileMenu.classList.contains('active');
+            
+            if (isActive) {
+                // Close menu
+                mobileMenu.classList.remove('active');
+                mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
+                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                mobileMenu.setAttribute('aria-hidden', 'true');
+            } else {
+                // Open menu and close search if open
+                mobileMenu.classList.add('active');
+                mobileSearchContainer.classList.remove('active');
+                mobileMenuBtn.querySelector('i').className = 'fas fa-times';
+                mobileMenuBtn.setAttribute('aria-expanded', 'true');
+                mobileMenu.setAttribute('aria-hidden', 'false');
+            }
+        }
+
+        // Mobile Search Toggle
+        function toggleMobileSearch() {
+            const isActive = mobileSearchContainer.classList.contains('active');
+            
+            if (isActive) {
+                // Close search
+                mobileSearchContainer.classList.remove('active');
+            } else {
+                // Open search and close menu if open
+                mobileSearchContainer.classList.add('active');
+                mobileMenu.classList.remove('active');
+                mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
+                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                mobileMenu.setAttribute('aria-hidden', 'true');
+                
+                // Focus on search input
+                setTimeout(() => {
+                    const searchInput = mobileSearchContainer.querySelector('.mobile-search-input');
+                    if (searchInput) searchInput.focus();
+                }, 300);
+            }
+        }
+
+        // Event Listeners
+        mobileMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleMobileMenu();
+        });
+
+        mobileSearchBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleMobileSearch();
+        });
+
+        // Close menus when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+                mobileMenu.classList.remove('active');
+                mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
+                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                mobileMenu.setAttribute('aria-hidden', 'true');
+            }
+            
+            if (!mobileSearchBtn.contains(e.target) && !mobileSearchContainer.contains(e.target)) {
+                mobileSearchContainer.classList.remove('active');
+            }
+        });
+
+        // Close menus on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                mobileMenu.classList.remove('active');
+                mobileSearchContainer.classList.remove('active');
+                mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
+                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                mobileMenu.setAttribute('aria-hidden', 'true');
+            }
+        });
+
+        // Authentication handling
+        function checkAuthStatus() {
+            const token = localStorage.getItem('jwtToken');
+            const loginLink = document.getElementById('login-link');
+            const logoutLink = document.getElementById('logout-link');
+            const mobileLoginLink = document.getElementById('mobile-login-link');
+            const mobileLogoutLink = document.getElementById('mobile-logout-link');
+            
+            if (token) {
+                // User is logged in
+                if (loginLink) loginLink.style.display = 'none';
+                if (logoutLink) logoutLink.style.display = 'block';
+                if (mobileLoginLink) mobileLoginLink.style.display = 'none';
+                if (mobileLogoutLink) mobileLogoutLink.style.display = 'block';
+            } else {
+                // User is not logged in
+                if (loginLink) loginLink.style.display = 'block';
+                if (logoutLink) logoutLink.style.display = 'none';
+                if (mobileLoginLink) mobileLoginLink.style.display = 'block';
+                if (mobileLogoutLink) mobileLogoutLink.style.display = 'none';
+            }
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('jwtToken');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('blog-draft');
+            alert('Logged out successfully!');
+            checkAuthStatus();
+            window.location.href = 'login.html';
+        }
+
+        // Add logout event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuthStatus();
+            
+            const logoutLink = document.getElementById('logout-link');
+            const mobileLogoutLink = document.getElementById('mobile-logout-link');
+            
+            if (logoutLink) {
+                logoutLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    logout();
+                });
+            }
+            
+            if (mobileLogoutLink) {
+                mobileLogoutLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    logout();
+                });
+            }
+        });
+
+        // Blog Form Logic
+        const form = document.getElementById('add-blog-form');
+        const titleInput = document.getElementById('blog-title');
+        const authorInput = document.getElementById('blog-author');
+        const emailInput = document.getElementById('blog-email');
+        const contentInput = document.getElementById('blog-content');
+        const characterCount = document.querySelector('.character-count .count');
+        const previewToggle = document.getElementById('preview-toggle');
+        const previewContent = document.getElementById('preview-content');
+        const previewTitle = document.getElementById('preview-title');
+        const previewAuthor = document.getElementById('preview-author');
+        const previewDate = document.getElementById('preview-date');
+        const previewText = document.getElementById('preview-text');
+
+        // Character count functionality
+        contentInput.addEventListener('input', function() {
+            const count = this.value.length;
+            characterCount.textContent = count;
+            
+            if (count > 2000) {
+                characterCount.style.color = '#ff4d4f';
+            } else if (count > 500) {
+                characterCount.style.color = 'var(--accent)';
+            } else {
+                characterCount.style.color = 'var(--text-secondary)';
+            }
+        });
+
+        // Preview functionality
+        previewToggle.addEventListener('click', function() {
+            const isVisible = previewContent.classList.contains('show');
+            
+            if (!isVisible) {
+                previewTitle.textContent = titleInput.value || 'Your blog title will appear here';
+                previewAuthor.textContent = authorInput.value || 'Anonymous';
+                previewDate.textContent = new Date().toLocaleDateString();
+                previewText.textContent = contentInput.value || 'Your blog content will appear here...';
+                
+                previewContent.classList.add('show');
+                this.innerHTML = '<i class="fas fa-eye-slash"></i> Hide Preview';
+            } else {
+                previewContent.classList.remove('show');
+                this.innerHTML = '<i class="fas fa-eye"></i> Preview Post';
+            }
+        });
+
+        // Form submission
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const title = titleInput.value.trim();
+            const author = authorInput.value.trim();
+            const email = emailInput.value.trim();
+            const content = contentInput.value.trim();
+            
+            // Validation
+            if (!title || !content || !email) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+            
+            if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+                alert('Please enter a valid email address.');
+                return;
+            }
+            
+            if (content.length < 50) {
+                alert('Blog content should be at least 50 characters long.');
+                return;
+            }
+
+            // Show loading state
+            const submitBtn = form.querySelector('.form-btn-primary');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<div class="loading"></div> Publishing...';
+            submitBtn.disabled = true;
+
+            const blogData = {
+                task: 'data',
+                operation: 'add',
+                projectType: 'Blog',
+                website: 'digital-oncely',
+                data: {
+                    title,
+                    author: author || 'Anonymous',
+                    email,
+                    content,
+                    date: new Date().toLocaleDateString(),
+                    timestamp: new Date().getTime()
+                }
+            };
+
+            const API_BASE_URL = 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api';
+            const token = localStorage.getItem('jwtToken');
+            
+            if (!token) {
+                alert('You must be logged in to add a blog.');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                return;
+            }
+
+            try {
+                const response = await fetch(API_BASE_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(blogData)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to add blog');
+                }
+
+                // Success
+                localStorage.removeItem('blog-draft');
+                alert('Blog post published successfully!');
+                window.location.href = 'blog.html';
+                
+            } catch (error) {
+                console.error('Error publishing blog:', error);
+                alert('Error publishing blog: ' + error.message);
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Auto-save functionality
+        let autoSaveTimer;
+        function autoSave() {
+            const title = titleInput.value.trim();
+            const author = authorInput.value.trim();
+            const email = emailInput.value.trim();
+            const content = contentInput.value.trim();
+            
+            if (title || content) {
+                localStorage.setItem('blog-draft', JSON.stringify({ 
+                    title, 
+                    author, 
+                    email, 
+                    content,
+                    timestamp: Date.now()
+                }));
+            }
+        }
+
+        // Auto-save every 30 seconds when typing
+        [titleInput, authorInput, emailInput, contentInput].forEach(input => {
+            input.addEventListener('input', () => {
+                clearTimeout(autoSaveTimer);
+                autoSaveTimer = setTimeout(autoSave, 30000);
+            });
+        });
+
+        // Load draft on page load
+        window.addEventListener('load', function() {
+            const draft = JSON.parse(localStorage.getItem('blog-draft') || '{}');
+            
+            // Only load draft if it's less than 24 hours old
+            if (draft.timestamp && (Date.now() - draft.timestamp) < 24 * 60 * 60 * 1000) {
+                if (draft.title) titleInput.value = draft.title;
+                if (draft.author) authorInput.value = draft.author;
+                if (draft.email) emailInput.value = draft.email;
+                if (draft.content) {
+                    contentInput.value = draft.content;
+                    characterCount.textContent = draft.content.length;
+                    
+                    const count = draft.content.length;
+                    if (count > 2000) {
+                        characterCount.style.color = '#ff4d4f';
+                    } else if (count > 500) {
+                        characterCount.style.color = 'var(--accent)';
+                    }
+                }
+                
+                // Show notification if draft was loaded
+                if (draft.title || draft.content) {
+                    setTimeout(() => {
+                        if (confirm('A draft was found. Would you like to continue where you left off?')) {
+                            // Draft is already loaded
+                        } else {
+                            // Clear the form
+                            form.reset();
+                            characterCount.textContent = '0';
+                            localStorage.removeItem('blog-draft');
+                        }
+                    }, 500);
+                }
+            } else {
+                // Remove old draft
+                localStorage.removeItem('blog-draft');
+            }
+        });
+
+        // Clear draft on successful submission
+        form.addEventListener('submit', function() {
+            localStorage.removeItem('blog-draft');
+        });
+
+        // Improved search functionality
+        function handleSearch(searchInput) {
+            const query = searchInput.value.trim();
+            if (query.length > 0) {
+                // Here you can implement actual search functionality
+                console.log('Searching for:', query);
+                // For now, just redirect to products page with search parameter
+                window.location.href = `products.html?search=${encodeURIComponent(query)}`;
+            }
+        }
+
+        // Add search functionality to both desktop and mobile search
+        const desktopSearch = document.querySelector('.search-input');
+        const mobileSearchInput = document.querySelector('.mobile-search-input');
+
+        if (desktopSearch) {
+            desktopSearch.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleSearch(this);
+                }
+            });
+        }
+
+        if (mobileSearchInput) {
+            mobileSearchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleSearch(this);
+                    mobileSearchContainer.classList.remove('active');
+                }
+            });
+        }
+
+        // Smooth scrolling for any anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add some visual feedback for form interactions
+        const formInputs = document.querySelectorAll('.form-input');
+        formInputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('focused');
+            });
+        });
+    </script>
+</body>
+</html>

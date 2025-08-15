@@ -1911,7 +1911,9 @@
     <nav class="navbar">
         <div class="container">
             <div class="nav-content">
-                <a href="index.html" class="nav-brand">Digital Oncely</a>
+                <a href="index.html" class="nav-brand">
+                    <img src="images/logo.svg" alt="Digital Oncely" style="height: 50px; width: auto;">
+                </a>
                 <div class="search-bar">
                     <i class="fas fa-search" style="color: var(--secondary-text)"></i>
                     <input type="text" class="search-input" placeholder="Search products...">
@@ -3814,7 +3816,9 @@
     <nav class="navbar" id="navbar">
         <div class="container">
         <div class="nav-content">
-            <a href="index.html" class="nav-brand">Digital Oncely</a>
+            <a href="index.html" class="nav-brand">
+                <img src="images/logo.svg" alt="Digital Oncely" style="height: 50px; width: auto;">
+            </a>
             <div class="search-bar">
                 <i class="fas fa-search"></i>
                 <input type="text" class="search-input" placeholder="Search amazing products...">
@@ -4627,36 +4631,152 @@
                 }
             }
 
-            function handleAddToCart(product) {
-                let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-                const existing = cart.find(item => item.productName === product.productName);
-                
-                if (existing) {
-                    existing.qty = (existing.qty || 1) + 1;
-                } else {
-                    cart.push({ ...product, qty: 1 });
+            async function handleAddToCart(product) {
+                const token = localStorage.getItem('jwtToken');
+                if (!token) {
+                    alert('Please login to add items to cart');
+                    window.location.href = 'login.html';
+                    return;
                 }
-                
-                localStorage.setItem('cart', JSON.stringify(cart));
-                
-                // Enhanced feedback
-                const btn = document.querySelector('.add-to-cart-btn');
-                const originalHTML = btn.innerHTML;
-                
-                btn.innerHTML = '<i class="fas fa-check" style="margin-right: 8px;"></i>Added to Cart!';
-                btn.style.background = 'var(--gradient-accent)';
-                btn.style.transform = 'scale(1.05)';
-                
-                setTimeout(() => {
-                    btn.innerHTML = originalHTML;
-                    btn.style.background = '';
-                    btn.style.transform = '';
-                }, 2500);
+
+                try {
+                    // Call the global addToCart function from cart.html
+                    if (window.addToCart) {
+                        const success = await window.addToCart(product);
+                        if (success) {
+                            // Enhanced feedback
+                            const btn = document.querySelector('.add-to-cart-btn');
+                            const originalHTML = btn.innerHTML;
+                            
+                            btn.innerHTML = '<i class="fas fa-check" style="margin-right: 8px;"></i>Added to Cart!';
+                            btn.style.background = 'var(--gradient-accent)';
+                            btn.style.transform = 'scale(1.05)';
+                            
+                            setTimeout(() => {
+                                btn.innerHTML = originalHTML;
+                                btn.style.background = '';
+                                btn.style.transform = '';
+                            }, 2500);
+                        } else {
+                            alert('Failed to add to cart. Please try again.');
+                        }
+                                    } else {
+                    console.log('window.addToCart not available, using direct API call');
+                    // Direct API call if cart.html is not loaded
+                    const success = await addToCartDirect(product);
+                    if (success) {
+                        // Enhanced feedback
+                        const btn = document.querySelector('.add-to-cart-btn');
+                        const originalHTML = btn.innerHTML;
+                        
+                        btn.innerHTML = '<i class="fas fa-check" style="margin-right: 8px;"></i>Added to Cart!';
+                        btn.style.background = 'var(--gradient-accent)';
+                        btn.style.transform = 'scale(1.05)';
+                        
+                        setTimeout(() => {
+                            btn.innerHTML = originalHTML;
+                            btn.style.background = '';
+                            btn.style.transform = '';
+                        }, 2500);
+                    } else {
+                        alert('Failed to add to cart. Please try again.');
+                    }
+                }
+                } catch (error) {
+                    console.error('Error adding to cart:', error);
+                    alert('Failed to add to cart. Please try again.');
+                }
             }
 
             function handleBuyNow(product) {
                 localStorage.setItem('buynow', JSON.stringify(product));
                 window.location.href = 'buynow.html';
+            }
+
+            // Direct API call function for adding to cart
+            async function addToCartDirect(product) {
+                const API_BASE_URL = 'https://ltqlisa626.execute-api.us-east-2.amazonaws.com/api';
+                const token = localStorage.getItem('jwtToken');
+                
+                if (!token) {
+                    console.error('No JWT token found');
+                    return false;
+                }
+
+                try {
+                    // Get user email from token
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    const userEmail = payload.email || payload.sub;
+                    
+                    if (!userEmail) {
+                        console.error('No user email found in token');
+                        return false;
+                    }
+
+                    console.log('Adding product to cart via direct API:', product);
+                    console.log('User email:', userEmail);
+                    
+                    // Get the product ID (handle both id and productId fields)
+                    const productId = product.id || product.productId;
+                    if (!productId) {
+                        console.error('Product has no ID:', product);
+                        return false;
+                    }
+
+                    const cartItem = {
+                        ...product,
+                        productId: productId, // Ensure we have a consistent productId
+                        userEmail: userEmail,
+                        qty: 1,
+                        addedAt: Date.now()
+                    };
+
+                    console.log('Cart item to be added:', cartItem);
+
+                    const requestBody = {
+                        task: 'data',
+                        operation: 'add',
+                        projectType: 'Cart',
+                        website: 'digital-oncely',
+                        data: cartItem
+                    };
+
+                    console.log('API request body:', requestBody);
+
+                    const response = await fetch(API_BASE_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(requestBody)
+                    });
+
+                    console.log('API response status:', response.status);
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('API error response:', errorText);
+                        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+                    }
+
+                    const data = await response.json();
+                    console.log('Direct API response:', data);
+                    
+                    // Check for success in multiple possible formats
+                    if (data.success === true || data.success === 'true' || data.status === 'success' || data.message === 'success' || 
+                        data.success === 'Success' || data.status === 'Success' || data.message === 'Success' ||
+                        (data.success !== false && data.success !== 'false' && data.status !== 'error' && data.message !== 'error')) {
+                        console.log('Successfully added to cart via direct API');
+                        return true;
+                    } else {
+                        console.error('API returned success: false', data);
+                        return false;
+                    }
+                } catch (error) {
+                    console.error('Error adding to cart via direct API:', error);
+                    return false;
+                }
             }
             
             // Start fetching product data
