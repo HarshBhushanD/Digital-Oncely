@@ -1177,75 +1177,13 @@
             }
         });
 
-<<<<<<< HEAD
+
         if (logoutLink) logoutLink.addEventListener('click', doLogout);
         if (mobileLogoutLink) mobileLogoutLink.addEventListener('click', doLogout);
     });
+
+
 </script>
-
-=======
-        // Mobile menu functionality
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        
-        mobileMenuBtn.addEventListener('click', () => {
-            const isOpen = mobileMenu.style.display === 'block';
-            mobileMenu.style.display = isOpen ? 'none' : 'block';
-            mobileMenuBtn.querySelector('i').className = isOpen ? 'fas fa-bars' : 'fas fa-times';
-            mobileMenuBtn.setAttribute('aria-expanded', !isOpen);
-            if (!isOpen) {
-                document.getElementById('mobile-search-container').classList.remove('active');
-            }
-        });
-         const mobileSearchBtn = document.getElementById('mobile-search-btn');
-        const mobileSearchContainer = document.getElementById('mobile-search-container');
-        
-        mobileSearchBtn.addEventListener('click', () => {
-            const isActive = mobileSearchContainer.classList.contains('active');
-            if (isActive) {
-                mobileSearchContainer.classList.remove('active');
-            } else {
-                mobileSearchContainer.classList.add('active');
-                // Close mobile menu when opening search
-                mobileMenu.style.display = 'none';
-                mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
-                mobileMenuBtn.setAttribute('aria-expanded', 'false');
-            }
-        });
-
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', (e) => {
-             if (!mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
-                mobileMenu.style.display = 'none';
-                mobileMenuBtn.querySelector('i').className = 'fas fa-bars';
-                mobileMenuBtn.setAttribute('aria-expanded', 'false');
-            }
-            
-            if (!mobileSearchBtn.contains(e.target) && !mobileSearchContainer.contains(e.target)) {
-                mobileSearchContainer.classList.remove('active');
-            }
-        });
-
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
-            updateAuthLinks();
-            loadProductData();
-            
-            // Logout functionality
-            const logoutLink = document.getElementById('logout-link');
-            const mobileLogoutLink = document.getElementById('mobile-logout-link');
-            
-            function doLogout(e) {
-                e.preventDefault();
-                localStorage.removeItem('jwtToken');
-                location.reload();
-            }
-            
-            if (logoutLink) logoutLink.addEventListener('click', doLogout);
-            if (mobileLogoutLink) mobileLogoutLink.addEventListener('click', doLogout);
-        });
-    </script>
->>>>>>> f606377ff83fa03a5d16489eff0ab70865b9ff90
 </body>
 </html>
 
