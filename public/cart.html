@@ -1038,13 +1038,13 @@
             </div>
             
             <!-- Debug section -->
-            <div style="margin-top: 20px; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 12px;">
+            <!-- <div style="margin-top: 20px; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 12px;">
                 <h3 style="color: var(--text-primary); margin-bottom: 10px;">Debug Info</h3>
                 <button onclick="loadCartFromAPI()" style="background: var(--primary); color: white; padding: 8px 16px; border: none; border-radius: 8px; margin-right: 10px;">Reload Cart</button>
                 <button onclick="console.log('Current cart:', cart)" style="background: var(--accent); color: white; padding: 8px 16px; border: none; border-radius: 8px;">Log Cart</button>
                 <button onclick="console.log('User email:', getCurrentUserEmail())" style="background: var(--primary-dark); color: white; padding: 8px 16px; border: none; border-radius: 8px;">Log User</button>
                 <button onclick="testAddToCart()" style="background: var(--warning); color: white; padding: 8px 16px; border: none; border-radius: 8px;">Test Add Item</button>
-            </div>
+            </div> -->
         </div>
     </div>
 
@@ -1674,32 +1674,32 @@ document.addEventListener('click', (e) => {
 });
 
 // Test function to manually add an item to cart
-async function testAddToCart() {
-    console.log('=== Testing add to cart ===');
-    const testProduct = {
-        id: 'test_product_' + Date.now(),
-        productId: 'test_product_' + Date.now(),
-        productName: 'Test Product',
-        price: 99.99,
-        description: 'This is a test product',
-        imageUrls: ['https://via.placeholder.com/150'],
-        category: 'test'
-    };
+// async function testAddToCart() {
+//     console.log('=== Testing add to cart ===');
+//     const testProduct = {
+//         id: 'test_product_' + Date.now(),
+//         productId: 'test_product_' + Date.now(),
+//         productName: 'Test Product',
+//         price: 99.99,
+//         description: 'This is a test product',
+//         imageUrls: ['https://via.placeholder.com/150'],
+//         category: 'test'
+//     };
     
-    console.log('Test product:', testProduct);
-    const result = await addToCartAPI(testProduct);
-    console.log('Test add to cart result:', result);
+//     console.log('Test product:', testProduct);
+//     const result = await addToCartAPI(testProduct);
+//     console.log('Test add to cart result:', result);
     
-    if (result) {
-        alert('Test item added successfully!');
-        loadCartFromAPI(); // Reload cart to show the new item
-    } else {
-        alert('Failed to add test item');
-    }
-}
+//     if (result) {
+//         alert('Test item added successfully!');
+//         loadCartFromAPI(); // Reload cart to show the new item
+//     } else {
+//         alert('Failed to add test item');
+//     }
+// }
 
-// Make test function globally available
-window.testAddToCart = testAddToCart;
+// // Make test function globally available
+// window.testAddToCart = testAddToCart;
 
 document.addEventListener('DOMContentLoaded', function() {
     updateAuthLinks();
