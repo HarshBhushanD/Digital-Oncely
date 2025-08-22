@@ -1949,6 +1949,15 @@ body::before {
         }
     });
 
+    function logout() {
+                    localStorage.removeItem('jwtToken');
+                    localStorage.removeItem('userEmail');
+                    localStorage.removeItem('blog-draft');
+                    alert('Logged out successfully!');
+                    checkAuthStatus();
+                    window.location.href = 'login.html';
+                }
+        
     async function loadProducts() {
         const token = localStorage.getItem('jwtToken');
         const loading = document.getElementById('loading');
